@@ -414,7 +414,7 @@
                 max-height: 100%;
                 margin-top: 40px;
                 width: 250px;
-                max-height: 150%;
+                max-height: 200%;
                 
             }
 

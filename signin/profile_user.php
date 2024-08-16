@@ -531,13 +531,23 @@
 
         /* popup2 */
 
-        .popup2 .overlay1 {
+        #popup-2 {
             position: fixed;
-            top: 0px;
-            left: 0px;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.7);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            display: none; 
+        }
+
+        #popup-2.active {
+            display: block; 
+        }
+
+        .overlay1 {
+            width: 1000vw;
+            height: 1000vh;
+            background: rgba(0, 0, 0, 0.4);
             z-index: 1;
             display: none;
         }
@@ -615,6 +625,7 @@
         .qr {
             margin: auto;
         }
+
 
 
 

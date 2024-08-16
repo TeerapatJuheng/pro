@@ -368,18 +368,24 @@
             }
 
             .popup2 .content5 {
-                width: 90%;
-                max-width: 90%;
                 padding: 15px;
                 border-radius: 5px;
                 overflow-y: auto;
-                max-height: 80%;
-                margin-top: 50px;
+                max-height: 100%;
+                margin-top: 40px;
+                width: 250px;
+                max-height: 200%;
+                width: 150px;
+                
             }
 
             .popup2 .name-report1 label,
             .popup2 .name-report1 span p {
                 font-size: 14px;
+            }
+            .popup2.active{
+                width: 100%;
+                height: 120%;
             }
             
         }
