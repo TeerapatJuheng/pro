@@ -558,6 +558,16 @@ include "language.php";
             color:#507F99;
         }*/
 
+        select {
+            width: 100%;
+            height: 3rem;
+            font-size: 1.5rem;
+            color: #666;
+            border: .1rem solid #507F99;
+            border-radius: 5px;
+            text-align: center;
+        }
+
         .active p {
             background:#9FE2BF;
             padding: 2px 10px;
@@ -1535,6 +1545,46 @@ include "language.php";
 
         <!-- popup3 messenger view end-->
     
+        <!-- product ดูยอดขาย -->
+
+        <div class="container"> 
+            <h1>Service</h1>
+                <table class="content-table">
+                    <thead>
+                        <tr>
+                            <th>ลำดับบริการ</th>
+                            <th>ชื่อบริการ</th>
+                            <th>จำนวนยอดขาย</th>
+                            <th><select name="" id="">
+                            <option value="1">วันนี้</option>
+                            <option value="2">เดือนนี้</option>
+                            </select></th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>ซัก+อบแห้ง</td>
+                            <td>10</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>ซัก+อบแห้ง+รีด</td>
+                            <td>7</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>ซัก+อบแห้ง</td>
+                            <td>2</td>
+                            <td></td>
+                        </tr>
+                        <!-- สามารถเพิ่มแถวข้อมูลต่อไปตามต้องการ -->
+                    </tbody>
+                </table>
+            </div>
+
+        <!-- product ดูยอดขาย end -->
     
 
 
