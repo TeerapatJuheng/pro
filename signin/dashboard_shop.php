@@ -1525,7 +1525,7 @@ include "language.php";
                     <img src="../photo/ตู้ซักผ้า2.jpg" alt="">
                 </div>
                 <div class="form-group">
-                    <label for="image3">แนบ OR Payment :</label>
+                    <label for="image">แนบ OR Payment :</label>
                     <img src="../photo/ตู้ซักผ้า2.jpg" alt="">
                 </div>
             </form>
