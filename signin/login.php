@@ -110,6 +110,14 @@ if (isset($_GET['lang'])) {
             margin-left: 10px;
         }
 
+        .forgot {
+            font-size: 12px;
+            color: #3F51B5;
+            text-decoration: none;
+            margin-top: 0px;
+            margin-left: 10px;
+        }
+
         .error {
             color: red;
             font-size: 14px;
@@ -169,6 +177,7 @@ if (isset($_GET['lang'])) {
             <form action="login_db.php" method="POST">
                 <input type="text" name="employee_id" id="employee_id" placeholder="<?php echo $lang == 'en' ? 'Username' : 'ชื่อผู้ใช้'; ?>" class="text-box-user form-control">
                 <input type="password" name="password" id="inputPassword" placeholder="<?php echo $lang == 'en' ? 'Password' : 'รหัสผ่าน'; ?>" class="text-box-password form-control">
+                <p class="dhaa"><?php echo $lang == 'en' ? 'Forgot Password?' : 'ลืมรหัสผ่าน'; ?><a href="resetpass.php" class="forgot"><?php echo $lang == 'en' ? 'Forgot' : 'ลืมรหัสผ่าน'; ?></a></p>
                 <button type="submit" name="login_user" class="button-submit"><?php echo $lang == 'en' ? 'Submit' : 'ยืนยัน'; ?></button>
                 <?php if (isset($_SESSION['error'])) : ?>
                     <div class="error">
@@ -183,7 +192,7 @@ if (isset($_GET['lang'])) {
                 <br>
                 <br>
                 <div>
-                    <p class="dhaa"><?php echo $lang == 'en' ? 'Dont have an account?' : 'ยังไม่มีบัญชีผู้ใช้?'; ?><a href="../signin/register.php" class="register-login"><?php echo $lang == 'en' ? 'Register' : 'ลงทะเบียน'; ?></a></p>
+                    <p class="dhaa"><?php echo $lang == 'en' ? 'Do not have an account?' : 'ยังไม่มีบัญชีผู้ใช้?'; ?><a href="../signin/register.php" class="register-login"><?php echo $lang == 'en' ? 'Register' : 'ลงทะเบียน'; ?></a></p>
                 </div>
             </form>
         </div>
