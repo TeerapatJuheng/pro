@@ -105,6 +105,14 @@
             border-radius: 5px; 
             text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff; 
             }
+            body, html {
+            font-family: Arial, sans-serif;
+            height: 110%;
+            margin: 0;
+            background: linear-gradient(0deg, #ffff 0%, #5FABBC 100%);
+            justify-content: center;
+            align-items: center;
+        } 
         }
     </style>
 
