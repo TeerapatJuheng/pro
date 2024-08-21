@@ -101,6 +101,10 @@ if (isset($_GET['lang'])) {
             color: #1E1E1E;
             margin-left: 20px;
         }
+        .dha{
+            margin-left: 30px;
+            font-size: 12px;
+        }
 
         .register-login {
             font-size: 12px;
@@ -115,7 +119,7 @@ if (isset($_GET['lang'])) {
             color: #3F51B5;
             text-decoration: none;
             margin-top: 0px;
-            margin-left: 10px;
+            margin-left: 15px;
         }
 
         .error {
@@ -177,7 +181,7 @@ if (isset($_GET['lang'])) {
             <form action="login_db.php" method="POST">
                 <input type="text" name="employee_id" id="employee_id" placeholder="<?php echo $lang == 'en' ? 'Username' : 'ชื่อผู้ใช้'; ?>" class="text-box-user form-control">
                 <input type="password" name="password" id="inputPassword" placeholder="<?php echo $lang == 'en' ? 'Password' : 'รหัสผ่าน'; ?>" class="text-box-password form-control">
-                <p class="dhaa"><?php echo $lang == 'en' ? 'Forgot Password?' : 'ลืมรหัสผ่าน'; ?><a href="resetpass.php" class="forgot"><?php echo $lang == 'en' ? 'Forgot' : 'ลืมรหัสผ่าน'; ?></a></p>
+                <p class="dha"><?php echo $lang == 'en' ? 'Forgot Password?' : 'ลืมรหัสผ่าน'; ?><a href="resetpass.php" class="forgot"><?php echo $lang == 'en' ? 'Forgot' : 'ลืมรหัสผ่าน'; ?></a></p>
                 <button type="submit" name="login_user" class="button-submit"><?php echo $lang == 'en' ? 'Submit' : 'ยืนยัน'; ?></button>
                 <?php if (isset($_SESSION['error'])) : ?>
                     <div class="error">

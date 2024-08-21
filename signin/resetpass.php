@@ -26,9 +26,12 @@
         }
 
         .container {
+            justify-content: center;
+            align-items: center;
             display: flex;
             height: 100vh;
         }
+
 
         .left-side {
             flex: 1;
@@ -52,7 +55,7 @@
 
         .mt-10 {
             width: 220px;
-            height: 50px;
+            height: 25px;
             border-radius: 10px;
             padding: 10px;
             border: none;
@@ -60,6 +63,7 @@
             font-size: 20px;
             margin-bottom: 20px;
             color: #000;
+            display: flex;
         }
 
         .Submit-Btn {
