@@ -94,7 +94,7 @@
             left: 0;
             margin-left: 0px;
             margin-top: 250px;
-            opacity: 0.1;
+            opacity: 0.2;
         }
         @media screen and (max-width: 450px) {
         .formtatle {
