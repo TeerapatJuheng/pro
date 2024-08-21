@@ -17,119 +17,73 @@
 
     <style>
         body, html {
-            margin: 0;
-            padding: 0;
             font-family: Arial, sans-serif;
-            height: 100vh;
-            overflow: hidden; /* Prevent scrolling */
+            height: 100%;
+            margin: 0;
             background: linear-gradient(0deg, #ffff 0%, #5FABBC 100%);
+            justify-content: center;
+            align-items: center;
         }
 
         .container {
+            display: flex;
             justify-content: center;
             align-items: center;
-            display: flex;
+            flex-direction: column;
             height: 100vh;
         }
 
+        .formtatle {
+            font-size: xxx-large;
+            margin-bottom: 30px;
+            color: #5FABBC; 
+            padding: 10px 20px; 
+            border-radius: 5px; 
+            text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff; 
+        }
 
-        .left-side {
-            flex: 1;
-            position: relative;
+        .form {
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
+            gap: 15px;
         }
 
-        .speech-bubble {
-            width: 300px;
-            border-radius: 10px;
-            padding: 20px;
-            border: none;
-            box-shadow: none;
-            font-size: 40px;
-            color: #ffffff;
-            text-align: center;
-        }
-
-        .mt-10 {
-            width: 220px;
-            height: 25px;
-            border-radius: 10px;
+        input.form {
             padding: 10px;
-            border: none;
-            box-shadow: none;
-            font-size: 20px;
-            margin-bottom: 20px;
-            color: #000;
-            display: flex;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            width: 200px; 
+            font-size: 16px;
+            height: 30px;
+        }
+        input.form:focus {
+            color: #212529;
+            background-color: #fff;
+            border-color: #86b7fe; 
+            outline: 0; 
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+
         }
 
         .Submit-Btn {
-            padding: 10px 20px;
+            padding: 10px 15px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
             background-color: #5FABBC;
             color: #ffffff;
             font-size: 20px;
-            margin-left: 60px;
-        }
-
-        .dhaa {
-            font-size: 12px;
-            color: #1E1E1E;
-            margin-left: 20px;
-        }
-
-        .resetpass {
-            font-size: 12px;
-            color: #3F51B5;
-            text-decoration: none;
             margin-top: 20px;
-            margin-left: 10px;
-        }
-
-        .forgot {
-            font-size: 12px;
-            color: #3F51B5;
-            text-decoration: none;
-            margin-top: 0px;
-            margin-left: 10px;
-        }
-
-        .error {
-            color: red;
-            font-size: 14px;
-            margin-top: 10px;
-        }
-
-        .logo {
-            width: 200px;
-            height: 80px;
-            margin-right: 10px;
-        }
-
-        .font {
-            font-family: Arial, sans-serif;
-            font-size: 40px;
-            color: white;
-        }
-
-        .iworld {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            font-size: 30px;
-            color: #000;
+            width: 100px; 
+            margin-left: 55px;
         }
 
         .sponge3 {
             position: absolute;
             top: 0;
             right: 0;
-            margin-right: -20px;
+            margin-right: 0px;
             margin-top: 0px;
         }
 
@@ -137,7 +91,7 @@
             position: absolute;
             top: 0;
             left: 0;
-            margin-left: -20px;
+            margin-left: 0px;
             margin-top: 250px;
         }
     </style>
@@ -146,19 +100,23 @@
 <body>
 
     <div class="container">
-        <div class="loginandregister">
-            <h1 id="formtatle">Reset Password</h1>
-            <div id="Resetpasswordform">
-                <form action="">
-                    <div class="contor">
-                        <input id="Newpassword" class="mt-10" type="password" placeholder="New Password">
-                        <input id="confirmNewPassword" class="mt-10" type="password" placeholder="Confirm Password">
-                    </div>
-                    <div class="center mt-20">
-                        <input class="Submit-Btn" type="submit" value="Change" id="PasswordChangeBtn">
-                    </div>
-                </form>
-            </div>
+        <div class="sponge3"> 
+            <img src="../photo/1x/Asset 3.png" alt="photo3" style="width:150px;height:150px;">
+        </div>
+        <div class="sponge4">
+            <img src="../photo/1x/Asset 6.png" alt="photo3" style="width:150px;height:150px;">
+        </div>
+        <h1 class="formtatle" id="formtatle">Reset Password</h1>
+        <div id="Resetpasswordform">
+            <form action="">
+                <div class="form">
+                    <input id="Newpassword" class="form" type="password" placeholder="New Password">
+                    <input id="confirmNewPassword" class="form" type="password" placeholder="Confirm Password">
+                </div>
+                <div class="center mt-20">
+                    <input class="Submit-Btn" type="submit" value="Change" id="PasswordChangeBtn">
+                </div>
+            </form>
         </div>
     </div>
     

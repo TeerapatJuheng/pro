@@ -95,7 +95,6 @@ if (isset($_GET['lang'])) {
             font-size: 20px;
             margin-left: 60px;
         }
-
         .dhaa {
             font-size: 12px;
             color: #1E1E1E;
