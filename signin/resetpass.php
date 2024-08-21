@@ -76,7 +76,7 @@
             font-size: 20px;
             margin-top: 20px;
             width: 100px; 
-            margin-left: 55px;
+            margin-left: 60px;
         }
 
         .sponge3 {
@@ -85,6 +85,7 @@
             right: 0;
             margin-right: 0px;
             margin-top: 0px;
+            opacity: 0.5;
         }
 
         .sponge4 {
@@ -93,6 +94,17 @@
             left: 0;
             margin-left: 0px;
             margin-top: 250px;
+            opacity: 0.1;
+        }
+        @media screen and (max-width: 450px) {
+        .formtatle {
+            font-size: 30px;
+            margin-bottom: 30px;
+            color: #5FABBC; 
+            padding: 10px 20px; 
+            border-radius: 5px; 
+            text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff; 
+            }
         }
     </style>
 
