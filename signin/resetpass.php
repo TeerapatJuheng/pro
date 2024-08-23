@@ -130,6 +130,7 @@
         <div id="Resetpasswordform">
             <form action="">
                 <div class="form">
+                    <input id="Newemail" class="form" type="email" placeholder="Email">
                     <input id="Newpassword" class="form" type="password" placeholder="New Password">
                     <input id="confirmNewPassword" class="form" type="password" placeholder="Confirm Password">
                 </div>
