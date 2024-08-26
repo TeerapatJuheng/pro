@@ -1242,7 +1242,7 @@ include "language.php";
                                 <td>โอ้โห</td>
                                 <td class="active"><p>เสร็จ</p></td>
                                 <td>10-07-24</td>
-                                <td class="edit"><button class="ck" onclick="edit()">Edit</button></td>
+                                <td class="edit"><button class="ck" onclick="edit()">view</button></td>
                             </tr>
                             <!-- สามารถเพิ่มแถวข้อมูลต่อไปตามต้องการ -->
                         </tbody>
