@@ -17,6 +17,7 @@ if (isset($_POST['login_user'])) {
     error_log("Password: " . $password);
 
     echo 1;
+    echo count($errors);
 
     if (empty($username)) {
         array_push($errors, "ต้องระบุชื่อผู้ใช้");
@@ -27,13 +28,22 @@ if (isset($_POST['login_user'])) {
     }
     
     if (count($errors) == 0) {
+        echo "gggggg";
         //$password = md5($password); // ยกเลิกการคอมเมนต์หากรหัสผ่านเก็บเป็น md5 hash
-        $query = "SELECT * FROM tb_customer WHERE name = '$username' AND password = '$password'";
-        $result = mysqli_query($conn, $query);
-        if (mysqli_num_rows($result) == 1) {
-            $row = mysqli_fetch_assoc($result);
+
+        $sql1 = "SELECT * FROM `tb_customer` WHERE username = '$username' AND password = '$password'";
+        $sql2 = "SELECT * FROM `tb_shop` WHERE shop_user = '$username' AND shop_pass ='$password'";
+
+        $result1 = mysqli_query($conn, $sql1);
+        $result2 = mysqli_query($conn, $sql2);
+
+        echo mysqli_num_rows($result1);
+        echo mysqli_num_rows($result2);
+
+        if (mysqli_num_rows($result1) == 1) {
+            echo "l";
+            $row = mysqli_fetch_assoc($result1);
             $_SESSION['employee_id'] = $username;
-            $_SESSION['role'] = $row['role'];
             $_SESSION['success'] = "คุณเข้าสู่ระบบเรียบร้อยแล้ว";
             header("location: ./dashboard_user.php");
             // Add JavaScript alert
@@ -41,10 +51,19 @@ if (isset($_POST['login_user'])) {
                 //alert("Employee ID: '.$_SESSION['employee_id'].'\nFirst Name: '.$_SESSION['first_name'].'\nRole: '.$_SESSION['role'].'\nBranch: '.$_SESSION['branch'].'\nBranch_ID: '.$_SESSION['branch_id'].'");
                 //window.location.href = "../inside/dashboard.php";
             //</script>';
-        } else {
-            array_push($errors, "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
-            $_SESSION['error'] = "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง!";
-            header("location: login.php");
+        }
+
+        if (mysqli_num_rows($result2) == 1) {
+            echo "k";
+            $row = mysqli_fetch_assoc($result2);
+            $_SESSION['employee_id'] = $username;
+            $_SESSION['success'] = "คุณเข้าสู่ระบบเรียบร้อยแล้ว";
+            header("location: ./dashboard_shop.php");
+            // Add JavaScript alert
+            //echo '<script type="text/javascript">
+                //alert("Employee ID: '.$_SESSION['employee_id'].'\nFirst Name: '.$_SESSION['first_name'].'\nRole: '.$_SESSION['role'].'\nBranch: '.$_SESSION['branch'].'\nBranch_ID: '.$_SESSION['branch_id'].'");
+                //window.location.href = "../inside/dashboard.php";
+            //</script>';
         }
     } else {
         array_push($errors, "ต้องระบุชื่อผู้ใช้และรหัสผ่าน");
