@@ -1,8 +1,20 @@
 <?php
-include "language.php";
+session_start();
+echo $_SESSION['shop_id'];
+include('../inc/server.php');
+
+$Query1 = "SELECT COUNT(*) as total 
+FROM tb_sell 
+WHERE shop_id = '$_SESSION[shop_id]' 
+AND DATE(sell_date) = CURDATE()";
+$result1 = mysqli_query($conn, $Query1) or die("database error:" . mysqli_error($conn));
+$total_date = mysqli_fetch_assoc($result1);
+
+$Query2 = "SELECT COUNT(*) as total FROM `tb_sell` WHERE shop_id = $_SESSION[shop_id]";
+$result2 = mysqli_query($conn, $Query2) or die("database error:" . mysqli_error($conn));
+$total = mysqli_fetch_assoc($result2);
+
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1150,7 +1162,7 @@ include "language.php";
             <div class="card">
                 <div>
                     <div class="number">2000</div>
-                    <div class="cardname"><?php echo $lang['sale']; ?></div>
+                    <div class="cardname">sale</div>
                 </div>
 
                 <div class="iconBx">
@@ -1161,7 +1173,7 @@ include "language.php";
             <div class="card">
                 <div>
                     <div class="number">20000</div>
-                    <div class="cardname"><?php echo $lang['total']; ?></div>
+                    <div class="cardname">total sale</div>
                 </div>
 
                 <div class="iconBx">
@@ -1171,8 +1183,8 @@ include "language.php";
 
             <div class="card">
                 <div>
-                    <div class="number">20</div>
-                    <div class="cardname"><?php echo $lang['order']; ?></div>
+                    <div class="number"><?= ucfirst($total_date['total']); ?></div>
+                    <div class="cardname">order</div>
                 </div>
 
                 <div class="iconBx">
@@ -1182,8 +1194,8 @@ include "language.php";
 
             <div class="card">
                 <div>
-                    <div class="number">30</div>
-                    <div class="cardname"><?php echo $lang['total order']; ?></div>
+                    <div class="number"><?= ucfirst($total['total']); ?></div>
+                    <div class="cardname">total order</div>
                 </div>
 
                 <div class="iconBx">
@@ -1194,7 +1206,7 @@ include "language.php";
             <div class="card" onclick="messenger()">
                 <div>
                     <div class="number">2</div>
-                    <div class="cardname"><?php echo $lang['messenger']; ?></div>
+                    <div class="cardname">messenger</div> 
                 </div>
 
                 <div class="iconBx">
@@ -1497,54 +1509,54 @@ include "language.php";
         <!-- popup3 messenger view-->
 
         <div class="popup4" id="popup4">
-    <div class="overlay4"></div>
-    <div class="content4">
-        <div class="close-btn" onclick="viewmessenger()">&times;</div>
-        <h1>ปัญหา</h1>
-        <div class="container2">
-                <div class="form-group">
-                    <label for="name">ชื่อ:</label>
-                    <input type="text" id="name" name="name" required>
+            <div class="overlay4"></div>
+            <div class="content4">
+                <div class="close-btn" onclick="viewmessenger()">&times;</div>
+                <h1>ปัญหา</h1>
+                <div class="container2">
+                        <div class="form-group">
+                            <label for="name">ชื่อ:</label>
+                            <input type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">อีเมล:</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">เบอร์โทรศัพท์:</label>
+                            <input type="tel" id="phone" name="phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="order">เลขออเดอร์:</label>
+                            <input type="text" id="order" name="order" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="issue">หัวข้อปัญหา:</label>
+                            <input type="text" id="issue" name="issue" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">ลักษณะของปัญหาที่พบ:</label>
+                            <textarea id="description" name="description" rows="4" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="image1">แนบรูปภาพ 1:</label>
+                            <img src="../photo/ตู้ซักผ้า2.jpg" alt="">
+                        </div>
+                        <div class="form-group">
+                            <label for="image2">แนบรูปภาพ 2:</label>
+                            <img src="../photo/ตู้ซักผ้า2.jpg" alt="">
+                        </div>
+                        <div class="form-group">
+                            <label for="image3">แนบ QR Payment :</label>
+                            <img src="../photo/ตู้ซักผ้า2.jpg" alt="">
+                        </div>
+                    </form>
                 </div>
-                <div class="form-group">
-                    <label for="email">อีเมล:</label>
-                    <input type="email" id="email" name="email" required>
-                </div>
-                <div class="form-group">
-                    <label for="phone">เบอร์โทรศัพท์:</label>
-                    <input type="tel" id="phone" name="phone">
-                </div>
-                <div class="form-group">
-                    <label for="order">เลขออเดอร์:</label>
-                    <input type="text" id="order" name="order" required>
-                </div>
-                <div class="form-group">
-                    <label for="issue">หัวข้อปัญหา:</label>
-                    <input type="text" id="issue" name="issue" required>
-                </div>
-                <div class="form-group">
-                    <label for="description">ลักษณะของปัญหาที่พบ:</label>
-                    <textarea id="description" name="description" rows="4" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="image1">แนบรูปภาพ 1:</label>
-                    <img src="../photo/ตู้ซักผ้า2.jpg" alt="">
-                </div>
-                <div class="form-group">
-                    <label for="image2">แนบรูปภาพ 2:</label>
-                    <img src="../photo/ตู้ซักผ้า2.jpg" alt="">
-                </div>
-                <div class="form-group">
-                    <label for="image3">แนบ OR Payment :</label>
-                    <img src="../photo/ตู้ซักผ้า2.jpg" alt="">
-                </div>
-            </form>
+            </div>
         </div>
-    </div>
-</div>
 
         <!-- popup3 messenger view end-->
-    
+
         <!-- product ดูยอดขาย -->
 
         <div class="container"> 
@@ -1585,6 +1597,7 @@ include "language.php";
             </div>
 
         <!-- product ดูยอดขาย end -->
+    
     
 
 
