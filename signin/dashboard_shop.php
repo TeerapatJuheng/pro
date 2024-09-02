@@ -14,6 +14,22 @@ $Query2 = "SELECT COUNT(*) as total FROM `tb_sell` WHERE shop_id = $_SESSION[sho
 $result2 = mysqli_query($conn, $Query2) or die("database error:" . mysqli_error($conn));
 $total = mysqli_fetch_assoc($result2);
 
+$Query3 = "SELECT sell_total
+FROM tb_sell 
+WHERE DATE(sell_date) = CURDATE()";
+$result3 = mysqli_query($conn, $Query3) or die("database error:" . mysqli_error($conn));
+$sale_date = mysqli_fetch_assoc($result3);
+
+$Query4 = "SELECT SUM(sell_total) as sell_total FROM `tb_sell` WHERE shop_id = $_SESSION[shop_id]";
+$result4 = mysqli_query($conn, $Query4) or die("database error:" . mysqli_error($conn));
+$sale_total = mysqli_fetch_assoc($result4);
+
+$Query5 = "SELECT COUNT(date_service) as date_service
+FROM tb_service 
+WHERE DATE(date_service) = CURDATE()";
+$result5 = mysqli_query($conn, $Query5) or die("database error:" . mysqli_error($conn));
+$date_service = mysqli_fetch_assoc($result5);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -1161,7 +1177,7 @@ $total = mysqli_fetch_assoc($result2);
         <div class="cardBox">
             <div class="card">
                 <div>
-                    <div class="number">2000</div>
+                    <div class="number"><?= ucfirst($sale_date['sell_total']); ?></div>
                     <div class="cardname">sale</div>
                 </div>
 
@@ -1172,7 +1188,7 @@ $total = mysqli_fetch_assoc($result2);
 
             <div class="card">
                 <div>
-                    <div class="number">20000</div>
+                    <div class="number"><?= ucfirst($sale_total['sell_total']); ?></div>
                     <div class="cardname">total sale</div>
                 </div>
 
@@ -1205,7 +1221,7 @@ $total = mysqli_fetch_assoc($result2);
 
             <div class="card" onclick="messenger()">
                 <div>
-                    <div class="number">2</div>
+                    <div class="number"><?= ucfirst($date_service['date_service']); ?></div>
                     <div class="cardname">messenger</div> 
                 </div>
 
