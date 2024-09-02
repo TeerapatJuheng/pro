@@ -1,4 +1,8 @@
 <?php
+echo '
+<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert-dev.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">';
 session_start();
 // include('db_conection.php');
 include('../inc/server.php');
@@ -9,15 +13,14 @@ if (isset($_POST['login_user'])) {
     $password = mysqli_real_escape_string($conn, $_POST['password']);
 
     // แสดงค่า username และ password ในหน้าเว็บเบราว์เซอร์
-    echo "Username: " . htmlspecialchars($username) . "<br>";
-    echo "Password: " . htmlspecialchars($password) . "<br>";
+    // echo "Username: " . htmlspecialchars($username) . "<br>";
+    // echo "Password: " . htmlspecialchars($password) . "<br>";
 
     // บันทึกค่า username และ password ลงใน server error log
     error_log("Username: " . $username);
     error_log("Password: " . $password);
 
-    echo 1;
-    echo count($errors);
+    // echo 1;
 
     if (empty($username)) {
         array_push($errors, "ต้องระบุชื่อผู้ใช้");
@@ -28,7 +31,6 @@ if (isset($_POST['login_user'])) {
     }
     
     if (count($errors) == 0) {
-        echo "gggggg";
         //$password = md5($password); // ยกเลิกการคอมเมนต์หากรหัสผ่านเก็บเป็น md5 hash
 
         $sql1 = "SELECT * FROM `tb_customer` WHERE username = '$username' AND password = '$password'";
@@ -37,11 +39,10 @@ if (isset($_POST['login_user'])) {
         $result1 = mysqli_query($conn, $sql1);
         $result2 = mysqli_query($conn, $sql2);
 
-        echo mysqli_num_rows($result1);
-        echo mysqli_num_rows($result2);
+        $row2 = mysqli_fetch_assoc($result2);
+
 
         if (mysqli_num_rows($result1) == 1) {
-            echo "l";
             $row = mysqli_fetch_assoc($result1);
             $_SESSION['employee_id'] = $username;
             $_SESSION['success'] = "คุณเข้าสู่ระบบเรียบร้อยแล้ว";
@@ -54,9 +55,9 @@ if (isset($_POST['login_user'])) {
         }
 
         if (mysqli_num_rows($result2) == 1) {
-            echo "k";
             $row = mysqli_fetch_assoc($result2);
             $_SESSION['employee_id'] = $username;
+            $_SESSION['shop_id'] = $row2['id'];
             $_SESSION['success'] = "คุณเข้าสู่ระบบเรียบร้อยแล้ว";
             header("location: ./dashboard_shop.php");
             // Add JavaScript alert
@@ -65,10 +66,22 @@ if (isset($_POST['login_user'])) {
                 //window.location.href = "../inside/dashboard.php";
             //</script>';
         }
+
+        echo '<script> 
+        setTimeout(function() { 
+            swal({ 
+                title: "Error", 
+                text: "ชื่อผู้ใช้ หรือรหัสผ่านไม่ถูกต้อง", 
+                type: "error" 
+            }, function() { 
+                window.location = "login.php"; 
+            }); 
+        }, 1000); 
+        </script>';
     } else {
-        array_push($errors, "ต้องระบุชื่อผู้ใช้และรหัสผ่าน");
-        $_SESSION['error'] = "ต้องระบุชื่อผู้ใช้และรหัสผ่าน";
-        header("location: login.php");
+        // array_push($errors, "ต้องระบุชื่อผู้ใช้และรหัสผ่าน");
+        // $_SESSION['error'] = "ต้องระบุชื่อผู้ใช้และรหัสผ่าน";
+        // header("location: login.php");
     }
 }
 ?>
