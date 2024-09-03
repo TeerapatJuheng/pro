@@ -613,22 +613,22 @@ $date_service = mysqli_fetch_assoc($result5);
         /* review*/
 
         .review {
-        margin-bottom: 30px;
-        width: 100vw; 
-        padding: 0; 
+            margin-bottom: 30px;
+            width: 100vw; 
+            padding: 0; 
         }
 
-            .review .review-slider {
+        .review .review-slider {
             padding: 1rem;
             box-sizing: border-box; 
             width: 100%; 
         }
 
-            .review .review-slider:first-child {
+        .review .review-slider:first-child {
             margin-bottom: 2rem;
         }
 
-            .review .review-slider .box3 {
+        .review .review-slider .box3 {
             background: #fff;
             border-radius: .5rem;
             text-align: center;
@@ -641,35 +641,35 @@ $date_service = mysqli_fetch_assoc($result5);
             box-sizing: border-box; 
         }
 
-            .review .review-slider .box3:hover {
+        .review .review-slider .box3:hover {
             outline-offset: 0rem;
             outline: var(--outline-hover);
         }
 
-            .review .review-slider .box3 img {
+        .review .review-slider .box3 img {
             height: 100px;
             width: 100px;
             border: 1px solid #000;
         }
 
-            .review .review-slider .box3 h3 {
+        .review .review-slider .box3 h3 {
             font-size: 15px;
             color: var(--black);
         }
 
-            .review .review-slider .box3 p {
+        .review .review-slider .box3 p {
             font-size: 12px;
             color: var(--light-color);
             padding: .2rem 0;
         }
 
-            .review .review-slider .box3 .stars i {
+        .review .review-slider .box3 .stars i {
             font-size: 1.7rem;
             color: #FFBF00;
             padding: 0.5rem 0;
         }
 
-            .review h1 {
+        .review h1 {
             text-align: left;
             font-size: 22px;
             color: #000;
@@ -1177,7 +1177,7 @@ $date_service = mysqli_fetch_assoc($result5);
         <div class="cardBox">
             <div class="card">
                 <div>
-                    <div class="number"><?= ucfirst($sale_date['sell_total']); ?></div>
+                    <div class="number"><?= ucfirst($sale_date['sell_total'] ?? 0); ?></div>
                     <div class="cardname">sale</div>
                 </div>
 
@@ -1188,7 +1188,7 @@ $date_service = mysqli_fetch_assoc($result5);
 
             <div class="card">
                 <div>
-                    <div class="number"><?= ucfirst($sale_total['sell_total']); ?></div>
+                    <div class="number"><?= ucfirst($sale_total['sell_total']) ; ?></div>
                     <div class="cardname">total sale</div>
                 </div>
 
