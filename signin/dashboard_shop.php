@@ -13,10 +13,10 @@ $total_date = mysqli_fetch_assoc($result1);
 $Query2 = "SELECT COUNT(*) as total FROM `tb_sell` WHERE shop_id = $_SESSION[shop_id]";
 $result2 = mysqli_query($conn, $Query2) or die("database error:" . mysqli_error($conn));
 $total = mysqli_fetch_assoc($result2);
-
-$Query3 = "SELECT SUM(sell_total) AS sell_total
+ 
+$Query3 = "SELECT SUM(sell_total) AS sell_total 
 FROM tb_sell
-WHERE DATE(sell_date) = CURDATE()";
+WHERE DATE(sell_date) = CURDATE() AND shop_id = $_SESSION[shop_id]";
 $result3 = mysqli_query($conn, $Query3) or die("database error:" . mysqli_error($conn));
 $sale_date = mysqli_fetch_assoc($result3);
 
@@ -26,7 +26,7 @@ $sale_total = mysqli_fetch_assoc($result4);
 
 $Query5 = "SELECT COUNT(date_service) as date_service
 FROM tb_service 
-WHERE DATE(date_service) = CURDATE()";
+WHERE DATE(date_service) = CURDATE() AND shop_id = $_SESSION[shop_id]";
 $result5 = mysqli_query($conn, $Query5) or die("database error:" . mysqli_error($conn));
 $date_service = mysqli_fetch_assoc($result5);
 
@@ -1210,7 +1210,7 @@ $date_service = mysqli_fetch_assoc($result5);
 
             <div class="card">
                 <div>
-                    <div class="number"><?= ucfirst($total['total']); ?></div>
+                    <div class="number"><?= ucfirst($total['total'] ?? 0); ?></div>
                     <div class="cardname">total order</div>
                 </div>
 
