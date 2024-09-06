@@ -13,7 +13,7 @@ $total_date = mysqli_fetch_assoc($result1);
 $Query2 = "SELECT COUNT(*) as total FROM `tb_sell` WHERE shop_id = $_SESSION[shop_id]";
 $result2 = mysqli_query($conn, $Query2) or die("database error:" . mysqli_error($conn));
 $total = mysqli_fetch_assoc($result2);
- 
+
 $Query3 = "SELECT SUM(sell_total) AS sell_total 
 FROM tb_sell
 WHERE DATE(sell_date) = CURDATE() AND shop_id = $_SESSION[shop_id]";
@@ -30,6 +30,11 @@ WHERE DATE(date_service) = CURDATE() AND shop_id = $_SESSION[shop_id]";
 $result5 = mysqli_query($conn, $Query5) or die("database error:" . mysqli_error($conn));
 $date_service = mysqli_fetch_assoc($result5);
 
+$sql = "SELECT ts.sell_order, tc.name, tss.discription, ts.sell_date 
+        FROM tb_sell ts 
+        JOIN tb_customer tc ON ts.ct_id = tc.id 
+        JOIN tb_sell_status tss ON ts.status = tss.id";
+$order_result = mysqli_query($conn, $sql) or die("Database error: " . mysqli_error($conn));
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -1251,28 +1256,33 @@ $date_service = mysqli_fetch_assoc($result5);
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>00001</td>
-                                <td>สาวสวย</td>
-                                <td class="active"><p>รอรับออเดอร์</p></td>
-                                <td>10-07-24</td>
-                                <td class="edit"><button class="ck" onclick="edit()">Edit</button></td>
-                            </tr>
-                            <tr>
-                                <td>00002</td>
-                                <td>สุดใจ</td>
-                                <td class="active"><p>กำลังดำเนินการ</p></td>
-                                <td>10-07-24</td>
-                                <td class="edit"><button class="ck" onclick="edit()">Edit</button></td>
-                            </tr>
-                            <tr>
-                                <td>00003</td>
-                                <td>โอ้โห</td>
-                                <td class="active"><p>เสร็จ</p></td>
-                                <td>10-07-24</td>
-                                <td class="edit"><button class="ck" onclick="edit()">view</button></td>
-                            </tr>
-                            <!-- สามารถเพิ่มแถวข้อมูลต่อไปตามต้องการ -->
+                        <?php
+        // เช็คว่ามีผลลัพธ์หรือไม่
+        if (mysqli_num_rows($order_result) > 0) {
+            // ดึงข้อมูลและแสดงผล
+            while ($row = mysqli_fetch_assoc($order_result)) {
+                // ดึงค่า sell_order จากแต่ละแถว
+                $sell_order = htmlspecialchars($row['sell_order']); // ใช้ htmlspecialchars() เพื่อป้องกัน XSS
+                $name = htmlspecialchars($row['name']);
+                $discription = htmlspecialchars($row['discription']);
+                $sell_date = htmlspecialchars($row['sell_date']);
+                
+                // แสดงข้อมูลในตาราง
+                echo "<tr>
+                        <td>{$sell_order}</td>
+                        <td>{$name}</td>
+                        <td>{$discription}</td>
+                        <td>{$sell_date}</td>
+                        <td><a href='edit.php?sell_order={$sell_order}' class='btn-edit'>Edit</a></td>
+                      </tr>";
+            }
+        } else {
+            echo "<tr><td colspan='5'>ไม่มีข้อมูล</td></tr>";
+        }
+
+        // ปิดการเชื่อมต่อฐานข้อมูล
+        mysqli_close($conn);
+        ?>
                         </tbody>
                     </table>
             </div>
