@@ -94,8 +94,6 @@ function sendLineNotify($message = "ทดสอบ By Programmer")
 
             document.form1.action = "linealert.php";
         }
-
-
     }
     </script>
 </head>
@@ -160,7 +158,7 @@ function sendLineNotify($message = "ทดสอบ By Programmer")
         .sign h2 {
             font-size: 40px;
             color:#fffefe;
-            margin-top:100px;
+            margin-top:50px;
         }
 
         .input-field {
@@ -170,7 +168,9 @@ function sendLineNotify($message = "ทดสอบ By Programmer")
         .input-field input[type="username"],
         .input-field input[type="email"],
         .input-field input[type="password"],
-        .input-field input[type="confirmpass"] {
+        .input-field input[type="confirmpass"],
+        .input-field input[type="age"],
+        .input-field input[type="job"] {
             border-radius:10px;
             background: #fff;
             margin:15px;
@@ -179,7 +179,6 @@ function sendLineNotify($message = "ทดสอบ By Programmer")
             height: 2px;
             padding:20px 40px 20px 20px;
             backdrop-filter:blur(15px);
-
         }
 
         .input::placeholder {
@@ -189,7 +188,9 @@ function sendLineNotify($message = "ทดสอบ By Programmer")
         .input-field input[type="username"]:focus::placeholder,
         .input-field input[type="email"]:focus::placeholder,
         .input-field input[type="password"]:focus::placeholder,
-        .input-field input[type="confirmpass"]:focus::placeholder {
+        .input-field input[type="confirmpass"]:focus::placeholder,
+        .input-field input[type="age"]:focus::placeholder,
+        .input-field input[type="job"]:focus::placeholder {
             transform:translateY(-100%);
             transition:transform 0.2s ease-in-out;
             font-size:14px;
@@ -198,7 +199,9 @@ function sendLineNotify($message = "ทดสอบ By Programmer")
         .input-field input[type="username"]:not(:focus)::placeholder,
         .input-field input[type="email"]:not(:focus)::placeholder,
         .input-field input[type="password"]:not(:focus)::placeholder,
-        .input-field input[type="confirmpass"]:not(:focus)::placeholder {
+        .input-field input[type="confirmpass"]:not(:focus)::placeholder,
+        .input-field input[type="age"]:not(:focus)::placeholder,
+        .input-field input[type="job"]:not(:focus)::placeholder {
             transform:translateY(0%);
             transition:transform 0.2s ease-in-out;
             font-size:16px;
@@ -259,6 +262,20 @@ function sendLineNotify($message = "ทดสอบ By Programmer")
             </div>
             <div class="input-field">
                 <input type="password" name="conpass" id="conpass" placeholder="ConfirmPassword"  value="<?php echo $_SESSION['e_conpass_add']; ?>" require>
+            </div>
+            <div class="input-field">
+                <input type="age" name="age" id="age" placeholder="age"  value="Age" require>
+            </div>
+            <div class="input-field">
+                <input type="job" name="job" id="job" placeholder="job"  value="Job" require>
+            </div>
+            <div class="sex">
+                <br>
+                <label>
+                    <input type="radio" name="sex" value="male"> Male
+                    <input type="radio" name="sex" value="female"> Female
+                    <input type="radio" name="sex" value="other"> Other
+                </label>
             </div>
             <div class="role">
                 <br>
