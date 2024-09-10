@@ -476,6 +476,7 @@
 
         .box-container .box .content .title, 
         .box-container .box .content .address, 
+        .box-container .box .content .datetime,
         .box-container .box .content .time ,
         .box-container .box .content .cont {
             font-size: 16px;
@@ -707,13 +708,23 @@
 
         /* popup2 */
 
-        .popup2 .overlay1 {
+        #popup-2 {
             position: fixed;
-            top: 0px;
-            left: 0px;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.7);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            display: none; 
+        }
+
+        #popup-2.active {
+            display: block; 
+        }
+
+        .overlay1 {
+            width: 1000vw;
+            height: 1000vh;
+            background: rgba(0, 0, 0, 0.4);
             z-index: 1;
             display: none;
         }
@@ -893,6 +904,9 @@
                     <p class="p1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero, exercitationem.</p>
                     <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d684.840511221341!2d100.7878557596282!3d13.836459168288247!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x311d6fa0d3e43c17%3A0x6900adb7c859f5c7!2z4Lia4Lij4Li04Lip4Lix4LiXIOC4reC4suC4o-C5jOC4oSDguITguK3guKPguYzguJvguK3guYDguKPguIrguLHguYjguJkg4LiI4LmN4Liy4LiB4Lix4LiU!5e0!3m2!1sth!2sth!4v1721792305749!5m2!1sth!2sth" width="200" height="200" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
 
+                    <h4 class="datetime">วันทำการ</h4>
+                    <p class="p1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero, exercitationem.</p>
+
                     <h4 class="time">เวลาทำการ</h4>
                     <p class="p1">Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero, exercitationem.</p>
                     
@@ -902,16 +916,16 @@
                     <form action="">
 
                         <div class="dropDown">
-                            <span><h5>ประเภท :</h5></span>
+                            <!-- <span><h5>ประเภท :</h5></span>
                             <select name="" id="">
                                 <option value="1">เสื้อผ้า</option>
                                 <option value="2">ชุดที่นอน</option>
-                            </select>
+                            </select> -->
                             <span><h5>ขนาด :</h5></span>
                             <select name="" id="">
-                                <option value="small">S</option>
-                                <option value="medium">M</option>
-                                <option value="big">L</option>
+                                <option value="small">S (ขนาดเล็ก)</option>
+                                <option value="medium">M (ขนาดมาตรฐาน)</option>
+                                <option value="big">L (ขนาดใหญ่)</option>
                             </select>
 
                             <div class="card-service">
@@ -928,9 +942,11 @@
                                         <div class="img">
                                             <img src="../photo/ตู้ซักผ้า2.jpg" alt="" class="img2">
                                         </div>
-                                        <h5 class="title2">ซัก อบ รีด</h5>
+                                        <h5 class="title2">ซัก อบ</h5>
                                         <p class="p2">Lorem ipsum dolor sit amet consectetur.</p>
-                                        <div class="price2">80 บาท</div>
+                                        <h5 class="title2">ประเภท</h5>
+                                        <p class="p2">ผ้าม่านแบบบาง</p>
+                                        <div class="price2">100 บาท</div>
                                     </div>
                                 </label>
                                 <label for="card_two">
@@ -938,9 +954,11 @@
                                         <div class="img">
                                             <img src="../photo/ตู้ซักผ้า2.jpg" alt="" class="img2">
                                         </div>
-                                        <h5 class="title2">ซัก อบ รีด</h5>
+                                        <h5 class="title2">ซัก อบ </h5>
                                         <p class="p2">Lorem ipsum dolor sit amet consectetur.</p>
-                                        <div class="price2">80 บาท</div>
+                                        <h5 class="title2">ประเภท</h5>
+                                        <p class="p2">Topper 5 ฟุต</p>
+                                        <div class="price2">120 บาท</div>
                                     </div>
                                 </label>
                                 <label for="card_three">
@@ -950,6 +968,8 @@
                                         </div>
                                         <h5 class="title2">ซัก อบ รีด</h5>
                                         <p class="p2">Lorem ipsum dolor sit amet consectetur.</p>
+                                        <h5 class="title2">ประเภท</h5>
+                                        <p class="p2">ชุดสูท ชุดทางการ</p>
                                         <div class="price2">80 บาท</div>
                                     </div>
                                 </label>
@@ -958,29 +978,22 @@
                                         <div class="img">
                                             <img src="../photo/ตู้ซักผ้า2.jpg" alt="" class="img2">
                                         </div>
-                                        <h5 class="title2">ซัก อบ รีด</h5>
+                                        <h5 class="title2">ซัก อบ </h5>
                                         <p class="p2">Lorem ipsum dolor sit amet consectetur.</p>
-                                        <div class="price2">80 บาท</div>
+                                        <h5 class="title2">ประเภท</h5>
+                                        <p class="p2">เสื้อผ้า ชุดที่นอน</p>
+                                        <div class="price2">60 บาท</div>
                                     </div>
                                 </label>
-                                <label for="card_five">
-                                    <div class="card">
-                                        <div class="img">
-                                            <img src="../photo/ตู้ซักผ้า2.jpg" alt="" class="img2">
-                                        </div>
-                                        <h5 class="title2">ซัก อบ รีด</h5>
-                                        <p class="p2">Lorem ipsum dolor sit amet consectetur.</p>
-                                        <div class="price2">80 บาท</div>
-                                    </div>
-                                </label>
+                                
                             </div>
                         </div>
                         </div>
                         
-                        <div class="quantity2">
+                        <!-- <div class="quantity2">
                             <span> quantity : </span>
                             <input type="number" value="1" class="q">
-                        </div>
+                        </div> -->
 
                         <div class="tt">
                             <span><h5>หมายเหตุ : </h5></span>
