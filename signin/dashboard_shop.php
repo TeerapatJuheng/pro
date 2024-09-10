@@ -626,7 +626,6 @@ $order_result = mysqli_query($conn, $sql) or die("Database error: " . mysqli_err
         .review .review-slider {
             padding: 1rem;
             box-sizing: border-box; 
-            width: 100%; 
         }
 
         .review .review-slider:first-child {
@@ -642,7 +641,7 @@ $order_result = mysqli_query($conn, $sql) or die("Database error: " . mysqli_err
             outline: var(--outline);
             box-shadow: var(--box-shadow);
             transition: .2s linear;
-            width: 100%;
+    
             box-sizing: border-box; 
         }
 
