@@ -1,5 +1,16 @@
+<?php
+session_start();
+echo $_SESSION['shop_id'];
+include('../inc/server.php');
+
+$sql = "SELECT * FROM `tb_product`";
+$result = $conn->query($sql);
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,18 +20,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
     <style>
         :root {
-        --orange: #ff7800;
-        --black: #130f40;
-        --white: #fff;
-        --light-color: #666;
-        --box-shadow: 0 .5rem 1rem rgba(0,0,0,.1);
-        --border:.2rem solid rgba(0,0,0,.1);
-        --outline:.1rem solid rgba(0,0,0,.1);
-        --outline-hover:.2rem solid var(--black);
+            --orange: #ff7800;
+            --black: #130f40;
+            --white: #fff;
+            --light-color: #666;
+            --box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .1);
+            --border: .2rem solid rgba(0, 0, 0, .1);
+            --outline: .1rem solid rgba(0, 0, 0, .1);
+            --outline-hover: .2rem solid var(--black);
         }
 
         * {
@@ -62,7 +73,7 @@
         }
 
         .btn:hover {
-            background:#507F99;
+            background: #507F99;
             color: #fff;
         }
 
@@ -76,7 +87,7 @@
             align-items: center;
             justify-content: space-between;
             padding: 2rem 9%;
-            background: var(--white) ;
+            background: var(--white);
             box-shadow: var(--box-shadow);
         }
 
@@ -161,7 +172,7 @@
         .header .search-form label:hover {
             color: #507F99;
         }
-        
+
 
 
         .header .profile {
@@ -173,7 +184,7 @@
             box-shadow: var(--box-shadow);
             width: 25rem;
             background: var(--white);
-            text-align:center;
+            text-align: center;
         }
 
         .header .profile.active {
@@ -239,12 +250,12 @@
             color: #fff;
         }
 
-        @media (max-width:991px){
-            html{
+        @media (max-width:991px) {
+            html {
                 font-size: 55%;
             }
 
-            .header{
+            .header {
                 padding: 2rem;
             }
 
@@ -267,21 +278,22 @@
                 font-size: 14px;
                 width: 100%;
             }
-            
+
         }
 
         @media (max-width: 768px) {
-            .header .search-form{
+            .header .search-form {
                 width: 90%;
             }
-            
+
             #menu-btn {
                 display: inline-block;
             }
 
             .header .navbar {
                 position: absolute;
-                top: 100%; right: -110%;
+                top: 100%;
+                right: -110%;
                 width: 30rem;
                 box-shadow: var(--box-shadow);
                 border-radius: .5rem;
@@ -310,10 +322,10 @@
             }
 
             .popup .name-report label,
-            .popup .name-report span  {
+            .popup .name-report span {
                 font-size: 14px;
             }
-            
+
         }
 
         @media (max-width: 450px) {
@@ -322,61 +334,61 @@
             }
 
             .popup .content {
-                padding: 5px; 
+                padding: 5px;
                 border-radius: 5px;
                 overflow-y: auto;
                 max-height: 80%;
-                margin-top: 30px; 
+                margin-top: 30px;
             }
 
             .popup .name-report label,
             .popup .name-report span {
-                font-size: 12px; 
+                font-size: 12px;
             }
 
             .popup.active {
-                width: 100%; 
+                width: 100%;
                 height: 100%;
             }
 
             .popup2 .content2 {
-                max-width: 350px;
-                padding: 5px; 
+                padding: 5px;
                 border-radius: 5px;
                 overflow-y: auto;
                 max-height: 80%;
-                margin-top: 30px; 
+                margin-top: 30px;
+                max-width: 350px;
             }
 
             .popup2 .name-report2 label,
             .popup2 .name-report2 span {
-                font-size: 12px; 
+                font-size: 12px;
             }
 
             .popup2.active {
-                width: 100%; 
+                width: 100%;
                 height: 100%;
             }
         }
 
         .table {
             width: 100%;
-            margin-top:90px;
+            margin-top: 90px;
         }
 
         .table_header {
             display: flex;
-            justify-content:space-between ;
-            align-items:center;
+            justify-content: space-between;
+            align-items: center;
             padding: 20px;
-            background-color: rgb(240,240,240);
+            background-color: rgb(240, 240, 240);
         }
 
         button {
-            outline:none;
-            border:none;
-            border-radius:6px;
-            cursor:pointer;
+            outline: none;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
             padding: 10px;
             color: #ffffff;
         }
@@ -395,23 +407,23 @@
 
         .add_new {
             padding: 10px 10px;
-            color:#ffffff;
-            background-color:#0298cf;
+            color: #ffffff;
+            background-color: #0298cf;
         }
 
         input {
             padding: 10px 10px;
-            margin:0 5px;
-            outline:none;
-            border:.5px solid #0298cf;
-            border-radius:6px;
-            color:#0298cf;
+            margin: 0 5px;
+            outline: none;
+            border: .5px solid #0298cf;
+            border-radius: 6px;
+            color: #0298cf;
         }
 
         .table_section {
             height: 100%;
             overflow: auto;
-            border-radius:10px;
+            border-radius: 10px;
         }
 
         table {
@@ -423,8 +435,8 @@
         thead th {
             position: sticky;
             top: 0;
-            background-color:#507F99;
-            color:#ffffff;
+            background-color: #507F99;
+            color: #ffffff;
             font-size: 15px;
             text-align: center;
             padding: 10px 20px;
@@ -456,13 +468,13 @@
         }
 
         tr:hover td {
-            color:#507F99;
-            cursor:pointer;
+            color: #507F99;
+            cursor: pointer;
             background-color: #EBF5FB;
         }
 
         ::placeholder {
-            color:#0298cf;
+            color: #0298cf;
         }
 
         ::-webkit-scrollbar {
@@ -471,27 +483,27 @@
         }
 
         ::-webkit-scrollbar-track {
-            box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
         }
 
         ::-webkit-scrollbar-thumb {
-            box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+            box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
         }
 
 
-         /* popup */
+        /* popup */
 
-         #popup {
+        #popup {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 1;
-            display: none; 
+            display: none;
         }
 
         #popup.active {
-            display: block; 
+            display: block;
         }
 
         .overlay {
@@ -506,7 +518,7 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%,-50%) scale(0);
+            transform: translate(-50%, -50%) scale(0);
             background: #fff;
             width: 450px;
             height: 585px;
@@ -538,7 +550,7 @@
 
         .popup.active .content {
             transition: all 300ms ease-in-out;
-            transform: translate(-50%,-50%) scale(1);
+            transform: translate(-50%, -50%) scale(1);
         }
 
         .popup .content h1 {
@@ -547,6 +559,7 @@
             margin-bottom: 10px;
 
         }
+
         .popup .content .name-report {
             display: flex;
             align-items: center;
@@ -555,19 +568,19 @@
         }
 
         .popup .content .name-report label {
-            width: 100px; 
+            width: 100px;
             font-size: 14px;
         }
 
         .popup .content .name-report span {
-            width: 100%; 
+            width: 100%;
             height: 100%;
         }
-            
+
         .popup .content a {
             font-size: 14px;
         }
-            
+
         .btn-container {
             display: flex;
             align-items: center;
@@ -583,7 +596,7 @@
             margin-top: 20px;
             font-weight: 500;
             background-color: #507F99;
-            color:var(--white) ;
+            color: var(--white);
             cursor: pointer;
         }
 
@@ -605,11 +618,11 @@
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 1;
-            display: none; 
+            display: none;
         }
 
         #popup2.active {
-            display: block; 
+            display: block;
         }
 
         .overlay2 {
@@ -624,7 +637,7 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%,-50%) scale(0);
+            transform: translate(-50%, -50%) scale(0);
             background: #fff;
             width: 450px;
             height: 585px;
@@ -656,7 +669,7 @@
 
         .popup2.active .content2 {
             transition: all 300ms ease-in-out;
-            transform: translate(-50%,-50%) scale(1);
+            transform: translate(-50%, -50%) scale(1);
         }
 
         .popup2 .content2 h1 {
@@ -665,6 +678,7 @@
             margin-bottom: 10px;
 
         }
+
         .popup2 .content2 .name-report2 {
             display: flex;
             align-items: center;
@@ -673,19 +687,19 @@
         }
 
         .popup2 .content2 .name-report2 label {
-            width: 100px; 
+            width: 100px;
             font-size: 14px;
         }
 
         .popup2 .content2 .name-report2 span {
-            width: 100%; 
+            width: 100%;
             height: 100%;
         }
-            
+
         .popup2 .content2 a {
             font-size: 14px;
         }
-            
+
         .btn-container2 {
             display: flex;
             align-items: center;
@@ -701,7 +715,7 @@
             margin-top: 20px;
             font-weight: 500;
             background-color: #507F99;
-            color:var(--white) ;
+            color: var(--white);
             cursor: pointer;
         }
 
@@ -713,21 +727,17 @@
             border: 1px solid #507F99;
             border-radius: 4px;
             margin-left: -5px;
-
         }
-            
-
-        
     </style>
     <title>store shop</title>
 </head>
 
-    <body>
+<body>
 
-        <!-- header section starts -->
-        <header class="header">
-        <a href="#" class="logo">Laundry</a>
-        
+    <!-- header section starts -->
+    <header class="header">
+        <a href="dashboard_shop.php" class="logo">Laundry</a>
+
         <nav class="navbar">
             <a href="dashboard_shop.php">Dashboard</a>
             <a href="store_shop.php">Shop</a>
@@ -757,267 +767,197 @@
                 <a href="login.php" class="option-btnp">Logout</a>
             </div>
         </div>
-        </header> 
+    </header>
 
-        
-        <!-- product -->
 
-        <div class="table">
-            <div class="table_header">
-                <h1>Product</h1>
-                <div>
-                    <input placeholder="product"/>
-                    <button class="add_new" onclick="add()">+ Add New</button>
-                </div>
-            </div>
-            <div class="table_section">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ลำดับ</th>
-                            <th>product</th>
-                            <th>ชื่อบริการ</th>
-                            <th>ประเภท</th>
-                            <th>รายละเอียด</th>
-                            <th>ราคา</th>
-                            <th>action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td><img src="../photo/ตู้ซักผ้า2.jpg" alt=""></td>
-                            <td>ซัก+อบแห้ง</td>
-                            <td>เสื้อผ้า ผ้าห่ม ชุดที่นอน</td>
-                            <td>ซักผ้าด้วยน้ำยาอย่างดี พร้อมอบแห้งด้วยเครื่องที่ได้มาตราฐาน</td>
-                            <td>80</td>
-                            <td>
-                                <button onclick="solve()"><i class='bx bx-edit-alt'></i></button>
-                                <button><i class='bx bx-trash'></i></button>
-                            </td>
-                        </tr>
-                        
-                        <tr>
-                            <td>2</td>
-                            <td><img src="../photo/1x/ผ้า2.png" alt=""></td>
-                            <td>ซัก+อบแห้ง</td>
-                            <td>เสื้อผ้า ผ้าห่ม ชุดที่นอน</td>
-                            <td>ซักผ้าด้วยน้ำยาอย่างดี พร้อมอบแห้งด้วยเครื่องที่ได้มาตราฐาน</td>
-                            <td>80</td>
-                            <td>
-                                <button onclick="solve()"><i class='bx bx-edit-alt'></i></button>
-                                <button><i class='bx bx-trash'></i></button>
-                            </td>
-                        </tr>
-                        
-                        <tr>
-                            <td>3</td>
-                            <td><img src="../photo/1x/ผ้า.png" alt=""></td>
-                            <td>ซัก+อบแห้ง</td>
-                            <td>เสื้อผ้า ผ้าห่ม ชุดที่นอน</td>
-                            <td>ซักผ้าด้วยน้ำยาอย่างดี พร้อมอบแห้งด้วยเครื่องที่ได้มาตราฐาน</td>
-                            <td>80</td>
-                            <td>
-                                <button onclick="solve()"><i class='bx bx-edit-alt'></i></button>
-                                <button><i class='bx bx-trash'></i></button>
-                            </td>
-                        </tr>
-                        
-                        <tr>
-                            <td>4</td>
-                            <td><img src="../photo/1x/น้ำยารีดผ้า.png" alt=""></td>
-                            <td>ซัก+อบแห้ง</td>
-                            <td>ชุดที่นอน</td>
-                            <td>ซักผ้าด้วยน้ำยาอย่างดี พร้อมอบแห้งด้วยเครื่องที่ได้มาตราฐาน</td>
-                            <td>80</td>
-                            <td>
-                                <button onclick="solve()"><i class='bx bx-edit-alt'></i></button>
-                                <button><i class='bx bx-trash'></i></button>
-                            </td>
-                        </tr>
-                        
-                        <tr>
-                            <td>5</td>
-                            <td><img src="../photo/1x/น้ำยาปรับผ้านุ่ม.png" alt=""></td>
-                            <td>ซัก+อบแห้ง</td>
-                            <td>ผ้าห่ม</td>
-                            <td>ซักผ้าด้วยน้ำยาอย่างดี พร้อมอบแห้งด้วยเครื่องที่ได้มาตราฐาน</td>
-                            <td>80</td>
-                            <td>
-                                <button onclick="solve()"><i class='bx bx-edit-alt'></i></button>
-                                <button><i class='bx bx-trash'></i></button>
-                            </td>
-                        </tr>
+    <!-- product -->
 
-                        <tr>
-                            <td>6</td>
-                            <td><img src="../photo/1x/ซักผ้า.png" alt=""></td>
-                            <td>ซัก+อบแห้ง+รีด</td>
-                            <td>เสื้อผ้า ชุดที่นอน</td>
-                            <td>ซักผ้าด้วยน้ำยาอย่างดี พร้อมอบแห้งด้วยเครื่องที่ได้มาตราฐาน</td>
-                            <td>80</td>
-                            <td>
-                                <button onclick="solve()"><i class='bx bx-edit-alt'></i></button>
-                                <button><i class='bx bx-trash'></i></button>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>7</td>
-                            <td><img src="../photo/ตู้ซักผ้า.jpg" alt=""></td>
-                            <td>ซัก+อบแห้ง+รีด</td>
-                            <td>เสื้อผ้า </td>
-                            <td>ซักผ้าด้วยน้ำยาอย่างดี พร้อมอบแห้งด้วยเครื่องที่ได้มาตราฐาน</td>
-                            <td>80</td>
-                            <td>
-                                <button onclick="solve()"><i class='bx bx-edit-alt'></i></button>
-                                <button><i class='bx bx-trash'></i></button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+    <div class="table">
+        <div class="table_header">
+            <h1>Product</h1>
+            <div>
+                <input placeholder="product" />
+                <button class="add_new" onclick="add()">+ Add New</button>
             </div>
         </div>
+        <div class="table_section">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ลำดับ</th>
+                        <th>product</th>
+                        <th>ชื่อบริการ</th>
+                        <th>ประเภท</th>
+                        <th>รายละเอียด</th>
+                        <th>ราคา</th>
+                        <th>action</th>
+                    </tr>
+                </thead>
+                <?php
+                if ($result->num_rows > 0) {
+                    echo "<table><tbody>";
+                    while ($row = $result->fetch_assoc()) {
+                        // แปลง BLOB เป็น Base64
+                        $imageData = base64_encode($row['product_img']); // ใช้ 'product_img' สำหรับภาพ
+                        $src = 'data:image/jpeg;base64,' . $imageData; // เปลี่ยนประเภทภาพตามที่ใช้ (jpeg, png, etc.)
 
-        <!-- product end -->
-    
+                        echo "<tr>
+                                        <td>{$row['product_id']}</td>
+                                        <td><img src='{$src}' alt='Image' style='max-width: 100px;'></td> <!-- ใช้ $src แทน -->
+                                        <td>{$row['product_name']}</td>
+                                        <td>{$row['product_type']}</td>
+                                        <td>{$row['product_details']}</td>
+                                        <td>{$row['product_price']}</td>
+                                        <td>
+                                            <button onclick='solve()'><i class='bx bx-edit-alt'></i></button>
+                                            <button><i class='bx bx-trash'></i></button>
+                                        </td>
+                                    </tr>";
+                    }
+                    echo "</tbody></table>";
+                } else {
+                    echo "0 results";
+                }
+                ?>
+        </div>
+    </div>
 
-         <!-- popup-->
+    <!-- product end -->
 
-            <div class="popup" id="popup"> 
-                <div class="overlay"></div>
-                <div class="content">
-                    <div class="close-btn" onclick="add()">&times;</div>
-                    <h1>Add new Product</h1>
-                    <div class="name-report">
-                        <label for="text">ลำดับ : </label>
-                        <span><input type="text"></span>
-                    </div>
-                    <div class="name-report">
-                        <label for="text">Product : </label>
-                        <span><input type="file" id="image" name="image" accept="image/*"></span>
-                    </div>
-                    <div class="name-report">
-                        <label for="text">ชื่อบริการ : </label>
-                        <span><input type="text"></span>
-                    </div>
-                    <div class="name-report">
-                        <label for="text">ประเภท : </label>
-                        <span><input type="text"></span>
-                    </div>
-                    <div class="name-report">
-                        <label for="text">รายละเอียด : </label>
-                        <span><input type="text"></span>
-                    </div>
-                    <div class="name-report">
-                        <label for="text">ราคา : </label>
-                        <span><input type="text" ></span>
-                    </div>
 
-                    <div class="btn-container">
-                        <button class="btn-submit">บันทึก</button>
-                    </div>
+    <!-- popup-->
 
+    <div class="popup" id="popup">
+        <div class="overlay"></div>
+        <div class="content">
+            <div class="close-btn" onclick="add()">&times;</div>
+            <h1>Add new Product</h1>
+            <form action="add_product.php" method="post" name="form1" enctype="multipart/form-data">
+                <div class="name-report">
+                    <label for="image">Product Image: </label>
+                    <span><input type="file" id="image" name="image" accept="image/*" required></span>
                 </div>
-            </div>
-
-        <!-- popup end-->
-
-        <!-- popup2-->
-
-        <div class="popup2" id="popup2"> 
-                <div class="overlay2"></div>
-                <div class="content2">
-                    <div class="close-btn" onclick="solve()">&times;</div>
-                    <h1>Edit Product</h1>
-                    <div class="name-report2">
-                        <label for="text">ลำดับ : </label>
-                        <span><input type="text"></span>
-                    </div>
-                    <div class="name-report2">
-                        <label for="text">Product : </label>
-                        <span><input type="file" id="image" name="image" accept="image/*"></span>
-                    </div>
-                    <div class="name-report2">
-                        <label for="text">ชื่อบริการ : </label>
-                        <span><input type="text"></span>
-                    </div>
-                    <div class="name-report2">
-                        <label for="text">ประเภท : </label>
-                        <span><input type="text"></span>
-                    </div>
-                    <div class="name-report2">
-                        <label for="text">รายละเอียด : </label>
-                        <span><input type="text"></span>
-                    </div>
-                    <div class="name-report2">
-                        <label for="text">ราคา : </label>
-                        <span><input type="text" ></span>
-                    </div>
-
-                    <div class="btn-container2">
-                        <button class="btn-submit2">บันทึก</button>
-                    </div>
-
+                <div class="name-report">
+                    <label for="product_name">ชื่อบริการ: </label>
+                    <span><input type="text" id="product_name" name="product_name" required></span>
                 </div>
-            </div>
+                <div class="name-report">
+                    <label for="product_type">ประเภท: </label>
+                    <span><input type="text" id="product_type" name="product_type" required></span>
+                </div>
+                <div class="name-report">
+                    <label for="product_details">รายละเอียด: </label>
+                    <span><input type="text" id="product_details" name="product_details" required></span>
+                </div>
+                <div class="name-report">
+                    <label for="product_price">ราคา: </label>
+                    <span><input type="text" id="product_price" name="product_price" required></span>
+                </div>
+                <div class="btn-container">
+                    <!-- <button type="button" class="btn-submit" onclick="submitForm()">บันทึก</button> -->
+                    <button type="submit" class="btn-submit" name="add" onclick="fncSubmit('add')">บันทึก</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-        <!-- popup end-->
 
+    <!-- popup end-->
 
+    <!-- popup2-->
 
+    <div class="popup2" id="popup2">
+        <div class="overlay2"></div>
+        <div class="content2">
+            <div class="close-btn" onclick="solve()">&times;</div>
+            <h1>Edit Product</h1>
+            <form action="add_product.php" method="post" name="form1" enctype="multipart/form-data">
+                <div class="name-report">
+                    <label for="image">Product Image: </label>
+                    <span><input type="file" id="image" name="image" accept="image/*" required>
+                </span>
+                </div>
+                <div class="name-report">
+                    <label for="product_name">ชื่อบริการ: </label>
+                    <span><input type="text" id="product_name" name="product_name" required></span>
+                </div>
+                <div class="name-report">
+                    <label for="product_type">ประเภท: </label>
+                    <span><input type="text" id="product_type" name="product_type" required></span>
+                </div>
+                <div class="name-report">
+                    <label for="product_details">รายละเอียด: </label>
+                    <span><input type="text" id="product_details" name="product_details" required></span>
+                </div>
+                <div class="name-report">
+                    <label for="product_price">ราคา: </label>
+                    <span><input type="text" id="product_price" name="product_price" required></span>
+                </div>
+                <div class="btn-container">
+                    <button type="submit" class="btn-submit" name="add">บันทึก</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
+    <!-- popup end-->
 
-
-
-
-
-
-    
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
-        <!--custom js file link -->
-        <script src="js/script.js"></script>
+    <!--custom js file link -->
+    <script src="js/script.js"></script>
 
-        <script>
-            let searchForm = document.querySelector('.search-form');
-            let profile = document.querySelector('.header .profile');
-            let navbar = document.querySelector('.header .navbar');
+    <script>
+        let searchForm = document.querySelector('.search-form');
+        let profile = document.querySelector('.header .profile');
+        let navbar = document.querySelector('.header .navbar');
 
-            document.querySelector('#search-btn').onclick = () => {
-                searchForm.classList.toggle('active');
-                profile.classList.remove('active');
-                navbar.classList.remove('active');
+        document.querySelector('#search-btn').onclick = () => {
+            searchForm.classList.toggle('active');
+            profile.classList.remove('active');
+            navbar.classList.remove('active');
+        }
+
+        document.querySelector('#user-btn').onclick = () => {
+            profile.classList.toggle('active');
+            searchForm.classList.remove('active');
+            navbar.classList.remove('active');
+        }
+
+        document.querySelector('#menu-btn').onclick = () => {
+            navbar.classList.toggle('active');
+            searchForm.classList.remove('active');
+            profile.classList.remove('active');
+        }
+
+        window.onscroll = () => {
+            searchForm.classList.remove('active');
+            profile.classList.remove('active');
+            navbar.classList.remove('active');
+        }
+
+        /* popup */
+        function add() {
+            document.getElementById("popup").classList.toggle("active");
+        }
+
+        /* popup2 */
+        function solve() {
+            document.getElementById("popup2").classList.toggle("active");
+        }
+
+        function fncSubmit(x) {
+            if (x == "add") {
+                //alert(document.form1.getElementById("otp"))
+                document.form1.action = "add_product.php";
             }
 
-            document.querySelector('#user-btn').onclick = () => {
-                profile.classList.toggle('active');
-                searchForm.classList.remove('active');
-                navbar.classList.remove('active');
-            }
+            if (x == "edit") {
 
-            document.querySelector('#menu-btn').onclick = () => {
-                navbar.classList.toggle('active');
-                searchForm.classList.remove('active');
-                profile.classList.remove('active');
+                document.form1.action = "edit_product.php";
             }
+        }
+    </script>
+</body>
 
-            window.onscroll = () => {
-                searchForm.classList.remove('active');
-                profile.classList.remove('active');
-                navbar.classList.remove('active');
-            }
-
-            /* popup */
-            function add() {
-                document.getElementById("popup").classList.toggle("active");
-            }
-
-            /* popup2 */
-            function solve() {
-                document.getElementById("popup2").classList.toggle("active");
-            }
-
-        </script>
-    </body>
 </html>
