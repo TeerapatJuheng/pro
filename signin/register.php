@@ -271,9 +271,9 @@ function sendLineNotify($message = "ทดสอบ By Programmer")
             </div>
             <div class="sex">
                 <label>
-                    <input type="radio" name="sex" value="male"> Male
-                    <input type="radio" name="sex" value="female"> Female
-                    <input type="radio" name="sex" value="other"> Other
+                    <input type="radio" name="sex" value="<?= "Male" ?? $_SESSION['e_sex_add']; ?>"> Male
+                    <input type="radio" name="sex" value="<?= "Female" ?? $_SESSION['e_sex_add']; ?>"> Female
+                    <input type="radio" name="sex" value="<?= "Other" ?? $_SESSION['e_sex_add']; ?>"> Other
                 </label>
             </div>
             <div class="role">
