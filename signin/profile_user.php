@@ -435,6 +435,9 @@
         input[type="text_payment"],
         input[type="text_email"],
         input[type="text_pass"],
+        input[type="text_sex"],
+        input[type="text_age"],
+        input[type="text_job"],
         textarea {
             width: 100%;
             padding: 10px;
@@ -665,7 +668,6 @@
             <div class="content">
                 <h3>ซัก อบ </h3>
                 <span class="price">50฿</span>
-                <span class="quantity">qty : 1 </span>
             </div>
         </div>
         <div class="box">
@@ -674,7 +676,6 @@
             <div class="content">
                 <h3>ซัก อบ </h3>
                 <span class="price">50฿</span>
-                <span class="quantity">qty : 1 </span>
             </div>
         </div>
         <div class="box">
@@ -683,7 +684,6 @@
             <div class="content">
                 <h3>ซัก อบ </h3>
                 <span class="price">50฿</span>
-                <span class="quantity">qty : 1 </span>
             </div>
         </div>
         <div class="total"> Total : 150฿</div>
@@ -714,14 +714,20 @@
                         <input type="file" id="input-file" accept="image/*" class="inimg">
                     </div>
                     <div class="from_group">
-                        <label for="name_shop" class="name">ชื่อ</label>
+                        <label for="name_user" class="name">ชื่อ</label>
                         <input type="text_name2">
-                        <label for="name_shop" class="name2">นามสกุล</label>
+                        <label for="name_user" class="name2">นามสกุล</label>
                         <input type="text_lname">
                     </div>
                     <div class="from_group">
-                        <label for="phon_shop">เบอร์โทรศัพท์</label>
+                        <label for="phon_user">เบอร์โทรศัพท์</label>
                         <input type="text_phon">
+                        <label for="sex_user">เพศ</label>
+                        <input type="text_sex">
+                        <label for="age_user">อายุ</label>
+                        <input type="text_age">
+                        <label for="job_user">อาชีพ</label>
+                        <input type="text_job">
                     </div>
                     <div class="from_group">
                         <label for="address">ที่อยู่</label>
@@ -736,7 +742,7 @@
                 <div class="form_profile">
                     <h1>บัญชี</h1>
                     <div class="from_group">
-                        <label for="name_shop">Email</label>
+                        <label for="email">Email</label>
                         <input type="text_email">
                     </div>
                     <div class="from_group">
