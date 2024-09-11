@@ -264,10 +264,10 @@ function sendLineNotify($message = "ทดสอบ By Programmer")
                 <input type="password" name="conpass" id="conpass" placeholder="ConfirmPassword"  value="<?php echo $_SESSION['e_conpass_add']; ?>" require>
             </div>
             <div class="input-field">
-                <input type="age" name="age" id="age" placeholder="Age"  value="" require>
+                <input type="age" name="age" id="age" placeholder="Age"  value="<?php echo $_SESSION['e_age_add']; ?>" require>
             </div>
             <div class="input-field">
-                <input type="job" name="job" id="job" placeholder="Job"  value="" require>
+                <input type="job" name="job" id="job" placeholder="Job"  value="<?php echo $_SESSION['e_job_add']; ?>" require>
             </div>
             <div class="sex">
                 <label>
