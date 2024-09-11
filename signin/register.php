@@ -270,7 +270,6 @@ function sendLineNotify($message = "ทดสอบ By Programmer")
                 <input type="job" name="job" id="job" placeholder="Job"  value="" require>
             </div>
             <div class="sex">
-                <br>
                 <label>
                     <input type="radio" name="sex" value="male"> Male
                     <input type="radio" name="sex" value="female"> Female
@@ -278,7 +277,6 @@ function sendLineNotify($message = "ทดสอบ By Programmer")
                 </label>
             </div>
             <div class="role">
-                <br>
                 <label>
                     <input type="radio" name="role" value="user"> User
                     <input type="radio" name="role" value="shop"> Shop
