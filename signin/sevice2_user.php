@@ -574,7 +574,6 @@
             <div class="content">
                 <h3>ซัก อบ </h3>
                 <span class="price">50฿</span>
-                <span class="quantity">qty : 1 </span>
             </div>
         </div>
         <div class="box">
@@ -583,7 +582,6 @@
             <div class="content">
                 <h3>ซัก อบ </h3>
                 <span class="price">50฿</span>
-                <span class="quantity">qty : 1 </span>
             </div>
         </div>
         <div class="box">
@@ -592,7 +590,6 @@
             <div class="content">
                 <h3>ซัก อบ </h3>
                 <span class="price">50฿</span>
-                <span class="quantity">qty : 1 </span>
             </div>
         </div>
         <div class="total"> Total : 150฿</div>
