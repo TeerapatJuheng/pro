@@ -1,3 +1,19 @@
+<?php
+echo '
+<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert-dev.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">';
+
+session_start();
+include('../inc/server.php');
+$errors = array();
+date_default_timezone_set('Asia/Bangkok');
+$create_date = date("Y-m-d H:i:s");
+
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -322,6 +338,9 @@
         input[type="text_payment"],
         input[type="text_email"],
         input[type="text_pass"],
+        input[type="text_sex"],
+        input[type="text_age"],
+        input[type="text_job"],
         textarea {
             width: 100%;
             padding: 10px;
@@ -421,7 +440,7 @@
 
         <!-- header section starts -->
         <header class="header">
-        <a href="#" class="logo">Laundry</a>
+        <a href="dashboard_shop.php" class="logo">Laundry</a>
         
         <nav class="navbar">
             <a href="dashboard_shop.php">Dashboard</a>
@@ -448,7 +467,7 @@
             <span>shop</span>
             <a href="profile_shop.php" class="btnp">Profile</a>
             <div class="flex-btnp">
-                <a href="history_shop.php" class="option-btnp">ประวัติ</a>
+                <a href="report_shop.php" class="option-btnp">รายงาน</a>
                 <a href="login.php" class="option-btnp">Logout</a>
             </div>
         </div>
@@ -478,6 +497,12 @@
                     <div class="from_group">
                         <label for="phon_shop">เบอร์โทรศัพท์</label>
                         <input type="text_phon">
+                        <label for="sex_shop">เพศ</label>
+                        <input type="text_sex">
+                        <label for="age_shop">อายุ</label>
+                        <input type="text_age">
+                        <label for="job_shop">อาชีพ</label>
+                        <input type="text_job">
                     </div>
                     <div class="from_group">
                         <label for="date">วันทำการ</label>
