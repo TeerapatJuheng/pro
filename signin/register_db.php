@@ -15,6 +15,8 @@ $_SESSION['e_email_add'] = isset($_POST['email']) ? $_POST['email'] : '';
 $_SESSION['e_role_add'] = isset($_POST['role']) ? $_POST['role'] : '';
 $_SESSION['e_pass_add'] = isset($_POST['pass']) ? $_POST['pass'] : '';
 $_SESSION['e_conpass_add'] = isset($_POST['conpass']) ? $_POST['conpass'] : '';
+$_SESSION['e_age_add'] = isset($_POST['age']) ? $_POST['age'] : '';
+$_SESSION['e_job_add'] = isset($_POST['job']) ? $_POST['job'] : '';
 
 if (isset($_POST['reg_user'])) {
     $user = mysqli_real_escape_string($conn, $_POST['user']);
@@ -22,6 +24,8 @@ if (isset($_POST['reg_user'])) {
     $role = mysqli_real_escape_string($conn, $_POST['role']);
     $pass = mysqli_real_escape_string($conn, $_POST['pass']);
     $conpass = mysqli_real_escape_string($conn, $_POST['conpass']);
+    $age = mysqli_real_escape_string($conn, $_POST['age']);
+    $job = mysqli_real_escape_string($conn, $_POST['job']);
 
     if (empty($user)) {
         array_push($errors, "Username is required");
@@ -59,7 +63,7 @@ if (isset($_POST['reg_user'])) {
             if (mysqli_num_rows($result1) <= 0 && mysqli_num_rows($result2) <= 0) {
                 // เพิ่มข้อมูลใหม่เข้าไปในฐานข้อมูล
                 if($role == "user"){
-                    $sql_insert = "INSERT INTO `tb_customer` (`username`, `password`, `email`) VALUES ('$user', '$pass', '$email')";
+                    $sql_insert = "INSERT INTO `tb_customer` (`username`, `password`, `email`, `age`, `job`) VALUES ('$user', '$pass', '$email', '$age', '$job')";
                 }
                 else{
                     $sql_insert = "INSERT INTO `tb_shop` (`shop_user`, `shop_pass`, `shop_email`) VALUES ('$user', '$pass', '$email')";
