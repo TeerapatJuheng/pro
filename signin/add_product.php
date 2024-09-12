@@ -34,12 +34,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Read the file content into a variable
                 $imageData = file_get_contents($fileTmpPath);
 
-                // Debugging output
-                // echo "File Name: " . $fileName . "<br>";
-                // echo "File Size: " . $fileSize . " bytes<br>";
-                // echo "File Type: " . $fileType . "<br>";
-                // echo "Image Data Size: " . strlen($imageData) . " bytes<br>";
-
                 // Insert data into the database
                 $stmt = $conn->prepare("INSERT INTO tb_product (product_img, product_name, product_type, product_details, product_price, shop_id) VALUES (?, ?, ?, ?, ?, ?)");
                 $stmt->bind_param("bssssi", $imageData, $productName, $productType, $productDetails, $productPrice, $shopId);
