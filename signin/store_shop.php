@@ -797,22 +797,21 @@ $result = $conn->query($sql);
                 if ($result->num_rows > 0) {
                     echo "<table><tbody>";
                     while ($row = $result->fetch_assoc()) {
-                        // แปลง BLOB เป็น Base64
-                        $imageData = base64_encode($row['product_img']); // ใช้ 'product_img' สำหรับภาพ
-                        $src = 'data:image/jpeg;base64,' . $imageData; // เปลี่ยนประเภทภาพตามที่ใช้ (jpeg, png, etc.)
+                        $imageData = base64_encode($row['product_img']);
+                        $src = 'data:image/jpeg;base64,' . $imageData;
 
                         echo "<tr>
-                                        <td>{$row['product_id']}</td>
-                                        <td><img src='{$src}' alt='Image' style='max-width: 100px;'></td> <!-- ใช้ $src แทน -->
-                                        <td>{$row['product_name']}</td>
-                                        <td>{$row['product_type']}</td>
-                                        <td>{$row['product_details']}</td>
-                                        <td>{$row['product_price']}</td>
-                                        <td>
-                                            <button onclick='solve()'><i class='bx bx-edit-alt'></i></button>
-                                            <button><i class='bx bx-trash'></i></button>
-                                        </td>
-                                    </tr>";
+                                <td>{$row['product_id']}</td>
+                                <td><img src='{$src}' alt='Image' style='max-width: 100px;'></td>
+                                <td>{$row['product_name']}</td>
+                                <td>{$row['product_type']}</td>
+                                <td>{$row['product_details']}</td>
+                                <td>{$row['product_price']}</td>
+                                <td>
+                                    <button onclick='solve({$row['product_id']})'><i class='bx bx-edit-alt'></i></button>
+                                    <button onclick='confirmDelete({$row['product_id']})'><i class='bx bx-trash'></i></button>
+                                </td>
+                              </tr>";
                     }
                     echo "</tbody></table>";
                 } else {
@@ -871,27 +870,28 @@ $result = $conn->query($sql);
         <div class="content2">
             <div class="close-btn" onclick="solve()">&times;</div>
             <h1>Edit Product</h1>
-            <form action="add_product.php" method="post" name="form1" enctype="multipart/form-data">
+            <p id="edit-product-id-display"></p> <!-- Display the product ID here -->
+            <form action="edit_product.php" method="post" name="form1" enctype="multipart/form-data">
+                <input type="hidden" id="edit-hidden_product_id" name="product_id"> <!-- Hidden field for product_id -->
                 <div class="name-report">
                     <label for="image">Product Image: </label>
-                    <span><input type="file" id="image" name="image" accept="image/*" required>
-                </span>
+                    <span><input type="file" id="edit-image" name="image" accept="image/*"></span>
                 </div>
                 <div class="name-report">
                     <label for="product_name">ชื่อบริการ: </label>
-                    <span><input type="text" id="product_name" name="product_name" required></span>
+                    <span><input type="text" id="edit-product_name" name="product_name" required></span>
                 </div>
                 <div class="name-report">
                     <label for="product_type">ประเภท: </label>
-                    <span><input type="text" id="product_type" name="product_type" required></span>
+                    <span><input type="text" id="edit-product_type" name="product_type" required></span>
                 </div>
                 <div class="name-report">
                     <label for="product_details">รายละเอียด: </label>
-                    <span><input type="text" id="product_details" name="product_details" required></span>
+                    <span><input type="text" id="edit-product_details" name="product_details" required></span>
                 </div>
                 <div class="name-report">
                     <label for="product_price">ราคา: </label>
-                    <span><input type="text" id="product_price" name="product_price" required></span>
+                    <span><input type="text" id="edit-product_price" name="product_price" required></span>
                 </div>
                 <div class="btn-container">
                     <button type="submit" class="btn-submit" name="add">บันทึก</button>
@@ -942,8 +942,44 @@ $result = $conn->query($sql);
         }
 
         /* popup2 */
-        function solve() {
+        function solve(productId) {
             document.getElementById("popup2").classList.toggle("active");
+            fetch(`get_product.php?product_id=${productId}`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    if (data && data.product_id) {
+                        // document.getElementById("edit-product-id-display").textContent = `Editing Product ID: ${data.product_id}`;
+                        document.getElementById("edit-hidden_product_id").value = data.product_id;
+                        document.getElementById("edit-product_name").value = data.product_name;
+                        document.getElementById("edit-product_type").value = data.product_type;
+                        document.getElementById("edit-product_details").value = data.product_details;
+                        document.getElementById("edit-product_price").value = data.product_price;
+
+                        // Display current image if available
+                        if (data.product_img) {
+                            document.getElementById("current-image").src = `data:image/jpeg;base64,${data.product_img}`;
+                            document.getElementById("current-image").style.display = "block";
+                        } else {
+                            document.getElementById("current-image").style.display = "none";
+                        }
+
+                        
+                    } else {
+                        console.error('No data found');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching product data:', error);
+                });
+        }
+
+        function confirmDelete(productId) {
+            if (confirm("Are you sure you want to delete this product?")) {
+                window.location.href = `delete_product.php?product_id=${productId}`;
+            }
         }
 
         function fncSubmit(x) {
