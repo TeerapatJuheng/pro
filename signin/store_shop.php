@@ -1,14 +1,15 @@
 <?php
 session_start();
 echo $_SESSION['shop_id'];
+$shopid = $_SESSION['shop_id'];
 include('../inc/server.php');
 
-$sql = "SELECT * FROM `tb_product`";
+$sql = "SELECT * FROM `tb_product` WHERE shop_id = $shopid";
 $result = $conn->query($sql);
 
 ?>
 
-<!DOCTYPE html>
+<!DOCTYPE html>s
 <html lang="en">
 
 <head>
