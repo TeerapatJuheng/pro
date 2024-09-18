@@ -169,8 +169,7 @@ function sendLineNotify($message = "ทดสอบ By Programmer")
         .input-field input[type="email"],
         .input-field input[type="password"],
         .input-field input[type="confirmpass"],
-        .input-field input[type="age"],
-        .input-field input[type="job"] {
+        .input-field input[type="phone"]{
             border-radius:10px;
             background: #fff;
             margin:15px;
@@ -189,8 +188,7 @@ function sendLineNotify($message = "ทดสอบ By Programmer")
         .input-field input[type="email"]:focus::placeholder,
         .input-field input[type="password"]:focus::placeholder,
         .input-field input[type="confirmpass"]:focus::placeholder,
-        .input-field input[type="age"]:focus::placeholder,
-        .input-field input[type="job"]:focus::placeholder {
+        .input-field input[type="phone"]:focus::placeholder{
             transform:translateY(-100%);
             transition:transform 0.2s ease-in-out;
             font-size:14px;
@@ -200,8 +198,7 @@ function sendLineNotify($message = "ทดสอบ By Programmer")
         .input-field input[type="email"]:not(:focus)::placeholder,
         .input-field input[type="password"]:not(:focus)::placeholder,
         .input-field input[type="confirmpass"]:not(:focus)::placeholder,
-        .input-field input[type="age"]:not(:focus)::placeholder,
-        .input-field input[type="job"]:not(:focus)::placeholder {
+        .input-field input[type="phone"]:not(:focus)::placeholder{
             transform:translateY(0%);
             transition:transform 0.2s ease-in-out;
             font-size:16px;
@@ -264,10 +261,7 @@ function sendLineNotify($message = "ทดสอบ By Programmer")
                 <input type="password" name="conpass" id="conpass" placeholder="ConfirmPassword"  value="<?php echo $_SESSION['e_conpass_add']; ?>" require>
             </div>
             <div class="input-field">
-                <input type="age" name="age" id="age" placeholder="Age"  value="<?php echo $_SESSION['e_age_add']; ?>" require>
-            </div>
-            <div class="input-field">
-                <input type="job" name="job" id="job" placeholder="Job"  value="<?php echo $_SESSION['e_job_add']; ?>" require>
+                <input type="phone" name="phone" id="phone" placeholder="Phone"  value="<?php echo $_SESSION['e_phone_add']; ?>" require>
             </div>
             <div class="sex">
                 <label>
