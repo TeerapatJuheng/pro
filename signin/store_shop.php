@@ -7,6 +7,30 @@ include('../inc/server.php');
 $sql = "SELECT * FROM `tb_product` WHERE shop_id = $shopid";
 $result = $conn->query($sql);
 
+// สมมติว่ามีการเก็บ shop_id ในเซสชันเมื่อผู้ใช้ล็อกอิน
+$shop_id = $_SESSION['shop_id']; // ควรตั้งค่านี้เมื่อผู้ใช้ทำการล็อกอิน
+
+// ดึงข้อมูลชื่อและนามสกุลจากตาราง tb_shop
+$query = "SELECT * FROM tb_shop WHERE id = $shop_id";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $shop_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($result->num_rows > 0) {
+    $shop = $result->fetch_assoc();
+    $fullName = htmlspecialchars($shop["shop_name"]) . " " . htmlspecialchars($shop["shop_lastname"]);
+    $profileImage = htmlspecialchars($shop['shop_img']);
+} else {
+    $fullName = "User not found";
+    $profileImage = "default-image.png"; // กรณีที่ไม่พบผู้ใช้
+}
+
+$stmt->close();
+$conn->close();
+
+
+
 ?>
 
 <!DOCTYPE html>s
