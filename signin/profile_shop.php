@@ -6,9 +6,62 @@ echo '
 
 session_start();
 include('../inc/server.php');
+include('../signin/shop_info.php');
+
+
 $errors = array();
 date_default_timezone_set('Asia/Bangkok');
 $create_date = date("Y-m-d H:i:s");
+
+// ตรวจสอบว่ามีการส่งข้อมูลจากฟอร์มหรือไม่
+if (isset($_POST['save_shop'])) {
+    // รับข้อมูลจากฟอร์ม
+    $nameshop = $_POST['nameshop'];
+    $name = $_POST['shop_name'];
+    $lastname = $_POST['shop_lastname'];
+    $phone = $_POST['shop_phone'];
+    $details = $_POST['shop_details'];
+    $address = $_POST['shop_address'];
+    $email = $_POST['shop_email'];
+    $password = $_POST['shop_pass']; // เข้ารหัสรหัสผ่าน
+    $shop_id = $_SESSION['shop_id']; // รับ shop_id จากเซสชัน
+
+    // เข้ารหัสรหัสผ่านก่อนบันทึกในฐานข้อมูล
+    $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
+    // ตรวจสอบและอัพโหลดไฟล์ภาพ
+    $imagePath = null;
+    if (isset($_FILES['shop_image']) && $_FILES['shop_image']['error'] == UPLOAD_ERR_OK) {
+        $target_dir = "../photo/";
+        $imagePath = $target_dir . basename($_FILES["shop_image"]["name"]);
+        move_uploaded_file($_FILES["shop_image"]["tmp_name"], $imagePath);
+    } else {
+        // หากไม่อัปโหลดไฟล์ใหม่ ให้ใช้ค่าเดิมที่มีอยู่ในฐานข้อมูล
+        $query = "SELECT shop_img FROM tb_shop WHERE id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $shop_id);
+        $stmt->execute();
+        $stmt->bind_result($current_image);
+        $stmt->fetch();
+        $stmt->close();
+        $imagePath = $current_image; // ใช้ค่าเดิมที่ดึงมาจากฐานข้อมูล
+    }
+
+    // ใช้คำสั่ง INSERT INTO เพื่อลงข้อมูลในฐานข้อมูล
+    $query = "INSERT INTO tb_shop (id, nameshop, shop_name, shop_lastname, shop_phone, shop_details, shop_address, shop_email, shop_pass, shop_img) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt->bind_param("isssssssss", $shop_id, $nameshop, $name, $lastname, $phone, $details, $address, $email, $hashedPassword, $imagePath);
+
+    if ($stmt->execute()) {
+        echo "ข้อมูลถูกบันทึกเรียบร้อยแล้ว";
+    } else {
+        echo "เกิดข้อผิดพลาดในการบันทึกข้อมูล: " . $stmt->error;
+    }
+
+    $stmt->close();
+}
+
+// ปิดการเชื่อมต่อฐานข้อมูล
+$conn->close();
 
 
 ?>
