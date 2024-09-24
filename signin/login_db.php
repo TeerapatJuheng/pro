@@ -37,6 +37,8 @@ if (isset($_POST['login_user'])) {
         $sql2 = "SELECT * FROM `tb_shop` WHERE shop_user = '$username' AND shop_pass ='$password'";
 
         $result1 = mysqli_query($conn, $sql1);
+        $row1 = mysqli_fetch_assoc($result1);
+
         $result2 = mysqli_query($conn, $sql2);
 
         $row2 = mysqli_fetch_assoc($result2);
@@ -45,6 +47,7 @@ if (isset($_POST['login_user'])) {
         if (mysqli_num_rows($result1) == 1) {
             $row = mysqli_fetch_assoc($result1);
             $_SESSION['employee_id'] = $username;
+            $_SESSION['user_id'] = $row1['id'];
             $_SESSION['success'] = "คุณเข้าสู่ระบบเรียบร้อยแล้ว";
             header("location: ./dashboard_user.php");
             // Add JavaScript alert
