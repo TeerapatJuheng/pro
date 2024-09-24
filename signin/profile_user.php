@@ -53,6 +53,9 @@ $conn->close();
 
 
 
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -460,152 +463,120 @@ $conn->close();
             }
         }
 
-       /* profile shop*/
+    /* profile user */
+    .container {
+        margin-top: 100px;
+        max-width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    }
 
-       .container {
-            margin-top: 100px;
-            max-width: 100%;
-        }
+    .container h1 {
+        font-size: 25px;
+        text-align: center;
+        margin-bottom: 20px;
+        color: #507F99;
+    }
 
-        .container h1 {
-            font-size: 25px;
-            text-align: center;
-        }
+    .form_profile {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        padding: 20px;
+    }
 
-        .container .form_profile {
-            padding: 20px 20px;
-        }
+    .from_group {
+        margin-bottom: 20px;
+    }
 
-        .from_group {
-            margin-bottom: 20px;
-        }
-        label {
-            font-size:15px;
-        }
-        
-        input[type="text_name"],
-        input[type="text_name2"],
-        input[type="text_lname"],
-        input[type="text_phon"],
-        input[type="text_payment"],
-        input[type="text_email"],
-        input[type="text_pass"],
-        input[type="text_sex"],
-        input[type="text_age"],
-        input[type="text_job"],
-        textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #507F99;
-            border-radius: 10px;
-            box-sizing: border-box;
-            font-size: 10px;
-            display: flex;
-        }
+    label {
+        font-size: 15px;
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: block;
+        color: #507F99;
+    }
 
-        .list-group {
-            display: grid;
-            grid-template-columns:repeat(3,1fr);
-            font-size: 14px;
-            margin-top: 5px;
-        }
+    input[type="text_name2"],
+    input[type="text_lname"],
+    input[type="text_phon"],
+    input[type="text_email"],
+    input[type="text_pass"],
+    textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #507F99;
+        border-radius: 10px;
+        box-sizing: border-box;
+        font-size: 16px;
+    }
 
-        input[type="time"] {
-            padding: 10px 20px;
-            margin:0 5px;
-            outline:none;
-            border:1px solid #507F99;
-            border-radius:6px;
-            color:#0298cf;
-            font-size: 14px;
-            background-color: #fff;
-        }
+    textarea {
+        resize: none;
+    }
 
-        ul li {
-        list-style: none;
-        }
+    .imglogo {
+    grid-column: span 2;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 225px;
+    width: 225px;
+    border: 1px solid #000;
+    border-radius: 50%;
+    position: relative; /* หรือ absolute ถ้าจำเป็น */
+    z-index: 10; /* หรือค่าที่สูงกว่าองค์ประกอบอื่น */
+}
 
-        .imglogo {
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            width: 300px;
-            border: 1px solid #000;
-            border-radius: 5px;
-            align-items: center;
-            display: flex;
-        }
+    .form-group {
+        grid-column: span 2;
+        text-align: center;
+    }
 
-        .if {
-            display: block;
-            width: 200px;
-            background:#507F99;
-            color: #fff;
-            padding: 10px;
-            margin: 10px auto;
-            border-radius:5px ;
-            cursor: pointer;
-            text-align: center;
-        }
+    iframe {
+        grid-column: span 2;
+        width: 100%;
+        height: 300px;
+        border: 0;
+        border-radius: 10px;
+    }
 
-        .inimg {
-            display: none;
-        }
+    button {
+        outline: none;
+        border: 1px solid #507F99;
+        border-radius: 6px;
+        cursor: pointer;
+        padding: 10px 20px;
+        color: #ffffff;
+        background-color: #507F99;
+        font-size: 14px;
+    }
 
-        iframe {
-            max-width: 100%;
-            display: block;
-        }
+    button:hover {
+        background-color: #728FCE;
+    }
 
-        button {
-            outline:none;
-            border:1px solid #507F99;
-            border-radius:6px;
-            cursor:pointer;
-            padding: 10px 20px;
-            color: #ffffff;
-            background-color: #507F99;
-            font-size: 14px;
-            float: right;
-            margin: 10px;
-        }
-
-        button:hover {
-            background-color: #728FCE;
-        }
-
-        button:nth-child(1) {
-            background-color: #AEB6BF;
-        }
-
-        button:nth-child(2) {
-            background-color: #507F99;
-        }
-
-        textarea {
-            resize: none;
-        }
+    .button-group {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        grid-column: span 2;
+        margin-top: 10px;
+    }
 
         /* popup2 */
 
-        #popup-2 {
+        .popup2 .overlay1 {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1;
-            display: none; 
-        }
-
-        #popup-2.active {
-            display: block; 
-        }
-
-        .overlay1 {
-            width: 1000vw;
-            height: 1000vh;
-            background: rgba(0, 0, 0, 0.4);
+            top: 0px;
+            left: 0px;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.7);
             z-index: 1;
             display: none;
         }
@@ -687,7 +658,6 @@ $conn->close();
 
 
 
-
     </style>
     <title>Profile</title>
 </head>
@@ -723,6 +693,7 @@ $conn->close();
             <div class="content">
                 <h3>ซัก อบ </h3>
                 <span class="price">50฿</span>
+                <span class="quantity">qty : 1 </span>
             </div>
         </div>
         <div class="box">
@@ -731,6 +702,7 @@ $conn->close();
             <div class="content">
                 <h3>ซัก อบ </h3>
                 <span class="price">50฿</span>
+                <span class="quantity">qty : 1 </span>
             </div>
         </div>
         <div class="box">
@@ -739,6 +711,7 @@ $conn->close();
             <div class="content">
                 <h3>ซัก อบ </h3>
                 <span class="price">50฿</span>
+                <span class="quantity">qty : 1 </span>
             </div>
         </div>
         <div class="total"> Total : 150฿</div>
@@ -747,76 +720,84 @@ $conn->close();
 
 
     <div class="profile">
-        <?php 
-            // ตรวจสอบว่ามีรูปภาพหรือไม่ ถ้าไม่มีให้แสดงรูปภาพเริ่มต้น
-            $img = !empty($customer['img']) ? htmlspecialchars($customer['img']) : 'default.jpg'; 
-        ?>
-        <img src="../photo/<?php echo $img; ?>" alt="Profile Image">
-        <h3><?php echo $fullName; ?></h3>
-        <span>User</span>
-        <a href="profile_user.php" class="btnp">Profile</a>
-        <div class="flex-btnp">
-            <a href="history.php" class="option-btnp">ประวัติ</a>
-            <a href="login.php" class="option-btnp">Logout</a>
-        </div>
+    <?php 
+        // ตรวจสอบว่ามีรูปภาพหรือไม่ ถ้าไม่มีให้แสดงรูปภาพเริ่มต้น
+        $img = !empty($customer['img']) ? htmlspecialchars($customer['img']) : 'default.jpg'; 
+    ?>
+    <img src="../photo/<?php echo $img; ?>" alt="Profile Image">
+    <h3><?php echo $fullName; ?></h3>
+    <span>User</span>
+    <a href="profile_user.php" class="btnp">Profile</a>
+    <div class="flex-btnp">
+        <a href="history.php" class="option-btnp">ประวัติการใช้งาน</a>
+        <a href="login.php" class="option-btnp">Logout</a>
     </div>
+</div>
     </header> 
 
-    <!-- form profile -->
+<!-- form profile -->
+<form method="POST" action="edit_user.php" enctype="multipart/form-data">
+    <div class="container">
+        <h1>ข้อมูลส่วนตัว</h1>
+        <div class="form_profile">
+        <div class="form-group">
+            <?php 
+                // กำหนดรูปภาพเริ่มต้นเป็น default.jpg หากไม่มีข้อมูลรูปภาพในฐานข้อมูล
+                $customerimg = !empty($customer['img']) ? htmlspecialchars($customer['img']) : 'default.jpg';
+            ?>
+            <!-- แสดงรูปภาพโปรไฟล์ -->
+            <img id="profile-image-form" src="../photo/<?php echo $img; ?>" alt="Profile Image" class="imglogo" disabled>
 
-            <div class="container">
-                <h1>ข้อมูลส่วนตัว</h1>
-                <div class="form_profile">
-                    <div class="form-group">
-                        <img src="../photo/ตู้ซักผ้า2.jpg" alt="" class="imglogo">
-                        <label for="input-file" class="if">update image</label>
-                        <input type="file" id="input-file" accept="image/*" class="inimg">
-                    </div>
-                    <div class="from_group">
-                        <label for="name_user" class="name">ชื่อ</label>
-                        <input type="text_name2">
-                        <label for="name_user" class="name2">นามสกุล</label>
-                        <input type="text_lname">
-                    </div>
-                    <div class="from_group">
-                        <label for="phon_user">เบอร์โทรศัพท์</label>
-                        <input type="text_phon">
-                        <label for="sex_user">เพศ</label>
-                        <input type="text_sex">
-                        <label for="age_user">อายุ</label>
-                        <input type="text_age">
-                        <label for="job_user">อาชีพ</label>
-                        <input type="text_job">
-                    </div>
-                    <div class="from_group">
-                        <label for="address">ที่อยู่</label>
-                        <textarea name="address" id="address" rows="4" required></textarea>
-                    </div>
-                    <div class="from_group">
-                        <label for="address">พิกัด</label>
-                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2739.3577164737044!2d100.7865171160615!3d13.836826733612302!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x311d6fa0d3e43c17%3A0x6900adb7c859f5c7!2z4Lia4Lij4Li04Lip4Lix4LiXIOC4reC4suC4o-C5jOC4oSDguITguK3guKPguYzguJvguK3guYDguKPguIrguLHguYjguJkg4LiI4LmN4Liy4LiB4Lix4LiU!5e0!3m2!1sth!2sth!4v1720673706746!5m2!1sth!2sth" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                    </div>
-                </div>
-
-                <div class="form_profile">
-                    <h1>บัญชี</h1>
-                    <div class="from_group">
-                        <label for="email">Email</label>
-                        <input type="text_email">
-                    </div>
-                    <div class="from_group">
-                        <label for="name_shop">Password</label>
-                        <input type="text_pass">
-                    </div>
-
-                    <div class="form-group">
-                        <button type="submit">แก้ไข</button>
-                        <button type="submit">บันทึก</button>
-                    </div>
-                </div>
+            <!-- Input file สำหรับอัปโหลดรูปภาพ -->
+            <input type="file" id="input-file" name="shop_image" accept="image/*" class="inimg" style="display: none;">
             </div>
-    <!-- form profile end-->
 
+            <div class="from_group">
+                <label for="name_shop" class="name">ชื่อ</label>
+                <input type="text_name2" name="name" value="<?php echo $name; ?>" required disabled>
+            </div>
+
+            <div class="from_group">
+                <label for="name_shop" class="name2">นามสกุล</label>
+                <input type="text_lname" name="lastname" value="<?php echo $lastname; ?>" required disabled>
+            </div>
+
+            <div class="from_group">
+                <label for="phon_shop">เบอร์โทรศัพท์</label>
+                <input type="text_phon" name="phone" id="phone" value="<?php echo $phone; ?>" required disabled>
+            </div>
+
+            <div class="from_group">
+                <label for="address">ที่อยู่</label>
+                <textarea name="address" id="address" rows="4" required disabled><?php echo htmlspecialchars($address); ?></textarea>
+            </div>
+
+            <div class="from_group">
+                <label for="address">พิกัด</label>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2739.3577164737044!2d100.7865171160615!3d13.836826733612302!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x311d6fa0d3e43c17%3A0x6900adb7c859f5c7!2z4Lia4Lij4Li04Lip4Lix4LiXIOC4reC4suC4o-C5jOC4oSDguITguK3guKPguYzguJvguK3guYDguKPguIrguLHguYjguJkg4LiI4LmN4Liy4LiB4Lix4LiU!5e0!3m2!1sth!2sth!4v1720673706746!5m2!1sth!2sth" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+        </div>
+
+        <h1>บัญชี</h1>
+        <div class="form_profile">
+            <div class="from_group">
+                <label for="name_shop">Email</label>
+                <input type="text_email" name="email" id="email" value="<?php echo $email; ?>" required disabled>
+            </div>
+
+            <div class="from_group">
+                <label for="name_shop">Password</label>
+                <input type="text_pass" name="password" id="password" value="<?php echo $password; ?>" required disabled>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button type="button" name="update_profile" id="edit-btn">แก้ไข</button>
+            <button type="submit" name="save_customer" style="display: none;" id="save-btn">บันทึก</button>
+        </div>
+    </div>
+</form>
+<!-- form profile end -->
 
     <!-- popup-->
 
@@ -872,6 +853,45 @@ $conn->close();
     </div>
 
     <!-- popup end-->
+
+    <!-- แก้ไขข้อมูลส่วนตัว -->
+
+
+    <script>
+// แก้ไขรูปภาพในโปรไฟล์
+document.getElementById('edit-btn').addEventListener('click', function() {
+    // เปิดใช้งาน input และ textarea ทุกช่อง
+    document.querySelectorAll('input, textarea').forEach(function(element) {
+        element.disabled = false;
+    });
+
+    // ทำให้รูปภาพคลิกได้
+    document.getElementById('profile-image-form').style.cursor = 'pointer';
+
+    // แสดงปุ่มบันทึกและซ่อนปุ่มแก้ไข
+    document.getElementById('save-btn').style.display = 'block';
+    document.getElementById('edit-btn').style.display = 'none';
+
+    // เปิดให้คลิกที่รูปภาพเพื่อเปลี่ยนรูป
+    document.getElementById('profile-image-form').addEventListener('click', function() {
+        document.getElementById('input-file').click();
+    });
+});
+
+// เมื่อมีการเลือกไฟล์ใหม่
+document.getElementById('input-file').addEventListener('change', function() {
+    const file = this.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // แสดงรูปภาพที่เลือกใหม่
+            document.getElementById('profile-image-form').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+    </script>
 
 
 
