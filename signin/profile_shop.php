@@ -1,17 +1,8 @@
 <?php
-echo '
-<script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert-dev.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.css">';
-
+// เริ่มต้นเซสชัน
 session_start();
 include('../inc/server.php');
 include('../signin/shop_info.php');
-
-
-$errors = array();
-date_default_timezone_set('Asia/Bangkok');
-$create_date = date("Y-m-d H:i:s");
 
 // ตรวจสอบว่ามีการส่งข้อมูลจากฟอร์มหรือไม่
 if (isset($_POST['save_shop'])) {
@@ -62,9 +53,11 @@ if (isset($_POST['save_shop'])) {
 
 // ปิดการเชื่อมต่อฐานข้อมูล
 $conn->close();
-
-
 ?>
+
+
+
+
 
 
 <!DOCTYPE html>
@@ -391,16 +384,13 @@ $conn->close();
         input[type="text_payment"],
         input[type="text_email"],
         input[type="text_pass"],
-        input[type="text_sex"],
-        input[type="text_age"],
-        input[type="text_job"],
         textarea {
             width: 100%;
             padding: 10px;
             border: 1px solid #507F99;
             border-radius: 10px;
             box-sizing: border-box;
-            font-size: 10px;
+            font-size: 16px;
             display: flex;
         }
 
@@ -515,8 +505,12 @@ $conn->close();
 
 
         <div class="profile">
-            <img src="../photo/1x/รีด.png" alt="">
-            <h3>kkkkkkk oooooooo</h3>
+        <?php 
+        // ตรวจสอบว่ามีรูปภาพหรือไม่ ถ้าไม่มีให้แสดงรูปภาพเริ่มต้น
+        $shopimg = !empty($shop['shop_img']) ? htmlspecialchars($shop['shop_img']) : 'default.jpg'; 
+        ?>
+            <img src="../photo/<?php echo $shopimg; ?>" alt="Profile Image">
+            <h3><?php echo $fullName; ?></h3>
             <span>shop</span>
             <a href="profile_shop.php" class="btnp">Profile</a>
             <div class="flex-btnp">
@@ -528,34 +522,33 @@ $conn->close();
 
 
         <!-- form profile -->
-
+        <form method="POST" action="edit_shop.php" enctype="multipart/form-data">
             <div class="container">
                 <h1>ข้อมูลร้านค้า</h1>
                 <div class="form_profile">
                     <div class="form-group">
-                        <img src="../photo/ตู้ซักผ้า2.jpg" alt="" class="imglogo">
-                        <label for="input-file" class="if">update image</label>
-                        <input type="file" id="input-file" accept="image/*" class="inimg">
+                    <?php 
+                    // กำหนดรูปภาพเริ่มต้นเป็น default.jpg หากไม่มีข้อมูลรูปภาพในฐานข้อมูล
+                        $shopimg = !empty($shop['shop_img']) ? htmlspecialchars($shop['shop_img']) : 'default.jpg';
+                    ?>
+                        <!-- แสดงรูปภาพโปรไฟล์ -->
+                        <img id="profile-image-form" src="../photo/<?php echo $shopimg; ?>" alt="Profile Image" class="imglogo" disabled>
+
+                        <input type="file" id="input-file" name="shop_image" accept="image/*" class="inimg">
                     </div>
                     <div class="from_group">
                         <label for="name_shop">ชื่อร้าน</label>
-                        <input type="text_name">
+                        <input type="text_name" name="nameshop" id="name_shop" value="<?php echo $nameshop ?>" required disabled>
                     </div>
                     <div class="from_group">
                         <label for="name_shop" class="name">ชื่อ</label>
-                        <input type="text_name2">
+                        <input type="text_name2" name = "shop_name" value="<?php echo $name; ?>" disabled>
                         <label for="name_shop" class="name2">นามสกุล</label>
-                        <input type="text_lname">
+                        <input type="text_lname" name = "shop_lastname" value="<?php echo $lastname; ?>" disabled>
                     </div>
                     <div class="from_group">
                         <label for="phon_shop">เบอร์โทรศัพท์</label>
-                        <input type="text_phon">
-                        <label for="sex_shop">เพศ</label>
-                        <input type="text_sex">
-                        <label for="age_shop">อายุ</label>
-                        <input type="text_age">
-                        <label for="job_shop">อาชีพ</label>
-                        <input type="text_job">
+                        <input type="text_phon" name = "shop_phone"value="<?php echo $phone ?>" disabled>
                     </div>
                     <div class="from_group">
                         <label for="date">วันทำการ</label>
@@ -597,11 +590,11 @@ $conn->close();
                     </div>
                     <div class="from_group">
                         <label for="data">รายละเอียด</label>
-                        <textarea id="data" name="data" rows="4" required></textarea>
+                        <textarea id="data" name="shop_details" rows="4" required disabled><?php echo htmlspecialchars($details ); ?></textarea>
                     </div>
                     <div class="from_group">
                         <label for="address">ที่อยู่ร้าน</label>
-                        <textarea name="address" id="address" rows="4" required></textarea>
+                        <textarea name="shop_address" id="address" rows="4" required disabled><?php echo $address; ?></textarea>
                     </div>
                     <div class="from_group">
                         <label for="address">พิกัด</label>
@@ -628,22 +621,20 @@ $conn->close();
                     <h1>บัญชีส่วนตัว</h1>
                     <div class="from_group">
                         <label for="name_shop">Email</label>
-                        <input type="text_email">
+                        <input type="text_email" name = "shop_email" value="<?php echo $email ?>" disabled>
                     </div>
                     <div class="from_group">
                         <label for="name_shop">Password</label>
-                        <input type="text_pass">
+                        <input type="text_pass" name = "shop_pass" value = "<?php echo $password ?>" disabled>
                     </div>
 
                     <div class="form-group">
-                        <button type="submit">แก้ไข</button>
-                        <button type="submit">บันทึก</button>
+                    <button type="button" name="update_profile" id="edit-btn">แก้ไข</button>
+                    <button type="submit" name="save_shop" style="display: none;" id="save-btn">บันทึก</button>
                     </div>
-
-
-
                 </div>
             </div>
+        </form>
         <!-- form profile end-->
 
 
@@ -665,6 +656,73 @@ $conn->close();
 
         <!--custom js file link -->
         <script src="js/script.js"></script>
+
+
+         <!-- แก้ไขข้อมูลส่วนตัว -->
+
+
+    <script>
+    // แก้ไขรูปภาพในโปรไฟล์
+document.getElementById('edit-btn').addEventListener('click', function() {
+    // เปิดใช้งาน input และ textarea ทุกช่องในฟอร์ม
+    document.querySelectorAll('input, textarea').forEach(function(element) {
+        element.disabled = false;
+    });
+
+    // ทำให้รูปภาพคลิกได้
+    document.querySelectorAll('.imglogo').forEach(function(imgElement) {
+        imgElement.style.cursor = 'pointer';
+    });
+
+    // แสดงปุ่มบันทึกและซ่อนปุ่มแก้ไข
+    document.getElementById('save-btn').style.display = 'block';
+    document.getElementById('edit-btn').style.display = 'none';
+
+    // เปิดให้คลิกที่รูปภาพเพื่อเปลี่ยนรูป
+    document.querySelectorAll('.imglogo').forEach(function(imgElement, index) {
+        imgElement.addEventListener('click', function() {
+            if (index === 0) {
+                document.getElementById('input-file').click(); // เปิดฟอร์มเลือกรูปภาพสำหรับโปรไฟล์ร้าน
+            } else if (index === 1) {
+                document.querySelector('input[name="shop_image"]').click(); // เปิดฟอร์มเลือกรูปภาพ QR Code
+            }
+        });
+    });
+});
+
+// เมื่อมีการเลือกไฟล์ใหม่สำหรับโปรไฟล์ร้าน
+document.getElementById('input-file').addEventListener('change', function() {
+    const file = this.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // แสดงรูปภาพโปรไฟล์ที่เลือกใหม่
+            document.querySelector('.imglogo').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// เมื่อมีการเลือกไฟล์ใหม่สำหรับ QR Code
+document.querySelector('input[name="shop_image"]').addEventListener('change', function() {
+    const file = this.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            // แสดง QR Code ที่เลือกใหม่
+            document.querySelectorAll('.imglogo')[1].src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+</script>
+
+
+
+
+
+
 
         <script>
             let searchForm = document.querySelector('.search-form');
