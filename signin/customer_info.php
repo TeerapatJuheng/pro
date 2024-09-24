@@ -20,7 +20,7 @@ if ($result->num_rows > 0) {
 }
 
 // ดึงข้อมูลชื่อและนามสกุลจากตาราง tb_user
-$query = "SELECT name, lastname, phone, address, email, password , img FROM tb_customer WHERE id = ?";
+$query = "SELECT name, lastname, phone, sex, age, job, address, email, password , img FROM tb_customer WHERE id = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
@@ -31,6 +31,9 @@ if ($result->num_rows > 0) {
     $name = htmlspecialchars($user["name"]);
     $lastname = htmlspecialchars($user["lastname"]);
     $phone = htmlspecialchars($user["phone"]);
+    $sex = htmlspecialchars($user["sex"]);
+    $age = htmlspecialchars($user["age"]);
+    $job = htmlspecialchars($user["job"]);
     $address = htmlspecialchars($user["address"]);
     $email = htmlspecialchars($user["email"]);
     $password = htmlspecialchars($user["password"]);
@@ -38,10 +41,14 @@ if ($result->num_rows > 0) {
     $name = "";
     $lastname = "";
     $phone = "";
+    $sex = "";
+    $age = "";
+    $job = "";
     $address = "";
     $email = "";
     $password = "";
 }
+
 
 $stmt->close();
 $conn->close();
