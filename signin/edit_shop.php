@@ -11,6 +11,9 @@ if (isset($_POST['save_shop'])) {
     $name = $_POST['shop_name'];
     $lastname = $_POST['shop_lastname'];
     $phone = $_POST['shop_phone'];
+    $sex = $_POST['shop_sex'];
+    $age = $_POST['shop_age'];
+    $job = $_POST['shop_job'];
     $details = $_POST['shop_details'];
     $address = $_POST['shop_address'];
     $email = $_POST['shop_email'];
@@ -19,6 +22,8 @@ if (isset($_POST['save_shop'])) {
 
     // เข้ารหัสรหัสผ่านใหม่ก่อนบันทึก
     $hashedPassword = password_hash($password, PASSWORD_BCRYPT);
+
+    
 
     // ตรวจสอบและอัปโหลดไฟล์ภาพ
     $imagePath = null;
@@ -61,14 +66,14 @@ if (isset($_POST['save_shop'])) {
 
     // เตรียมคำสั่ง UPDATE เพื่อลงข้อมูลในฐานข้อมูล
     if ($imagePath) {
-        $query = "UPDATE tb_shop SET nameshop = ?, shop_name = ?, shop_lastname = ?, shop_phone = ?, shop_details = ?, shop_address = ?, shop_email = ?, shop_pass = ?, shop_img = ? WHERE id = ?";
+        $query = "UPDATE tb_shop SET nameshop = ?, shop_name = ?, shop_lastname = ?, shop_phone = ?, shop_sex = ?, shop_age = ?, shop_job = ?, shop_details = ?, shop_address = ?, shop_email = ?, shop_pass = ?, shop_img = ? WHERE id = ?";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("sssssssssi", $nameshop, $name, $lastname, $phone, $details, $address, $email, $hashedPassword, $imagePath, $shop_id);
+        $stmt->bind_param("ssssssssssssi", $nameshop, $name, $lastname, $phone, $sex, $age, $job, $details, $address, $email, $hashedPassword, $imagePath, $shop_id);
     } else {
         // หากไม่มีรูปภาพใหม่ ใช้คำสั่ง UPDATE โดยไม่แก้ไขรูปภาพ
-        $query = "UPDATE tb_shop SET nameshop = ?, shop_name = ?, shop_lastname = ?, shop_phone = ?, shop_details = ?, shop_address = ?, shop_email = ?, shop_pass = ? WHERE id = ?";
+        $query = "UPDATE tb_shop SET nameshop = ?, shop_name = ?, shop_lastname = ?, shop_phone = ?, shop_sex = ?, shop_age = ?, shop_job = ?, shop_details = ?, shop_address = ?, shop_email = ?, shop_pass = ? WHERE id = ?";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("ssssssssi", $nameshop, $name, $lastname, $phone, $details, $address, $email, $hashedPassword, $shop_id);
+        $stmt->bind_param("ssssssssssi", $nameshop, $name, $lastname, $phone, $sex, $age, $job, $details, $address, $email, $hashedPassword, $shop_id);
     }
 
     // ทำการอัปเดตข้อมูล
