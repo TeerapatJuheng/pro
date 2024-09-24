@@ -747,10 +747,10 @@ $conn->close();
 
 
     <div class="profile">
-    <?php 
-        // ตรวจสอบว่ามีรูปภาพหรือไม่ ถ้าไม่มีให้แสดงรูปภาพเริ่มต้น
-        $img = !empty($customer['img']) ? htmlspecialchars($customer['img']) : 'default.jpg'; 
-    ?>
+        <?php 
+            // ตรวจสอบว่ามีรูปภาพหรือไม่ ถ้าไม่มีให้แสดงรูปภาพเริ่มต้น
+            $img = !empty($customer['img']) ? htmlspecialchars($customer['img']) : 'default.jpg'; 
+        ?>
         <img src="../photo/<?php echo $img; ?>" alt="Profile Image">
         <h3><?php echo $fullName; ?></h3>
         <span>User</span>
