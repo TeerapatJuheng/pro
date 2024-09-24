@@ -1,3 +1,58 @@
+<?php
+// เริ่มต้นเซสชัน
+session_start();
+include('../inc/server.php');
+include('../signin/customer_info.php');
+
+// ตรวจสอบว่ามีการส่งข้อมูลจากฟอร์มหรือไม่
+if (isset($_POST['save_customer'])) {
+    // รับข้อมูลจากฟอร์ม
+    $name = $_POST['name'];
+    $lastname =$_POST['lastname'];
+    $phone = $_POST['phone'];
+    $address = $_POST['address'];
+    $email = $_POST['email'];
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // เข้ารหัสรหัสผ่าน
+    $user_id = $_SESSION['user_id']; // รับ customer_id จากเซสชัน
+
+       // ตรวจสอบและอัพโหลดไฟล์ภาพ
+       $imagePath = null;
+       if (isset($_FILES['shop_image']) && $_FILES['shop_image']['error'] == UPLOAD_ERR_OK) {
+           $target_dir = "../photo/";
+           $imagePath = $target_dir . basename($_FILES["shop_image"]["name"]);
+           move_uploaded_file($_FILES["shop_image"]["tmp_name"], $imagePath);
+       } else {
+           // หากไม่อัปโหลดไฟล์ใหม่ ให้ใช้ค่าเดิมที่มีอยู่ในฐานข้อมูล
+           $query = "SELECT img FROM tb_customer WHERE id = ?";
+           $stmt = $conn->prepare($query);
+           $stmt->bind_param("i", $user_id);
+           $stmt->execute();
+           $stmt->bind_result($current_image);
+           $stmt->fetch();
+           $stmt->close();
+           $imagePath = $current_image;
+       }
+
+    // ใช้คำสั่ง INSERT INTO เพื่อลงข้อมูลในฐานข้อมูล
+    $query = "INSERT INTO tb_customer (id, name, lastname, phone, address, email, password, img) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("isssssss", $user_id, $name, $lastname, $phone, $address, $email, $password, $imagePath);
+
+    if ($stmt->execute()) {
+        echo "ข้อมูลถูกบันทึกเรียบร้อยแล้ว";
+    } else {
+        echo "เกิดข้อผิดพลาดในการบันทึกข้อมูล: " . $stmt->error;
+    }
+
+    $stmt->close();
+}
+
+// ปิดการเชื่อมต่อฐานข้อมูล
+$conn->close();
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
