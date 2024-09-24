@@ -1,3 +1,51 @@
+<?php
+// เริ่มต้นเซสชัน
+session_start();
+include('../inc/server.php');
+include('../signin/upload.php');
+
+
+// ตรวจสอบว่าผู้ใช้เข้าสู่ระบบหรือยัง
+if (!isset($_SESSION['user_id'])) {
+    echo "คุณยังไม่ได้เข้าสู่ระบบ";
+    exit;
+}
+
+    $user_id = $_SESSION['user_id']; // รับค่า customer_id จากเซสชัน
+
+    // ดึงข้อมูลผู้ใช้จากฐานข้อมูล
+    $query = "SELECT * FROM tb_customer WHERE id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $customer = $result->fetch_assoc();
+        $fullName = htmlspecialchars($customer["name"]) . " " . htmlspecialchars($customer["lastname"]);
+        $profileImage = htmlspecialchars($customer['img']);
+    } else {
+        $fullName = "User not found";
+        $profileImage = "default-image.png"; // กรณีที่ไม่พบผู้ใช้
+    }
+
+    // ดึงชื่อร้านจากฐานข้อมูล
+    $shop_id = $_SESSION['shop_id']; // สมมุติว่า shop_id ถูกเก็บในเซสชัน
+    $query = "SELECT nameshop, shop_details, shop_phone, shop_address FROM tb_shop WHERE id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $shop_id);
+    $stmt->execute();
+    $stmt->bind_result($nameshop, $shop_details, $shop_phone, $shop_address);
+    $stmt->fetch();
+    $stmt->close();
+
+
+    $stmt->close();
+    $conn->close();
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
