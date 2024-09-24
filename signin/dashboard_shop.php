@@ -1184,8 +1184,12 @@ $conn->close();
 
 
         <div class="profile">
-            <img src="../photo/1x/รีด.png" alt="">
-            <h3>kkkkkkk oooooooo</h3>
+        <?php 
+        // ตรวจสอบว่ามีรูปภาพหรือไม่ ถ้าไม่มีให้แสดงรูปภาพเริ่มต้น
+        $shopimg = !empty($shop['shop_img']) ? htmlspecialchars($shop['shop_img']) : 'default.jpg'; 
+        ?>
+            <img src="../photo/<?php echo $shopimg; ?>" alt="Profile Image">
+            <h3><?php echo $fullName; ?></h3>
             <span>shop</span>
             <a href="profile_shop.php" class="btnp">Profile</a>
             <div class="flex-btnp">
