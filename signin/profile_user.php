@@ -10,6 +10,9 @@ if (isset($_POST['save_customer'])) {
     $name = $_POST['name'];
     $lastname =$_POST['lastname'];
     $phone = $_POST['phone'];
+    $sex = $_POST['sex'];
+    $age = $_POST['age'];
+    $job = $_POST['job'];
     $address = $_POST['address'];
     $email = $_POST['email'];
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // เข้ารหัสรหัสผ่าน
@@ -34,9 +37,9 @@ if (isset($_POST['save_customer'])) {
        }
 
     // ใช้คำสั่ง INSERT INTO เพื่อลงข้อมูลในฐานข้อมูล
-    $query = "INSERT INTO tb_customer (id, name, lastname, phone, address, email, password, img) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    $query = "INSERT INTO tb_customer (id, name, lastname, phone, sex, age, job, address, email, password, img) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("isssssss", $user_id, $name, $lastname, $phone, $address, $email, $password, $imagePath);
+    $stmt->bind_param("issssssssss", $user_id, $name, $lastname, $phone, $sex, $age, $job,  $address, $email, $password, $imagePath);
 
     if ($stmt->execute()) {
         echo "ข้อมูลถูกบันทึกเรียบร้อยแล้ว";
@@ -50,11 +53,6 @@ if (isset($_POST['save_customer'])) {
 // ปิดการเชื่อมต่อฐานข้อมูล
 $conn->close();
 ?>
-
-
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -506,6 +504,9 @@ $conn->close();
     input[type="text_phon"],
     input[type="text_email"],
     input[type="text_pass"],
+    input[type="text_sex"],
+    input[type="text_age"],
+    input[type="text_job"],
     textarea {
         width: 100%;
         padding: 10px;
@@ -765,6 +766,21 @@ $conn->close();
             <div class="from_group">
                 <label for="phon_shop">เบอร์โทรศัพท์</label>
                 <input type="text_phon" name="phone" id="phone" value="<?php echo $phone; ?>" required disabled>
+            </div>
+
+            <div class="from_group">
+                <label for="sex_shop">เพศ</label>
+                <input type="text_sex" name="sex" id="sex" value="<?php echo $sex; ?>" required disabled>
+            </div>
+
+            <div class="from_group">
+                <label for="age_shop">อายุ</label>
+                <input type="text_age" name="age" id="age" value="<?php echo $age; ?>" required disabled>
+            </div>
+
+            <div class="from_group">
+                <label for="job_shop">อาชีพ</label>
+                <input type="text_job" name="job" id="job" value="<?php echo $job; ?>" required disabled>
             </div>
 
             <div class="from_group">
