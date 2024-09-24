@@ -10,6 +10,9 @@ if (isset($_POST['save_customer'])) { // เปลี่ยนชื่อตา
     $name = $_POST['name'];
     $lastname = $_POST['lastname'];
     $phone = $_POST['phone'];
+    $sex = $_POST['sex'];
+    $age = $_POST['age'];
+    $job = $_POST['job'];
     $address = $_POST['address'];
     $email = $_POST['email'];
     $password = $_POST['password']; // ควรเข้ารหัสรหัสผ่านก่อนบันทึก
@@ -54,16 +57,16 @@ if (isset($_POST['save_customer'])) { // เปลี่ยนชื่อตา
 
     // เตรียมคำสั่ง UPDATE เพื่อลงข้อมูลในฐานข้อมูล
     if ($imagePath) {
-        $query = "UPDATE tb_customer SET name = ?, lastname = ?, phone = ?, address = ?, email = ?, password = ?, img = ? WHERE id = ?";
+        $query = "UPDATE tb_customer SET name = ?, lastname = ?, phone = ?, sex = ?, age = ?, job = ?, address = ?, email = ?, password = ?, img = ? WHERE id = ?";
         $stmt = $conn->prepare($query);
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT); // เข้ารหัสรหัสผ่าน
-        $stmt->bind_param("sssssssi", $name, $lastname, $phone, $address, $email, $hashedPassword, $imagePath, $customer_id);
+        $stmt->bind_param("ssssssssssi", $name, $lastname, $phone, $sex, $age, $job, $address, $email, $hashedPassword, $imagePath, $customer_id);
     } else {
         // ถ้าไม่มีภาพใหม่อัพโหลด ก็ไม่อัพเดตฟิลด์ img
-        $query = "UPDATE tb_customer SET name = ?, lastname = ?, phone = ?, address = ?, email = ?, password = ? WHERE id = ?";
+        $query = "UPDATE tb_customer SET name = ?, lastname = ?, phone = ?, sex = ?, age = ?, job = ?, address = ?, email = ?, password = ? WHERE id = ?";
         $stmt = $conn->prepare($query);
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT); // เข้ารหัสรหัสผ่าน
-        $stmt->bind_param("ssssssi", $name, $lastname, $phone, $address, $email, $hashedPassword, $customer_id);
+        $stmt->bind_param("ssssssssssi", $name, $lastname, $phone, $sex, $age, $job, $address, $email, $hashedPassword, $customer_id);
     }
 
     if ($stmt->execute()) {
