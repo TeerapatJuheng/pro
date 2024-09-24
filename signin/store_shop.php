@@ -7,18 +7,15 @@ include('../inc/server.php');
 $sql = "SELECT * FROM `tb_product` WHERE shop_id = $shopid";
 $result = $conn->query($sql);
 
-// สมมติว่ามีการเก็บ shop_id ในเซสชันเมื่อผู้ใช้ล็อกอิน
-$shop_id = $_SESSION['shop_id']; // ควรตั้งค่านี้เมื่อผู้ใช้ทำการล็อกอิน
-
 // ดึงข้อมูลชื่อและนามสกุลจากตาราง tb_shop
-$query = "SELECT * FROM tb_shop WHERE id = $shop_id";
+$query = "SELECT * FROM tb_shop WHERE id = $shopid";
 $stmt = $conn->prepare($query);
-$stmt->bind_param("i", $shop_id);
+$stmt->bind_param("i", $shopid);
 $stmt->execute();
-$result = $stmt->get_result();
+$result2 = $stmt->get_result();
 
-if ($result->num_rows > 0) {
-    $shop = $result->fetch_assoc();
+if ($result2->num_rows > 0) {
+    $shop = $result2->fetch_assoc();
     $fullName = htmlspecialchars($shop["shop_name"]) . " " . htmlspecialchars($shop["shop_lastname"]);
     $profileImage = htmlspecialchars($shop['shop_img']);
 } else {
@@ -28,8 +25,6 @@ if ($result->num_rows > 0) {
 
 $stmt->close();
 $conn->close();
-
-
 
 ?>
 
@@ -783,8 +778,12 @@ $conn->close();
 
 
         <div class="profile">
-            <img src="../photo/1x/รีด.png" alt="">
-            <h3>kkkkkkk oooooooo</h3>
+        <?php 
+        // ตรวจสอบว่ามีรูปภาพหรือไม่ ถ้าไม่มีให้แสดงรูปภาพเริ่มต้น
+        $img = !empty($shop['shop_img']) ? htmlspecialchars($shop['shop_img']) : 'default.jpg'; 
+        ?>
+        <img src="../photo/<?php echo $img; ?>" alt="Profile Image">
+        <h3><?php echo $fullName; ?></h3>
             <span>shop</span>
             <a href="profile_shop.php" class="btnp">Profile</a>
             <div class="flex-btnp">
