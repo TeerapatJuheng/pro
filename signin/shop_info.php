@@ -20,7 +20,7 @@ if ($result->num_rows > 0) {
 }
 
 // ดึงข้อมูลชื่อและนามสกุลจากตาราง tb_shop
-$query = "SELECT shop_name, shop_lastname , nameshop , shop_phone , shop_details , shop_address , shop_email, shop_pass, shop_img FROM tb_shop WHERE id = ?";
+$query = "SELECT shop_name, shop_lastname , nameshop , shop_phone , shop_sex , shop_age, shop_job, shop_details , shop_address , shop_email, shop_pass, shop_img FROM tb_shop WHERE id = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $shop_id);
 $stmt->execute();
@@ -32,6 +32,9 @@ if ($result->num_rows > 0) {
     $name = htmlspecialchars($shop["shop_name"]);
     $lastname = htmlspecialchars($shop["shop_lastname"]);
     $phone = htmlspecialchars($shop["shop_phone"]);
+    $sex = htmlspecialchars($shop["shop_sex"]);
+    $age = htmlspecialchars($shop["shop_age"]);
+    $job = htmlspecialchars($shop["shop_job"]);
     $details = htmlspecialchars($shop["shop_details"]);
     $address = htmlspecialchars($shop["shop_address"]);
     $email = htmlspecialchars($shop["shop_email"]);
@@ -41,6 +44,9 @@ if ($result->num_rows > 0) {
     $name = "";
     $lastname = "";
     $phone = "";
+    $sex = "";
+    $age = "";
+    $job = "";
     $details = "";
     $address = "";
     $email = "";

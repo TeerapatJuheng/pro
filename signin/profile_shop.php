@@ -11,6 +11,9 @@ if (isset($_POST['save_shop'])) {
     $name = $_POST['shop_name'];
     $lastname = $_POST['shop_lastname'];
     $phone = $_POST['shop_phone'];
+    $sex = $_POST['shop_sex'];
+    $age = $_POST['shop_age'];
+    $job = $_POST['shop_job'];
     $details = $_POST['shop_details'];
     $address = $_POST['shop_address'];
     $email = $_POST['shop_email'];
@@ -39,8 +42,8 @@ if (isset($_POST['save_shop'])) {
     }
 
     // ใช้คำสั่ง INSERT INTO เพื่อลงข้อมูลในฐานข้อมูล
-    $query = "INSERT INTO tb_shop (id, nameshop, shop_name, shop_lastname, shop_phone, shop_details, shop_address, shop_email, shop_pass, shop_img) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-    $stmt->bind_param("isssssssss", $shop_id, $nameshop, $name, $lastname, $phone, $details, $address, $email, $hashedPassword, $imagePath);
+    $query = "INSERT INTO tb_shop (id, nameshop, shop_name, shop_lastname, shop_phone, shop_sex, shop_age, shop_job, shop_details, shop_address, shop_email, shop_pass, shop_img) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    $stmt->bind_param("issssssssssss", $shop_id, $nameshop, $name, $lastname, $phone, $sex, $age, $job, $details, $address, $email, $hashedPassword, $imagePath);
 
     if ($stmt->execute()) {
         echo "ข้อมูลถูกบันทึกเรียบร้อยแล้ว";
@@ -54,11 +57,6 @@ if (isset($_POST['save_shop'])) {
 // ปิดการเชื่อมต่อฐานข้อมูล
 $conn->close();
 ?>
-
-
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -384,6 +382,9 @@ $conn->close();
         input[type="text_payment"],
         input[type="text_email"],
         input[type="text_pass"],
+        input[type="text_sex"],
+        input[type="text_age"],
+        input[type="text_job"],
         textarea {
             width: 100%;
             padding: 10px;
@@ -549,6 +550,15 @@ $conn->close();
                     <div class="from_group">
                         <label for="phon_shop">เบอร์โทรศัพท์</label>
                         <input type="text_phon" name = "shop_phone"value="<?php echo $phone ?>" disabled>
+
+                        <label for="sex_shop">เพศ</label>
+                        <input type="text_sex" name = "shop_sex"value="<?php echo $sex ?>" disabled>
+
+                        <label for="age_shop">อายุ</label>
+                        <input type="text_age" name = "shop_age"value="<?php echo $age ?>" disabled>
+
+                        <label for="job_shop">อาชีพ</label>
+                        <input type="text_job" name = "shop_job"value="<?php echo $job ?>" disabled>
                     </div>
                     <div class="from_group">
                         <label for="date">วันทำการ</label>
