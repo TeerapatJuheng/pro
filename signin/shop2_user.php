@@ -1033,7 +1033,7 @@ if (!isset($_SESSION['user_id'])) {
                                 
                             </div>
                         </div>
-                        </div>
+                    </div>
                         
                         <!-- <div class="quantity2">
                             <span> quantity : </span>
