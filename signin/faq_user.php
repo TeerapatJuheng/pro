@@ -783,8 +783,12 @@ $conn->close();
 
 
     <div class="profile">
-        <img src="../photo/1x/รีด.png" alt="">
-        <h3>kkkkkkk oooooooo</h3>
+    <?php 
+        // ตรวจสอบว่ามีรูปภาพหรือไม่ ถ้าไม่มีให้แสดงรูปภาพเริ่มต้น
+        $img = !empty($customer['img']) ? htmlspecialchars($customer['img']) : 'default.jpg'; 
+        ?>
+        <img src="../photo/<?php echo $img; ?>" alt="Profile Image">
+        <h3><?php echo $fullName; ?></h3>
         <span>User</span>
         <a href="profile_user.php" class="btnp">Profile</a>
         <div class="flex-btnp">
