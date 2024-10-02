@@ -64,6 +64,10 @@ $result_service = $stmt->get_result();
 
 ?>
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 883efc299f2d145759400c93644eb7a9393a1577
 <!DOCTYPE html>
 <html lang="en">
 
