@@ -33,12 +33,12 @@ $stmt->close();
 $conn->close();
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -426,7 +426,7 @@ $conn->close();
             }
 
             .popup2 .content5 {
-                width: 250px;
+                width: 90%;
                 max-width: 90%;
                 padding: 15px;
                 border-radius: 5px;
@@ -479,23 +479,13 @@ $conn->close();
 
         /* popup2 */
 
-        #popup-2 {
+        .popup2 .overlay1 {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1;
-            display: none; 
-        }
-
-        #popup-2.active {
-            display: block; 
-        }
-
-        .overlay1 {
-            width: 1000vw;
-            height: 1000vh;
-            background: rgba(0, 0, 0, 0.4);
+            top: 0px;
+            left: 0px;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.7);
             z-index: 1;
             display: none;
         }
@@ -574,6 +564,56 @@ $conn->close();
             margin: auto;
         }
 
+                /* รายการในตะกร้า */
+#cart-items-container {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    padding-right: 10px; /* เพิ่ม Padding เพื่อหลีกเลี่ยงการชนของ Scrollbar */
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.cart-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-right: 15px;
+}
+
+.item-info {
+    flex-grow: 1;
+    text-align: left;
+}
+
+.item-info h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.item-info .price {
+    color: #666;
+}
+
+/* Total และค่าจัดส่ง */
+.total-info {
+    font-size: 18px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+}
+
+
 
     </style>
     <title>sevice</title>
@@ -604,45 +644,25 @@ $conn->close();
     </form>
 
     <div class="shopping-cart">
-        <div class="box">
-            <i class='bx bx-trash'></i>
-            <img src="../photo/ตู้ซักผ้า.jpg" alt="">
-            <div class="content">
-                <h3>ซัก อบ </h3>
-                <span class="price">50฿</span>
-            </div>
-        </div>
-        <div class="box">
-            <i class='bx bx-trash'></i>
-            <img src="../photo/ตู้ซักผ้า.jpg" alt="">
-            <div class="content">
-                <h3>ซัก อบ </h3>
-                <span class="price">50฿</span>
-            </div>
-        </div>
-        <div class="box">
-            <i class='bx bx-trash'></i>
-            <img src="../photo/ตู้ซักผ้า.jpg" alt="">
-            <div class="content">
-                <h3>ซัก อบ </h3>
-                <span class="price">50฿</span>
-            </div>
-        </div>
-        <div class="total"> Total : 150฿</div>
-        <button class="ck" onclick="togglePopup()">Checkout</button>
-    </div>
-
+    <div id="cart-items"></div> <!-- ส่วนนี้จะถูกอัปเดตเมื่อมีสินค้าถูกเพิ่มเข้ามา -->
+    <div class="total"> Total : <span id="cart-total">0฿</span></div>
+    <button class="ck" onclick="togglePopup()">Checkout</button>
+</div>
 
     <div class="profile">
-        <img src="../photo/1x/รีด.png" alt="">
-        <h3>kkkkkkk oooooooo</h3>
-        <span>User</span>
-        <a href="profile_user.php" class="btnp">Profile</a>
-        <div class="flex-btnp">
-            <a href="history.php" class="option-btnp">ประวัติ</a>
-            <a href="login.php" class="option-btnp">Logout</a>
-        </div>
+    <?php 
+        // ตรวจสอบว่ามีรูปภาพหรือไม่ ถ้าไม่มีให้แสดงรูปภาพเริ่มต้น
+        $img = !empty($customer['img']) ? htmlspecialchars($customer['img']) : 'default.jpg'; 
+    ?>
+    <img src="../photo/<?php echo $img; ?>" alt="Profile Image">
+    <h3><?php echo $fullName; ?></h3>
+    <span>User</span>
+    <a href="profile_user.php" class="btnp">Profile</a>
+    <div class="flex-btnp">
+        <a href="history.php" class="option-btnp">ประวัติการใช้งาน</a>
+        <a href="login.php" class="option-btnp">Logout</a>
     </div>
+</div>
     </header> 
 
     <!-- นโยบาย card-->
@@ -731,56 +751,36 @@ $conn->close();
 
     <!-- popup-->
 
-    <div class="popup2" id="popup-2"> 
-        <div class="overlay1"></div>
-        <div class="content5">
-            <div class="close-btn" onclick="togglePopup()">&times;</div>
-            <h1>รายการ</h1>
-            <div class="name-report1">
-                <label for="text">ชื่อร้าน : </label>
-                <span><p>ซักรีด1</p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text">หมายเหตุ : </label>
-                <span><p></p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text">ประเภท : </label>
-                <span><p>เสื้อผ้า</p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text">ขนาด : </label>
-                <span><p> M </p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text">บริการ : </label>
-                <span><p>ซัก อบแห้ง</p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text">ราคา : </label>
-                <span><p>80 บาท</p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text">ระยะทาง : </label>
-                <span><p>5 Km.</p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text">ค่าขนส่ง : </label>
-                <span><p>50 บาท</p></span>
-            </div>
-            
-            <div class="name-report1">
-                <label for="text">ราคารวม : </label>
-                <span><p>130 บาท</p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text" class="qr">แสกน QR ชำระเงิน</label>
-            </div>
-            <div class="name-report1">
-                <img src="../photo/ตู้ซักผ้า2.jpg" alt="" for="qr">
+    <div class="popup2" id="popup-2">
+    <div class="overlay1"></div>
+    <div class="content5">
+        <div class="close-btn" onclick="togglePopup()">&times;</div>
+        
+        <!-- หัวข้อแสดงคำว่า "รายการ" ที่ด้านบนสุด -->
+        <h1 class="header-title">รายการ</h1>
+
+        <!-- รายการสินค้า -->
+        <div id="cart-items-container">
+            <div class="cart-item">
+                <div class="item-image">
+                    <img src="${item.image}" alt="${item.name}">
+                </div>
+                <div class="item-info">
+                    <h3>${item.name}</h3>
+                    <span class="price">${item.price}฿</span>
+                </div>
             </div>
         </div>
+
+        <!-- Total และ QR Code -->
+        <div class="total-info">
+            <!-- Total info will be injected here -->
+        </div>
+        <div class="qr-code-container" id="qr-code-container">
+            <!-- QR code will be generated here -->
+        </div>
     </div>
+</div>
 
     <!-- popup end-->
 
@@ -840,10 +840,140 @@ $conn->close();
         }
 
         /* popup */
-        function togglePopup() {
-            document.getElementById("popup-2").classList.toggle("active");
-            document.querySelector('.shopping-cart').classList.remove('active');
-        }
+        // Function to toggle popup for checkout
+function togglePopup() {
+    const popup = document.getElementById("popup-2");
+    const shoppingCart = document.querySelector('.shopping-cart'); // เลือก shopping-cart
+    const isActive = popup.classList.contains("active");
+
+    // If the popup is currently active, close it
+    if (isActive) {
+        popup.classList.remove("active");
+        return; // Exit the function
+    }
+
+    // Clear previous content
+    const popupContent = document.querySelector('.content5');
+    popupContent.innerHTML = ''; // Clear previous content in popup
+
+    // If there are no items in the cart, notify the user
+    if (userCart.length === 0) {
+        popupContent.innerHTML = '<p>ไม่มีสินค้าในตะกร้า</p>'; // "No items in the cart"
+        popup.classList.add("active"); // Show popup if cart is empty
+        return;
+    }
+
+    let total = 0;
+    const shippingFee = 50; // Assuming a static shipping fee
+
+    // Add header title (แสดงคำว่า "รายการ" แค่ครั้งเดียว)
+    popupContent.innerHTML += `<h1 class="header-title">รายการ</h1>`;
+
+    // Generate checkout content
+    userCart.forEach(item => {
+        total += parseFloat(item.price);
+        
+        // Append item details to popup content
+        popupContent.innerHTML += `
+        <div class="cart-item">
+            <div class="item-image">
+                <img src="${item.image}" alt="${item.name}">
+            </div>
+            <div class="item-info">
+                <h3>${item.name}</h3>
+                <span class="price">${item.price}฿</span>
+            </div>
+        </div>
+        `;
+    });
+
+    // Add shipping fee and total to popup
+    total += shippingFee; // Include shipping fee in total
+
+    popupContent.innerHTML += `
+    <div class="total-info">
+        <p>ค่าจัดส่ง: <span id="shipping-fee">${shippingFee}฿</span></p>
+        <p>รวม: <span id="total-price">${total}฿</span></p>
+    </div>
+    `;
+
+    // Add QR code container below total
+    popupContent.innerHTML += `
+    <div class="qr-code-container" id="qr-code-container"></div>
+    `;
+
+    // Add close button at the top of the popup
+    popupContent.innerHTML = `
+        <div class="close-btn" onclick="togglePopup()">&times;</div>
+        ${popupContent.innerHTML}  <!-- Insert previous content below the close button -->
+    `;
+
+    // Show popup
+    popup.classList.add("active");
+
+    // Hide the shopping cart when the popup is shown
+    shoppingCart.classList.remove('active'); // ซ่อน shopping-cart
+
+    // Generate QR Code for the total price
+    const qrData = "test qr code"; // ข้อมูลใน QR code (เช่น จำนวนเงินที่ต้องชำระ)
+    console.log("QR Data: ", qrData); // Log QR Data
+
+    try {
+        // Generate QR Code
+        const qrCodeContainer = document.getElementById("qr-code-container");
+        qrCodeContainer.innerHTML = ''; // Clear previous QR Code
+        new QRCode(qrCodeContainer, {
+            text: qrData,
+            width: 128,
+            height: 128
+        });
+    } catch (error) {
+        console.error("Error generating QR Code:", error);
+        alert("เกิดข้อผิดพลาดในการสร้าง QR Code กรุณาลองใหม่อีกครั้ง");
+    }
+}
+
+    // Function to remove item from cart
+    function removeFromCart(index) {
+        userCart.splice(index, 1); // Remove item at index
+        updateCart(userCart); // Update cart display
+    }
+
+    // Retrieve data from localStorage
+    document.addEventListener('DOMContentLoaded', function() {
+        const cartItems = JSON.parse(localStorage.getItem('cartItems')) || {};
+        let user_id = <?php echo json_encode($user_id); ?>; // Retrieve user_id from PHP
+        userCart = cartItems[user_id] || []; // If there's no cart data, make it an empty array
+
+        // Update the display
+        updateCart(userCart);
+    });
+
+    function updateCart(cartItems) {
+        const cartItemsContainer = document.getElementById('cart-items');
+        let cartHTML = '';
+        let total = 0;
+
+        cartItems.forEach((item, index) => {
+            cartHTML += `
+                <div class="box">
+                    <i class='bx bx-trash' onclick="removeFromCart(${index})"></i>
+                    <img src="${item.image}" alt="${item.name}">
+                    <div class="content">
+                        <h3>${item.name}</h3>
+                        <span class="price">${item.price}฿</span>
+                    </div>
+                </div>
+            `;
+            total += parseFloat(item.price);
+        });
+
+        cartItemsContainer.innerHTML = cartHTML;
+        document.getElementById('cart-total').textContent = total + '฿';
+    }
+
+    // Show cart data when the page loads
+    updateCart(userCart);
 
 
     </script>
