@@ -132,90 +132,69 @@ function sendLineNotify($message = "ทดสอบ By Programmer")
             margin-right: -20px;
             margin-bottom: 170px;
         }
+        .container {
+        display: flex;
+        justify-content: center; /* จัดแนวนอนกลาง */
+        align-items: center; /* จัดแนวตั้งกลาง */
+        height: 100vh; /* ความสูงเต็มหน้าจอ */
+        background: linear-gradient(0deg, #ffffff 0%, #5FABBC 100%); /* พื้นหลัง */
+    }
 
-        .sign {
-            /*position: absolute;
-            top:280px;
-            left:50px;
-            transform:translate(-50%,-50%);
-            width: 350px;
-            height: 490px;*/
-            text-align:center;
-            /*border: 1px solid rgb(241, 241, 241);
-            border-radius:12px;*/
-            /*background: transparent;
-            backdrop-filter:blur(6px);
-            box-shadow:5px 5px 10px 0 rgba(0, 0, 0, 0.5);
-            /*margin-top:50px;
-            margin-left:150px;*/
-            max-width: 100%;
-            margin-top: 80px;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto;
-        }
+    .sign {
+        background: rgba(255, 255, 255, 0); /* พื้นหลังโปร่งใส */
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        max-width: 400px; /* กำหนดความกว้างสูงสุด */
+        width: 100%; /* ทำให้ฟอร์มไม่เกินความกว้าง */
+    }
        
-        .sign h2 {
-            font-size: 40px;
-            color:#fffefe;
-            margin-top:50px;
-        }
+    .sign h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+    }
 
-        .input-field {
-            position: relative;
-        }
+    .input-field {
+        margin-bottom: 15px;
+    }
+    .input-field select {
+    width: 100%; /* ทำให้ select กว้างเต็มช่อง */
+    padding: 10px; /* เพิ่ม padding */
+    border: 1px solid #ccc; /* ขอบ */
+    border-radius: 5px; /* มุมโค้ง */
+    background-color: rgba(255, 255, 255, 0.8); /* พื้นหลังโปร่งใส */
+}
 
-        .input-field input[type="username"],
-        .input-field input[type="email"],
-        .input-field input[type="password"],
-        .input-field input[type="confirmpass"],
-        .input-field input[type="phone"]{
-            border-radius:10px;
-            background: #fff;
-            margin:15px;
-            border: 2px solid #5FABBC;
-            width: 280px;
-            height: 2px;
-            padding:20px 40px 20px 20px;
-            backdrop-filter:blur(15px);
-        }
+    .input-field input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+        box-sizing: border-box;
+    }
 
-        .input::placeholder {
-            color: rgb(255, 255, 255);
-        }
+    .sex label,
+    .role label {
+        display: inline-block;
+        margin-right: 10px;
+    }
 
-        .input-field input[type="username"]:focus::placeholder,
-        .input-field input[type="email"]:focus::placeholder,
-        .input-field input[type="password"]:focus::placeholder,
-        .input-field input[type="confirmpass"]:focus::placeholder,
-        .input-field input[type="phone"]:focus::placeholder{
-            transform:translateY(-100%);
-            transition:transform 0.2s ease-in-out;
-            font-size:14px;
-        }
+    .sign2 {
+        width: 100%;
+        padding: 10px;
+        background-color: #6C63FF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+    }
 
-        .input-field input[type="username"]:not(:focus)::placeholder,
-        .input-field input[type="email"]:not(:focus)::placeholder,
-        .input-field input[type="password"]:not(:focus)::placeholder,
-        .input-field input[type="confirmpass"]:not(:focus)::placeholder,
-        .input-field input[type="phone"]:not(:focus)::placeholder{
-            transform:translateY(0%);
-            transition:transform 0.2s ease-in-out;
-            font-size:16px;
-        }
-
-        /*.sign .sign2 {
-            background:#5FABBC;
-            border:20px 20px;
-            outline:none;
-            cursor:pointer;
-            font-weight:600;
-            border-radius:20px;
-            width: 200px;
-            height: 30px;
-            color:#fff;
-        }*/
-
+    .sign2:hover {
+        background-color: #5548c8;
+    }
         button {
             outline:none;
             border:1px solid #507F99;
@@ -228,8 +207,18 @@ function sendLineNotify($message = "ทดสอบ By Programmer")
         }
 
         .role {
-            font-size:16px;
-        }
+    text-align: center; /* จัดตำแหน่งให้ข้อความอยู่กลาง */
+    margin: 20px 0; /* เพิ่มช่องว่างด้านบนและด้านล่าง */
+}
+
+.role-options {
+    display: flex; /* ใช้ flexbox เพื่อจัดตำแหน่งตัวเลือก */
+    justify-content: center; /* จัดตำแหน่งตัวเลือกให้กึ่งกลาง */
+}
+
+.role-options input {
+    margin: 0 10px; /* เพิ่มช่องว่างระหว่างตัวเลือก */
+}
 
     </style>
 </head>
@@ -245,42 +234,47 @@ function sendLineNotify($message = "ทดสอบ By Programmer")
         <img src="../photo/1x/Asset 1.png" alt="photo3" style="width:150px;height:150px;">
     </div>
     
+    <div class="container">
     <div class="sign">
-        <h2>Sign up</h2>
+        <h2>Sign Up</h2>
         <form action="register_db.php" method="post" name="form1">
             <div class="input-field">
-                <input type="username" name="user" id="user" placeholder="Username"  value="<?php echo $_SESSION['e_user_add']; ?>" require>
+                <input type="text" name="user" id="user" placeholder="Username" value="<?php echo $_SESSION['e_user_add']; ?>" required>
             </div>
             <div class="input-field">
-                <input type="email" name="email" id="email" placeholder="Email"  value="<?php echo $_SESSION['e_email_add']; ?>" require>
+                <input type="email" name="email" id="email" placeholder="Email" value="<?php echo $_SESSION['e_email_add']; ?>" required>
             </div>
             <div class="input-field">
-                <input type="password" name="pass" id="pass" placeholder="Password"  value="<?php echo $_SESSION['e_pass_add']; ?>" require>
+                <input type="password" name="pass" id="pass" placeholder="Password" value="<?php echo $_SESSION['e_pass_add']; ?>" required>
             </div>
             <div class="input-field">
-                <input type="password" name="conpass" id="conpass" placeholder="ConfirmPassword"  value="<?php echo $_SESSION['e_conpass_add']; ?>" require>
+                <input type="password" name="conpass" id="conpass" placeholder="Confirm Password" value="<?php echo $_SESSION['e_conpass_add']; ?>" required>
             </div>
             <div class="input-field">
-                <input type="phone" name="phone" id="phone" placeholder="Phone"  value="<?php echo $_SESSION['e_phone_add']; ?>" require>
+                <input type="number" name="age" id="age" placeholder="Age" value="<?php echo $_SESSION['e_age_add']; ?>" required>
             </div>
-            <div class="sex">
-                <label>
-                    <input type="radio" name="sex" value="<?= "Male" ?? $_SESSION['e_sex_add']; ?>"> Male
-                    <input type="radio" name="sex" value="<?= "Female" ?? $_SESSION['e_sex_add']; ?>"> Female
-                    <input type="radio" name="sex" value="<?= "Other" ?? $_SESSION['e_sex_add']; ?>"> Other
-                </label>
+            <div class="input-field">
+                <input type="text" name="job" id="job" placeholder="Job" value="<?php echo $_SESSION['e_job_add']; ?>" required>
+            </div>
+            <div class="input-field">
+                <select name="sex" id="sex" required>
+                    <option value="" disabled <?= empty($_SESSION['e_sex_add']) ? 'selected' : ''; ?>>Select Gender</option>
+                    <option value="Male" <?= (isset($_SESSION['e_sex_add']) && $_SESSION['e_sex_add'] == 'Male') ? 'selected' : ''; ?>>Male</option>
+                    <option value="Female" <?= (isset($_SESSION['e_sex_add']) && $_SESSION['e_sex_add'] == 'Female') ? 'selected' : ''; ?>>Female</option>
+                    <option value="Other" <?= (isset($_SESSION['e_sex_add']) && $_SESSION['e_sex_add'] == 'Other') ? 'selected' : ''; ?>>Other</option>
+                </select>
             </div>
             <div class="role">
                 <label>
-                    <input type="radio" name="role" value="user"> User
-                    <input type="radio" name="role" value="shop"> Shop
+                    <input type="radio" name="role" value="user" <?= (isset($_SESSION['e_role_add']) && $_SESSION['e_role_add'] == 'user') ? 'checked' : ''; ?>> User
+                    <input type="radio" name="role" value="shop" <?= (isset($_SESSION['e_role_add']) && $_SESSION['e_role_add'] == 'shop') ? 'checked' : ''; ?>> Shop
                 </label>
             </div>
-            <br>
-            <button type="submit" class="sign2" name="reg_user" onclick="fncSubmit('page1')">Sign up</button>
+            <button type="submit" class="sign2" name="reg_user" onclick="fncSubmit('page1')">Sign Up</button>
         </form>
     </div>
-    
+</div>
+
     
 
     
