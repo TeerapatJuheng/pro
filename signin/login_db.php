@@ -48,6 +48,7 @@ if (isset($_POST['login_user'])) {
             $row = mysqli_fetch_assoc($result1);
             $_SESSION['employee_id'] = $username;
             $_SESSION['user_id'] = $row1['id'];
+            $_SESSION['ct_id'] = $row1['ct_id'];
             $_SESSION['success'] = "คุณเข้าสู่ระบบเรียบร้อยแล้ว";
             header("location: ./dashboard_user.php");
             // Add JavaScript alert
