@@ -461,7 +461,7 @@ $conn->close();
 
         <!-- header section starts -->
         <header class="header">
-        <a href="#" class="logo">Laundry</a>
+        <a href="dashboard_shop.php" class="logo">Laundry</a>
         
         <nav class="navbar">
             <a href="dashboard_shop.php">Dashboard</a>
@@ -483,12 +483,16 @@ $conn->close();
 
 
         <div class="profile">
-            <img src="../photo/1x/รีด.png" alt="">
-            <h3>kkkkkkk oooooooo</h3>
+            <?php 
+                // ตรวจสอบว่ามีรูปภาพหรือไม่ ถ้าไม่มีให้แสดงรูปภาพเริ่มต้น
+                $img = !empty($shop['shop_img']) ? htmlspecialchars($shop['shop_img']) : 'default.jpg'; 
+            ?>
+            <img src="../photo/<?php echo $img; ?>" alt="Profile Image">
+            <h3><?php echo $fullName; ?></h3>
             <span>shop</span>
             <a href="profile_shop.php" class="btnp">Profile</a>
             <div class="flex-btnp">
-                <a href="history_shop.php" class="option-btnp">ประวัติ</a>
+                <a href="report_shop.php" class="option-btnp">รายงาน</a>
                 <a href="login.php" class="option-btnp">Logout</a>
             </div>
         </div>
@@ -540,6 +544,17 @@ $conn->close();
                         ทางเว็บไซต์หัก GP 5% จากยอดขาย
                     </p>
                 </div>
+
+                <div class="accordion">
+                <div class="accordion-heading">
+                    <h3>Q: หากมีปัญหาสามารถติดต่อช่างทางใดได้บ้าง?</h3>
+                    <i class='bx bx-chevron-down'></i>
+                </div>
+                <p class="accordion-content">
+                    สามารถติดต่อได้ 2 ช่องทาง 1.ทางแบบฟอร์มแจ้งปัญหา 2.Line Offcial ID:@armcorp 
+                </p>
+            </div>
+            
             </div>
         </div>
 
