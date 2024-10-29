@@ -1,9 +1,7 @@
 <?php
-// เริ่มต้นเซสชัน
 session_start();
 include('../inc/server.php');
 include('../signin/upload.php');
-
 
 // ตรวจสอบว่าผู้ใช้เข้าสู่ระบบหรือยัง
 if (!isset($_SESSION['user_id'])) {
@@ -11,7 +9,7 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-$user_id = $_SESSION['user_id']; // รับค่า customer_id จากเซสชัน
+$user_id = $_SESSION['user_id']; // รับค่า user_id จากเซสชัน
 
 // ดึงข้อมูลผู้ใช้จากฐานข้อมูล
 $query = "SELECT * FROM tb_customer WHERE id = ?";
@@ -29,15 +27,37 @@ if ($result->num_rows > 0) {
     $profileImage = "default-image.png"; // กรณีที่ไม่พบผู้ใช้
 }
 
+// ดึงข้อมูลสินค้าจาก tb_sell ที่มี ct_id ตรงกับ user_id
+$query = "SELECT * FROM tb_sell WHERE ct_id = ?"; // ใช้ ct_id แทน user_id
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$cartItems = [];
+while ($row = $result->fetch_assoc()) {
+    $cartItems[] = $row; // เก็บข้อมูลสินค้าลงใน array
+}
+
 $stmt->close();
 $conn->close();
+
+// แสดงข้อความสำเร็จถ้ามี
+if (isset($_SESSION['success_message'])) {
+    echo "<div class='success-message'>" . $_SESSION['success_message'] . "</div>";
+    unset($_SESSION['success_message']); // เคลียร์ข้อความหลังจากแสดงแล้ว
+}
+
+// ตัวอย่างการแสดงผลข้อมูลผู้ใช้และสินค้าที่ดึงมา
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -46,11 +66,11 @@ $conn->close();
 
     <style>
         :root {
-        --orange: #ff7800;
-        --black: #130f40;
-        --white: #fff;
-        --light-color: #666;
-        --box-shadow: 0 .5rem 1rem rgba(0,0,0,.1);
+            --orange: #ff7800;
+            --black: #130f40;
+            --white: #fff;
+            --light-color: #666;
+            --box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .1);
         }
 
         * {
@@ -88,7 +108,7 @@ $conn->close();
         }
 
         .btn:hover {
-            background:#507F99;
+            background: #507F99;
             color: #fff;
         }
 
@@ -106,7 +126,7 @@ $conn->close();
         }
 
         .ck:hover {
-            background:#507F99;
+            background: #507F99;
             color: #fff;
         }
 
@@ -269,7 +289,7 @@ $conn->close();
             margin-bottom: 1rem;
         }
 
-        .header .shopping-cart .btn{
+        .header .shopping-cart .btn {
             display: block;
         }
 
@@ -282,7 +302,7 @@ $conn->close();
             box-shadow: var(--box-shadow);
             width: 25rem;
             background: var(--white);
-            text-align:center;
+            text-align: center;
         }
 
         .header .profile.active {
@@ -348,14 +368,15 @@ $conn->close();
             color: #fff;
         }
 
-        @media (max-width:991px){
-            html{
+        @media (max-width:991px) {
+            html {
                 font-size: 55%;
             }
 
-            .header{
+            .header {
                 padding: 2rem;
             }
+
             .popup .content4 {
                 width: 90%;
                 max-width: 90%;
@@ -397,17 +418,18 @@ $conn->close();
         }
 
         @media (max-width: 768px) {
-            .header .search-form{
+            .header .search-form {
                 width: 90%;
             }
-            
+
             #menu-btn {
                 display: inline-block;
             }
 
             .header .navbar {
                 position: absolute;
-                top: 100%; right: -110%;
+                top: 100%;
+                right: -110%;
                 width: 30rem;
                 box-shadow: var(--box-shadow);
                 border-radius: .5rem;
@@ -424,6 +446,7 @@ $conn->close();
                 margin: 2rem 2.5rem;
                 display: block;
             }
+
             .popup .content4 {
                 width: 90%;
                 max-width: 90%;
@@ -491,7 +514,8 @@ $conn->close();
             }
 
             .popup2 .content5 {
-                max-width: 9%;
+                width: 90%;
+                max-width: 90%;
                 padding: 15px;
                 border-radius: 5px;
                 overflow-y: auto;
@@ -507,19 +531,19 @@ $conn->close();
 
         .container {
             max-width: 100%;
-            margin-top:100px;
+            margin-top: 100px;
         }
 
         .container h1 {
-            text-align:center;
-            font-size:25px;
-            color:#507F99;
+            text-align: center;
+            font-size: 25px;
+            color: #507F99;
         }
 
         table {
-        width: 99%;
-        border-collapse: collapse;
-        margin-top: 20px;
+            width: 99%;
+            border-collapse: collapse;
+            margin-top: 20px;
         }
 
         /*th, td {
@@ -533,21 +557,21 @@ $conn->close();
         }
 
         .content-table {
-            border-collapse:collapse;
-            margin:25px 0;
-            font-size:11px;
-            min-width:400px;
-            border-radius:5px 5px 0 0;
-            overflow:hidden;
-            box-shadow:0 0 20px rgba(0, 0, 0, 0.15);
-            margin-left:6px;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 11px;
+            min-width: 400px;
+            border-radius: 5px 5px 0 0;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+            margin-left: 6px;
         }
 
         .content-table thead tr {
-            background-color:#507F99;
-            color:#ffffff;
-            text-align:left;
-            font-weight:bold;
+            background-color: #507F99;
+            color: #ffffff;
+            text-align: left;
+            font-weight: bold;
         }
 
         .content-table th,
@@ -556,15 +580,15 @@ $conn->close();
         }
 
         .content-table tbody tr {
-            border-bottom:1px solid #dddddd;
+            border-bottom: 1px solid #dddddd;
         }
 
         .content-table tbody tr:nth-of-type(even) {
-            background-color:#f3f3f3;
+            background-color: #f3f3f3;
         }
 
         .content-table tbody tr:last-of-type {
-            border-bottom:2px solid #507F99;
+            border-bottom: 2px solid #507F99;
         }
 
         /*.content-table tbody tr.active-row {
@@ -573,27 +597,27 @@ $conn->close();
         }*/
 
         .active .at {
-            background:#9FE2BF;
+            background: #9FE2BF;
             padding: 2px 10px;
             display: inline-block;
-            border-radius:40px;
-            color:#2b2b2b;
+            border-radius: 40px;
+            color: #2b2b2b;
         }
 
         .bt4 {
-            background:#9FE2BF;
+            background: #9FE2BF;
             padding: 2px 10px;
             display: inline-block;
-            border-radius:40px;
-            color:#2b2b2b;
+            border-radius: 40px;
+            color: #2b2b2b;
         }
 
         .bt4:hover {
-            background:#728FCE;
+            background: #728FCE;
             padding: 2px 10px;
             display: inline-block;
-            border-radius:40px;
-            color:#2b2b2b;
+            border-radius: 40px;
+            color: #2b2b2b;
         }
 
         /* popup */
@@ -613,7 +637,7 @@ $conn->close();
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%,-50%) scale(0);
+            transform: translate(-50%, -50%) scale(0);
             background: #fff;
             width: 450px;
             height: 580px;
@@ -645,7 +669,7 @@ $conn->close();
 
         .popup.active .content4 {
             transition: all 300ms ease-in-out;
-            transform: translate(-50%,-50%) scale(1);
+            transform: translate(-50%, -50%) scale(1);
         }
 
         .popup .content4 h1 {
@@ -686,7 +710,7 @@ $conn->close();
             display: flex;
             justify-content: center;
             align-items: center;
-            grid-gap:.5rem;
+            grid-gap: .5rem;
             font-size: 2rem;
             color: orange;
             margin-bottom: 2rem;
@@ -736,7 +760,7 @@ $conn->close();
 
         .btn-group {
             display: flex;
-            grid-gap:.5rem;
+            grid-gap: .5rem;
             align-items: center;
             font-size: .875rem;
             float: right;
@@ -750,7 +774,7 @@ $conn->close();
             cursor: pointer;
             background: #507F99;
             color: #ffff;
-           
+
         }
 
         .btn-group .btn-submit:hover {
@@ -759,23 +783,13 @@ $conn->close();
 
         /* popup2 */
 
-        #popup-2 {
+        .popup2 .overlay1 {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1;
-            display: none; 
-        }
-
-        #popup-2.active {
-            display: block; 
-        }
-
-        .overlay1 {
-            width: 1000vw;
-            height: 1000vh;
-            background: rgba(0, 0, 0, 0.4);
+            top: 0px;
+            left: 0px;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.7);
             z-index: 1;
             display: none;
         }
@@ -784,7 +798,7 @@ $conn->close();
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%,-50%) scale(0);
+            transform: translate(-50%, -50%) scale(0);
             background: #fff;
             width: 450px;
             height: 580px;
@@ -816,7 +830,7 @@ $conn->close();
 
         .popup2.active .content5 {
             transition: all 300ms ease-in-out;
-            transform: translate(-50%,-50%) scale(1);
+            transform: translate(-50%, -50%) scale(1);
         }
 
         .popup2 .content5 h1 {
@@ -846,155 +860,156 @@ $conn->close();
         .popup2 .content5 .name-report1 img {
             height: 200px;
             width: 200px;
-            text-align:center;
+            text-align: center;
             margin: auto;
         }
-        
+
         .qr {
             margin: auto;
         }
 
+        /* รายการในตะกร้า */
+        #cart-items-container {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding-right: 10px;
+            /* เพิ่ม Padding เพื่อหลีกเลี่ยงการชนของ Scrollbar */
+        }
 
+        .cart-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
 
+        .cart-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-right: 15px;
+        }
 
+        .item-info {
+            flex-grow: 1;
+            text-align: left;
+        }
 
+        .item-info h3 {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+        }
 
+        .item-info .price {
+            color: #666;
+        }
 
-
-
-
-
+        /* Total และค่าจัดส่ง */
+        .total-info {
+            font-size: 18px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+        }
     </style>
     <title>history</title>
 </head>
+
 <body>
 
     <!-- header section starts -->
     <header class="header">
-    <a href="dashboard_user.php" class="logo">Laundry</a>
-    
-    <nav class="navbar">
-        <a href="dashboard_user.php">Dashboard</a>
-        <a href="shop_user.php">Shop</a>
-        <a href="faq_user.php">FAQ</a>
-        <a href="sevice_user.php">Terms & Condition</a>
-    </nav>
+        <a href="dashboard_user.php" class="logo">Laundry</a>
 
-    <div class="icons">
-        <div class="bx bx-menu" id="menu-btn"></div>
-        <div class="bx bx-search" id="search-btn"></div>
-        <div class="bx bx-basket" id="cart-btn"></div>
-        <div class="bx bx-user" id="user-btn"></div>
-    </div>
+        <nav class="navbar">
+            <a href="dashboard_user.php">Dashboard</a>
+            <a href="shop_user.php">Shop</a>
+            <a href="faq_user.php">FAQ</a>
+            <a href="sevice_user.php">Terms & Condition</a>
+        </nav>
 
-    <form action="" class="search-form">
-        <input type="search" id="search-box" placeholder="Search here...">
-        <label for="search-box" class="bx bx-search"></label>
-    </form>
+        <div class="icons">
+            <div class="bx bx-menu" id="menu-btn"></div>
+            <div class="bx bx-search" id="search-btn"></div>
+            <div class="bx bx-basket" id="cart-btn"></div>
+            <div class="bx bx-user" id="user-btn"></div>
+        </div>
 
-    <div class="shopping-cart">
-        <div class="box">
-            <i class='bx bx-trash'></i>
-            <img src="../photo/ตู้ซักผ้า.jpg" alt="">
-            <div class="content">
-                <h3>ซัก อบ </h3>
-                <span class="price">50฿</span>
+        <form action="" class="search-form">
+            <input type="search" id="search-box" placeholder="Search here...">
+            <label for="search-box" class="bx bx-search"></label>
+        </form>
+
+
+        <div class="shopping-cart">
+            <div id="cart-items"></div> <!-- ส่วนนี้จะถูกอัปเดตเมื่อมีสินค้าถูกเพิ่มเข้ามา -->
+            <div class="total"> Total : <span id="cart-total">0฿</span></div>
+            <button class="ck" onclick="togglePopup()">Checkout</button>
+        </div>
+
+
+
+        <div class="profile">
+            <?php
+            // ตรวจสอบว่ามีรูปภาพหรือไม่ ถ้าไม่มีให้แสดงรูปภาพเริ่มต้น
+            $img = !empty($customer['img']) ? htmlspecialchars($customer['img']) : 'default.jpg';
+            ?>
+            <img src="../photo/<?php echo $img; ?>" alt="Profile Image">
+            <h3><?php echo $fullName; ?></h3>
+            <span>User</span>
+            <a href="profile_user.php" class="btnp">Profile</a>
+            <div class="flex-btnp">
+                <a href="history.php" class="option-btnp">ประวัติการใช้งาน</a>
+                <a href="login.php" class="option-btnp">Logout</a>
             </div>
         </div>
-        <div class="box">
-            <i class='bx bx-trash'></i>
-            <img src="../photo/ตู้ซักผ้า.jpg" alt="">
-            <div class="content">
-                <h3>ซัก อบ </h3>
-                <span class="price">50฿</span>
-            </div>
-        </div>
-        <div class="box">
-            <i class='bx bx-trash'></i>
-            <img src="../photo/ตู้ซักผ้า.jpg" alt="">
-            <div class="content">
-                <h3>ซัก อบ </h3>
-                <span class="price">50฿</span>
-            </div>
-        </div>
-        <div class="total"> Total : 150฿</div>
-        <button class="ck" onclick="togglePopup()">Checkout</button>
-    </div>
-
-    <div class="profile">
-        <img src="../photo/1x/รีด.png" alt="">
-        <h3>kkkkkkk oooooooo</h3>
-        <span>User</span>
-        <a href="profile_user.php" class="btnp">Profile</a>
-        <div class="flex-btnp">
-            <a href="history.php" class="option-btnp">ประวัติ</a>
-            <a href="login.php" class="option-btnp">Logout</a>
-        </div>
-    </div>
-    </header> 
+    </header>
 
 
 
     <!-- รายการ  -->
 
     <div class="container">
-        <h1>ประวัติการใช้บริการ</h1>
+        <h1>ประวัติการทำรายการ</h1>
 
-            <table class="content-table">
-                <thead>
-                    <tr>
-                        <th>ลำดับ</th>
-                        <th>ออเดอร์</th>
-                        <th>ชื่อร้าน</th>
-                        <th>รายการ</th>
-                        <th>วันที่</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>000001</td>
-                        <td>ซักรีด1</td>
-                        <td>ซัก+อบแห้ง</td>
-                        <td>10-07-24</td>
-                        <td class="active"><button class="bt4" onclick="Popup()">View</button></td>
-                    </tr>
-                    <tr class="active-row">
-                        <td>2</td>
-                        <td>000002</td>
-                        <td>ซักรีด 2</td>
-                        <td>ซัก+อบแห้ง+รีด</td>
-                        <td>10-07-24</td>
-                        <td class="active"><button class="bt4" onclick="Popup()">View</button></td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>000003</td>
-                        <td>ซักรีด1</td>
-                        <td>ซัก+อบแห้ง</td>
-                        <td>24-07-01</td>
-                        <td class="active"><button class="bt4" onclick="Popup()">View</button></td>
-                    </tr>
-                    <tr class="active-row">
-                        <td>4</td>
-                        <td>000004</td>
-                        <td>ซักรีด 2</td>
-                        <td>ซัก+อบแห้ง+รีด</td>
-                        <td>10-07-24</td>
-                        <td class="active"><button class="bt4" onclick="Popup()">View</button></td>
-                    </tr>
-                    <tr>
-                        <td>5</td>
-                        <td>000005</td>
-                        <td>ซักรีด1</td>
-                        <td>ซัก+อบแห้ง</td>
-                        <td>10-07-24</td>
-                        <td class="active"><button class="bt4" onclick="Popup()">View</button></td>
-                    </tr>
-                    <!-- สามารถเพิ่มแถวข้อมูลต่อไปตามต้องการ -->
-                </tbody>
-            </table>
+        <table class="content-table">
+            <thead>
+                <tr>
+                    <th>ลำดับ</th>
+                    <th>ออเดอร์</th>
+                    <th>ชื่อร้าน</th>
+                    <th>รายการ</th>
+                    <th>วันที่</th>
+                    <th>ดูรายละเอียด</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                if (count($cartItems) > 0) {
+                    $i = 1;
+                    foreach ($cartItems as $item) {
+                        echo "<tr>";
+                        echo "<td>" . $i . "</td>";
+                        echo "<td>" . htmlspecialchars($item['sell_order']) . "</td>";
+                        echo "<td>" . htmlspecialchars($item['nameshop']) . "</td>";
+                        echo "<td>" . htmlspecialchars($item['sell_note']) . "</td>";
+                        echo "<td>" . date('d-m-Y', strtotime($item['sell_date'])) . "</td>";
+                        echo '<td><button class="bt4" onclick="Popup_Detail(' . $item['sell_id'] . ')">View</button></td>';
+                        echo "</tr>";
+                        $i++;
+                    }
+                } else {
+                    echo "<tr><td colspan='6'>ไม่มีข้อมูลการสั่งซื้อ</td></tr>";
+                }
+                ?>
+            </tbody>
+        </table>
     </div>
 
     <!-- รายการ  end-->
@@ -1002,150 +1017,106 @@ $conn->close();
 
     <!-- popup-->
 
-    <div class="popup" id="popup-1"> 
+    <div class="popup" id="popup-1">
         <div class="overlay"></div>
         <div class="content4">
             <div class="close-btn" onclick="Popup()">&times;</div>
             <h1>รายการ</h1>
-            <div class="name-report">
-                <label for="text">ลำดับ    : </label>
-                <span><p>0001</p></span>
-            </div>
-            <div class="name-report">
-                <label for="text">วันที่ : </label>
-                <span><p>20-6-2024</p></span>
-            </div>
-            <div class="name-report">
-                <label for="text">ชื่อร้าน : </label>
-                <span><p>ซักรีด1</p></span>
-            </div>
-            <div class="name-report">
-                <label for="text">ประเภท : </label>
-                <span><p>เสื้อผ้า</p></span>
-            </div>
-            <div class="name-report">
-                <label for="text">ขนาด : </label>
-                <span><p> M </p></span>
-            </div>
-            <div class="name-report">
-                <label for="text">บริการ : </label>
-                <span><p>ซัก อบแห้ง</p></span>
-            </div>
-            <div class="name-report">
-                <label for="text">ราคา : </label>
-                <span><p>80 บาท</p></span>
-            </div>
-            <div class="name-report">
-                <label for="text">ระยะทาง : </label>
-                <span><p>5 Km.</p></span>
-            </div>
-            <div class="name-report">
-                <label for="text">ค่าขนส่ง : </label>
-                <span><p>50 บาท</p></span>
-            </div>
-            <div class="name-report">
-                <label for="text">หมายเหตุ : </label>
-                <span><p></p></span>
-            </div>
-            <div class="name-report">
-                <label for="text">ราคารวม : </label>
-                <span><p>130 บาท</p></span>
-            </div>
 
+            <form action="review_update.php" method="post" name="form1" enctype="multipart/form-data">
+                <input type="hidden" name="orderNumber" id="inputOrderNumber"> <!-- ฟิลด์ที่ซ่อน -->
+                <input type="hidden" name="shop_id" id="inputShopId"> <!-- แสดง shop_id -->
+                <input type="hidden" name="sell_id" id="inputSellId"> <!-- แสดง sell_id -->
 
-            <!-- comment -->
+                <div class="name-report">
+                    <label for="text">เลขออเดอร์: </label><span id="orderNumber"></span>
+                </div>
+                <div class="name-report">
+                    <label for="text">วันที่: </label><span id="orderDate"></span>
+                </div>
+                <div class="name-report">
+                    <label for="text">ประเภท: </label><span id="orderType"></span>
+                </div>
+                <div class="name-report">
+                    <label for="text">ขนาด: </label><span id="orderSize"></span>
+                </div>
+                <div class="name-report">
+                    <label for="text">บริการ: </label><span id="orderService"></span>
+                </div>
+                <div class="name-report">
+                    <label for="text">ราคา: </label><span id="orderPrice"></span>
+                </div>
+                <div class="name-report">
+                    <label for="text">ระยะทาง: </label><span id="orderDistance"></span>
+                </div>
+                <div class="name-report">
+                    <label for="text">ค่าขนส่ง: </label><span id="shippingCost"></span>
+                </div>
+                <div class="name-report">
+                    <label for="text">หมายเหตุ: </label><span id="orderNotes"></span>
+                </div>
+                <div class="name-report">
+                    <label for="text">ราคารวม: </label><span id="totalPrice"></span>
+                </div>
 
-            <div class="wrapper">
-                <h3>Review & Comment</h3>
-                <form action="#">
+                <div class="wrapper">
+                    <h3>Review & Comment</h3>
                     <div class="rating">
-                        <input type="number" name="rating" hidden>
-                        <i class='bx bx-star star' style="--i: 0;"></i>
-                        <i class='bx bx-star star' style="--i: 1;"></i>
-                        <i class='bx bx-star star' style="--i: 2;"></i>
-                        <i class='bx bx-star star' style="--i: 3;"></i>
-                        <i class='bx bx-star star' style="--i: 4;"></i>
+                        <input type="number" name="review_stars" id="inputRating" hidden>
+                        <i class='bx bx-star star' style="--i: 0;" onclick="setRating(1)"></i>
+                        <i class='bx bx-star star' style="--i: 1;" onclick="setRating(2)"></i>
+                        <i class='bx bx-star star' style="--i: 2;" onclick="setRating(3)"></i>
+                        <i class='bx bx-star star' style="--i: 3;" onclick="setRating(4)"></i>
+                        <i class='bx bx-star star' style="--i: 4;" onclick="setRating(5)"></i>
                     </div>
-                    <textarea name="opinion" cols="30" rows="3" placeholder="Your opinion..."></textarea>
+                    <textarea name="review_comment" cols="30" rows="3" placeholder="ความคิดเห็นของคุณ..."></textarea>
                     <div class="btn-group">
                         <button type="submit" class="btn-submit">บันทึก</button>
                     </div>
-                </form>
-            </div>
-
-            <!-- comment -->
+                </div>
+            </form>
         </div>
+
+
+    </div>
     </div>
 
     <!-- popup end-->
 
     <!-- popup-->
 
-    <div class="popup2" id="popup-2"> 
+    <div class="popup2" id="popup-2">
         <div class="overlay1"></div>
         <div class="content5">
             <div class="close-btn" onclick="togglePopup()">&times;</div>
-            <h1>รายการ</h1>
-            <div class="name-report1">
-                <label for="text">ชื่อร้าน : </label>
-                <span><p>ซักรีด1</p></span>
+
+            <!-- หัวข้อแสดงคำว่า "รายการ" ที่ด้านบนสุด -->
+            <h1 class="header-title">รายการ</h1>
+
+            <!-- รายการสินค้า -->
+            <div id="cart-items-container">
+                <div class="cart-item">
+                    <div class="item-image">
+                        <img src="${item.image}" alt="${item.name}">
+                    </div>
+                    <div class="item-info">
+                        <h3>${item.name}</h3>
+                        <span class="price">${item.price}฿</span>
+                    </div>
+                </div>
             </div>
-            <div class="name-report1">
-                <label for="text">หมายเหตุ : </label>
-                <span><p></p></span>
+
+            <!-- Total และ QR Code -->
+            <div class="total-info">
+                <!-- Total info will be injected here -->
             </div>
-            <div class="name-report1">
-                <label for="text">ประเภท : </label>
-                <span><p>เสื้อผ้า</p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text">ขนาด : </label>
-                <span><p> M </p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text">บริการ : </label>
-                <span><p>ซัก อบแห้ง</p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text">ราคา : </label>
-                <span><p>80 บาท</p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text">ระยะทาง : </label>
-                <span><p>5 Km.</p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text">ค่าขนส่ง : </label>
-                <span><p>50 บาท</p></span>
-            </div>
-            
-            <div class="name-report1">
-                <label for="text">ราคารวม : </label>
-                <span><p>130 บาท</p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text" class="qr">แสกน QR ชำระเงิน</label>
-            </div>
-            <div class="name-report1">
-                <img src="../photo/ตู้ซักผ้า2.jpg" alt="" for="qr">
+            <div class="qr-code-container" id="qr-code-container">
+                <!-- QR code will be generated here -->
             </div>
         </div>
     </div>
 
     <!-- popup end-->
-    
-
-
-
-
-
-
-
-
-
-
-
-
 
     <!--custom js file link -->
     <script src="js/script.js"></script>
@@ -1191,6 +1162,42 @@ $conn->close();
             navbar.classList.remove('active');
         }
 
+        function Popup_Detail(sellId) {
+            // เรียก Ajax เพื่อดึงข้อมูลตาม sell_id
+            fetch('get_sell_details.php?sell_id=' + sellId)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        // แสดงข้อมูลที่ดึงมา
+                        document.getElementById('orderNumber').innerText = data.sell_order || 'N/A';
+                        // ตั้งค่าฟิลด์ที่ซ่อน
+                        document.getElementById('inputOrderNumber').value = data.sell_order || ''; // ตั้งค่า orderNumber
+
+                        document.getElementById('orderDate').innerText = data.sell_date || 'N/A';
+                        document.getElementById('orderType').innerText = data.product_type || 'N/A';
+                        document.getElementById('orderSize').innerText = data.sell_size || 'N/A';
+                        document.getElementById('orderService').innerText = data.product_name || 'N/A';
+                        document.getElementById('orderPrice').innerText = data.sell_total + ' บาท' || 'N/A';
+                        document.getElementById('orderDistance').innerText = data.sell_distance + ' กม.' || 'N/A';
+                        document.getElementById('shippingCost').innerText = '50 บาท';
+                        document.getElementById('orderNotes').innerText = data.sell_note || 'ไม่มี';
+                        document.getElementById('totalPrice').innerText = (parseFloat(data.sell_total) + 50).toFixed(2) + ' บาท';
+
+                        // จัดการค่าของร้าน
+                        document.getElementById('inputShopId').value = data.shop_id || 'N/A'; // ตั้งค่า shop_id
+                        document.getElementById('inputSellId').value = sellId; // ตั้งค่า sell_id
+
+                        // แสดง popup
+                        document.getElementById('popup-1').classList.add('active');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
         function Popup() {
             document.getElementById("popup-1").classList.toggle("active");
         }
@@ -1198,18 +1205,18 @@ $conn->close();
         const allStar = document.querySelectorAll('.rating .star')
         const ratingValue = document.querySelector('.rating input')
 
-        allStar.forEach((item, idx)=> {
-            item.addEventListener('click', function () {
+        allStar.forEach((item, idx) => {
+            item.addEventListener('click', function() {
                 let click = 0
                 ratingValue.value = idx + 1
                 console.log(ratingValue.value)
 
-                allStar.forEach(i=> {
-                    i.classList.replace('bxs-star', 'bx-star' )
+                allStar.forEach(i => {
+                    i.classList.replace('bxs-star', 'bx-star')
                     i.classList.remove('active')
                 })
-                for(let i=0; i<allStar.length; i++) {
-                    if(i <= idx) {
+                for (let i = 0; i < allStar.length; i++) {
+                    if (i <= idx) {
                         allStar[i].classList.replace('bx-star', 'bxs-star')
                         allStar[i].classList.add('active')
                     } else {
@@ -1220,13 +1227,162 @@ $conn->close();
             })
         })
 
-        /* popup */
+        // Function to toggle popup for checkout
         function togglePopup() {
-            document.getElementById("popup-2").classList.toggle("active");
-            document.querySelector('.shopping-cart').classList.remove('active');
+            const popup = document.getElementById("popup-2");
+            const shoppingCart = document.querySelector('.shopping-cart'); // เลือก shopping-cart
+            const isActive = popup.classList.contains("active");
+
+            // If the popup is currently active, close it
+            if (isActive) {
+                popup.classList.remove("active");
+                return; // Exit the function
+            }
+
+            // Clear previous content
+            const popupContent = document.querySelector('.content5');
+            popupContent.innerHTML = ''; // Clear previous content in popup
+
+            // If there are no items in the cart, notify the user
+            if (userCart.length === 0) {
+                popupContent.innerHTML = '<p>ไม่มีสินค้าในตะกร้า</p>'; // "No items in the cart"
+                popup.classList.add("active"); // Show popup if cart is empty
+                return;
+            }
+
+            let total = 0;
+            const shippingFee = 50; // Assuming a static shipping fee
+
+            // Add header title (แสดงคำว่า "รายการ" แค่ครั้งเดียว)
+            popupContent.innerHTML += `<h1 class="header-title">รายการ</h1>`;
+
+            // Generate checkout content
+            userCart.forEach(item => {
+                total += parseFloat(item.price);
+
+                // Append item details to popup content
+                popupContent.innerHTML += `
+        <div class="cart-item">
+            <div class="item-image">
+                <img src="${item.image}" alt="${item.name}">
+            </div>
+            <div class="item-info">
+                <h3>${item.name}</h3>
+                <span class="price">${item.price}฿</span>
+            </div>
+        </div>
+        `;
+            });
+
+            // Add shipping fee and total to popup
+            total += shippingFee; // Include shipping fee in total
+
+            popupContent.innerHTML += `
+    <div class="total-info">
+        <p>ค่าจัดส่ง: <span id="shipping-fee">${shippingFee}฿</span></p>
+        <p>รวม: <span id="total-price">${total}฿</span></p>
+    </div>
+    `;
+
+            // Add QR code container below total
+            popupContent.innerHTML += `
+    <div class="qr-code-container" id="qr-code-container"></div>
+    `;
+
+            // Add close button at the top of the popup
+            popupContent.innerHTML = `
+        <div class="close-btn" onclick="togglePopup()">&times;</div>
+        ${popupContent.innerHTML}  <!-- Insert previous content below the close button -->
+    `;
+
+            // Show popup
+            popup.classList.add("active");
+
+            // Hide the shopping cart when the popup is shown
+            shoppingCart.classList.remove('active'); // ซ่อน shopping-cart
+
+            // Generate QR Code for the total price
+            const qrData = "test qr code"; // ข้อมูลใน QR code (เช่น จำนวนเงินที่ต้องชำระ)
+            console.log("QR Data: ", qrData); // Log QR Data
+
+            try {
+                // Generate QR Code
+                const qrCodeContainer = document.getElementById("qr-code-container");
+                qrCodeContainer.innerHTML = ''; // Clear previous QR Code
+                new QRCode(qrCodeContainer, {
+                    text: qrData,
+                    width: 128,
+                    height: 128
+                });
+            } catch (error) {
+                console.error("Error generating QR Code:", error);
+                alert("เกิดข้อผิดพลาดในการสร้าง QR Code กรุณาลองใหม่อีกครั้ง");
+            }
         }
 
+        // Function to remove item from cart
+        function removeFromCart(index) {
+            userCart.splice(index, 1); // Remove item at index
+            updateCart(userCart); // Update cart display
+        }
 
+        // Retrieve data from localStorage
+        document.addEventListener('DOMContentLoaded', function() {
+            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || {};
+            let user_id = <?php echo json_encode($user_id); ?>; // Retrieve user_id from PHP
+            userCart = cartItems[user_id] || []; // If there's no cart data, make it an empty array
+
+            // Update the display
+            updateCart(userCart);
+        });
+
+        function updateCart(cartItems) {
+            const cartItemsContainer = document.getElementById('cart-items');
+            let cartHTML = '';
+            let total = 0;
+
+            cartItems.forEach((item, index) => {
+                cartHTML += `
+                <div class="box">
+                    <i class='bx bx-trash' onclick="removeFromCart(${index})"></i>
+                    <img src="${item.image}" alt="${item.name}">
+                    <div class="content">
+                        <h3>${item.name}</h3>
+                        <span class="price">${item.price}฿</span>
+                    </div>
+                </div>
+            `;
+                total += parseFloat(item.price);
+            });
+
+            cartItemsContainer.innerHTML = cartHTML;
+            document.getElementById('cart-total').textContent = total + '฿';
+        }
+
+        // Show cart data when the page loads
+        updateCart(userCart);
     </script>
-    </body>
-    </html>
+
+    <script>
+        function setRating(rating) {
+            document.getElementById('inputRating').value = rating;
+            const stars = document.querySelectorAll('.star');
+            stars.forEach((star, index) => {
+                star.classList.toggle('active', index < rating);
+            });
+        }
+
+        function clearForm() {
+            document.getElementById('inputRating').value = ''; // เคลียร์ดาว
+            document.querySelector('textarea[name="review_comment"]').value = ''; // เคลียร์คอมเมนต์
+        }
+
+        // เรียกใช้ clearForm() เมื่อต้องการเคลียร์ฟอร์ม
+    </script>
+
+
+
+
+</body>
+
+</html>
