@@ -21,7 +21,9 @@ if (isset($_GET['product_id'])) {
 
     // Execute the statement
     if ($stmt->execute()) {
-        echo "Product deleted successfully.";
+        // Redirect back to the product list page (adjust the URL as necessary)
+        header("Location: store_shop.php"); // Replace with your actual product list page
+        exit();
     } else {
         echo "Error deleting product: " . $conn->error;
     }
@@ -34,8 +36,4 @@ if (isset($_GET['product_id'])) {
 
 // Close the database connection
 $conn->close();
-
-// Redirect back to the product list page (adjust the URL as necessary)
-header("Location: store_shop.php"); // Replace with your actual product list page
-exit();
 ?>
