@@ -38,6 +38,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -284,7 +285,6 @@ $conn->close();
             text-align: center;
             min-width: 100%;
             background-color: var(--white);
-
         }
 
         .ck:hover {
@@ -437,29 +437,24 @@ $conn->close();
             
         }
 
-        @media (max-width:450px){
+        @media (max-while:450px){
             html{
                 font-size:50%;
             }
 
             .popup2 .content5 {
+                width: 90%;
+                max-width: 90%;
                 padding: 15px;
                 border-radius: 5px;
                 overflow-y: auto;
-                max-height: 100%;
+                max-height: 80%;
                 margin-top: 40px;
-                width: 250px;
-                max-height: 200%;
-                
             }
 
             .popup2 .name-report1 label,
             .popup2 .name-report1 span p {
                 font-size: 14px;
-            }
-            .popup2.active{
-                width: 100%;
-                height: 120%;
             }
         }
 
@@ -477,71 +472,83 @@ $conn->close();
         }
 
         .container .accordion-container {
-            padding: 0 20px;
-        }
+    padding: 0 20px;
+}
 
-        .container .accordion-container .accordion {
-            margin-top:20px;
-            cursor:pointer;
-        }
+.container .accordion-container .accordion {
+    margin-top: 20px;
+    cursor: pointer;
+}
 
-        .container .accordion-container .accordion.active .accordion-heading{
-            background:#507F99;
-        }
+.container .accordion-container .accordion.active .accordion-heading {
+    background: #507F99;
+    transition: background 0.3s ease;
+}
 
-        .container .accordion-container .accordion.active .accordion-heading h3{
-            color:#fff;
-        }
+.container .accordion-container .accordion.active .accordion-heading h3 {
+    color: #fff;
+    transition: color 0.3s ease;
+}
 
-        .container .accordion-container .accordion.active .accordion-heading i{
-            color:#fff;
-            transform:rotate(180deg);
-            transition:transform .2s .1s;
-        }
+.container .accordion-container .accordion.active .accordion-heading i {
+    color: #fff;
+    transform: rotate(180deg);
+    transition: transform 0.3s ease, color 0.3s ease;
+}
 
-        .container .accordion-container .accordion.active .accordion-content{
-            display: block;
-        }
+.container .accordion-container .accordion.active .accordion-content {
+    display: block;
+    max-height: 500px; /* ปรับ max-height เพื่อให้แสดงผลแบบ smooth */
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+    animation: animate 0.4s linear backwards; /* ใส่ animation กลับไป */
+}
 
-        .container .accordion-container .accordion .accordion-heading {
-            display: flex;
-            align-items:center;
-            justify-content: space-between;
-            gap:10px;
-            background:#fff;
-            border:.5px solid #000;
-            padding: 15px 20px;
-            border-radius:1rem;
+.container .accordion-container .accordion .accordion-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: #fff;
+    border: 1px solid #ccc; /* ปรับสี border ให้อ่อนลง */
+    padding: 15px 20px;
+    border-radius: 1rem;
+    transition: background 0.3s ease, border 0.3s ease;
+}
 
-        }
+.container .accordion-container .accordion .accordion-heading h3 {
+    font-size: 16px; /* ปรับขนาดเพื่ออ่านง่าย */
+}
 
-        .container .accordion-container .accordion .accordion-heading h3 {
-            font-size:15px;
-        }
+.container .accordion-container .accordion .accordion-heading i {
+    font-size: 20px;
+    transition: transform 0.3s ease;
+}
 
-        .container .accordion-container .accordion .accordion-heading i {
-            font-size:25px;
-        }
+.container .accordion-container .accordion .accordion-content {
+    padding: 15px 20px;
+    border: 1px solid #ccc; /* ปรับสี border ให้อ่อนลง */
+    font-size: 14px; /* เพิ่มขนาด font */
+    background: #f9f9f9; /* สีพื้นหลังให้อ่อนลง */
+    border-top: 0;
+    max-height: 0; /* เริ่มต้นที่ max-height 0 เพื่อซ่อน */
+    overflow: hidden;
+    transition: max-height 0.5s ease; /* ใช้ transition */
+    line-height: 1.8; /* ปรับระยะห่างระหว่างบรรทัด */
+    transform-origin: top;
+    border-radius: 0 0 1rem 1rem;
+}
 
-        .container .accordion-container .accordion .accordion-content {
-            padding: 15px 20px;
-            border:.5px solid #000;
-            font-size:13px;
-            background:#fff;
-            border-top:0;
-            display: none;
-            animation:animate .4s linear backwards;
-            line-height:2;
-            transform-origin:top;
-            border-radius:1rem;
+@keyframes animate {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
 
-        }
 
-        @keyframes animate {
-            0% {
-                transform:scale(0);
-            }
-        }
 
         .container2 {
             max-width:700px;
@@ -627,25 +634,13 @@ $conn->close();
 
         /* popup2 */
 
-        
-
-        #popup-2 {
+        .popup2 .overlay1 {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1;
-            display: none; 
-        }
-
-        #popup-2.active {
-            display: block; 
-        }
-
-        .overlay1 {
-            width: 1000vw;
-            height: 1000vh;
-            background: rgba(0, 0, 0, 0.4);
+            top: 0px;
+            left: 0px;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.7);
             z-index: 1;
             display: none;
         }
@@ -723,6 +718,58 @@ $conn->close();
         .qr {
             margin: auto;
         }
+
+           
+        /* รายการในตะกร้า */
+#cart-items-container {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    padding-right: 10px; /* เพิ่ม Padding เพื่อหลีกเลี่ยงการชนของ Scrollbar */
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.cart-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+    margin-right: 15px;
+}
+
+.item-info {
+    flex-grow: 1;
+    text-align: left;
+}
+
+.item-info h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.item-info .price {
+    color: #666;
+}
+
+/* Total และค่าจัดส่ง */
+.total-info {
+    font-size: 18px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    color: #333;
+    text-align: center;
+}
+
+        
     
     </style>
     <title>FQAs</title>
@@ -753,45 +800,26 @@ $conn->close();
     </form>
 
     <div class="shopping-cart">
-        <div class="box">
-            <i class='bx bx-trash'></i>
-            <img src="../photo/ตู้ซักผ้า.jpg" alt="">
-            <div class="content">
-                <h3>ซัก อบ </h3>
-                <span class="price">50฿</span>
-            </div>
-        </div>
-        <div class="box">
-            <i class='bx bx-trash'></i>
-            <img src="../photo/ตู้ซักผ้า.jpg" alt="">
-            <div class="content">
-                <h3>ซัก อบ </h3>
-                <span class="price">50฿</span>
-            </div>
-        </div>
-        <div class="box">
-            <i class='bx bx-trash'></i>
-            <img src="../photo/ตู้ซักผ้า.jpg" alt="">
-            <div class="content">
-                <h3>ซัก อบ </h3>
-                <span class="price">50฿</span>
-            </div>
-        </div>
-        <div class="total"> Total : 150฿</div>
-        <button class="ck" onclick="togglePopup()">Checkout</button>
-    </div>
+    <div id="cart-items"></div> <!-- ส่วนนี้จะถูกอัปเดตเมื่อมีสินค้าถูกเพิ่มเข้ามา -->
+    <div class="total"> Total : <span id="cart-total">0฿</span></div>
+    <button class="ck" onclick="togglePopup()">Checkout</button>
+</div>
 
 
     <div class="profile">
-        <img src="../photo/1x/รีด.png" alt="">
-        <h3>kkkkkkk oooooooo</h3>
-        <span>User</span>
-        <a href="profile_user.php" class="btnp">Profile</a>
-        <div class="flex-btnp">
-            <a href="history.php" class="option-btnp">ประวัติ</a>
-            <a href="login.php" class="option-btnp">Logout</a>
-        </div>
+    <?php 
+        // ตรวจสอบว่ามีรูปภาพหรือไม่ ถ้าไม่มีให้แสดงรูปภาพเริ่มต้น
+        $img = !empty($customer['img']) ? htmlspecialchars($customer['img']) : 'default.jpg'; 
+    ?>
+    <img src="../photo/<?php echo $img; ?>" alt="Profile Image">
+    <h3><?php echo $fullName; ?></h3>
+    <span>User</span>
+    <a href="profile_user.php" class="btnp">Profile</a>
+    <div class="flex-btnp">
+        <a href="history.php" class="option-btnp">ประวัติการใช้งาน</a>
+        <a href="login.php" class="option-btnp">Logout</a>
     </div>
+</div>
     </header> 
 
     <!-- FAQ section-->
@@ -947,56 +975,36 @@ $conn->close();
 
     <!-- popup-->
 
-    <div class="popup2" id="popup-2"> 
-        <div class="overlay1"></div>
-        <div class="content5">
-            <div class="close-btn" onclick="togglePopup()">&times;</div>
-            <h1>รายการ</h1>
-            <div class="name-report1">
-                <label for="text">ชื่อร้าน : </label>
-                <span><p>ซักรีด1</p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text">หมายเหตุ : </label>
-                <span><p></p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text">ประเภท : </label>
-                <span><p>เสื้อผ้า</p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text">ขนาด : </label>
-                <span><p> M </p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text">บริการ : </label>
-                <span><p>ซัก อบแห้ง</p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text">ราคา : </label>
-                <span><p>80 บาท</p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text">ระยะทาง : </label>
-                <span><p>5 Km.</p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text">ค่าขนส่ง : </label>
-                <span><p>50 บาท</p></span>
-            </div>
-            
-            <div class="name-report1">
-                <label for="text">ราคารวม : </label>
-                <span><p>130 บาท</p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text" class="qr">แสกน QR ชำระเงิน</label>
-            </div>
-            <div class="name-report1">
-                <img src="../photo/ตู้ซักผ้า2.jpg" alt="" for="qr">
+    <div class="popup2" id="popup-2">
+    <div class="overlay1"></div>
+    <div class="content5">
+        <div class="close-btn" onclick="togglePopup()">&times;</div>
+        
+        <!-- หัวข้อแสดงคำว่า "รายการ" ที่ด้านบนสุด -->
+        <h1 class="header-title">รายการ</h1>
+
+        <!-- รายการสินค้า -->
+        <div id="cart-items-container">
+            <div class="cart-item">
+                <div class="item-image">
+                    <img src="${item.image}" alt="${item.name}">
+                </div>
+                <div class="item-info">
+                    <h3>${item.name}</h3>
+                    <span class="price">${item.price}฿</span>
+                </div>
             </div>
         </div>
+
+        <!-- Total และ QR Code -->
+        <div class="total-info">
+            <!-- Total info will be injected here -->
+        </div>
+        <div class="qr-code-container" id="qr-code-container">
+            <!-- QR code will be generated here -->
+        </div>
     </div>
+</div>
 
     <!-- popup end-->
      
@@ -1011,70 +1019,218 @@ $conn->close();
     <script src="js/script.js"></script>
 
     <script>
-        let searchForm = document.querySelector('.search-form');
-        let shoppingCart = document.querySelector('.shopping-cart');
-        let profile = document.querySelector('.header .profile');
-        let navbar = document.querySelector('.header .navbar');
-        let accordions = document.querySelectorAll('.accordion-container .accordion');
+let searchForm = document.querySelector('.search-form');
+let shoppingCart = document.querySelector('.shopping-cart');
+let profile = document.querySelector('.header .profile');
+let navbar = document.querySelector('.header .navbar');
+let accordions = document.querySelectorAll('.accordion-container .accordion');
 
-        accordions.forEach(acco =>{
-            acco.onclick = () =>{
-                accordions.forEach(subAcco => { subAcco.classList.remove('active') });
-                acco.classList.add('active');
+// ซ่อนเนื้อหาทั้งหมดตอนเริ่มต้น
+accordions.forEach(acco => {
+    const content = acco.querySelector('.accordion-content');
+    content.style.display = 'none';  // ซ่อนทุก accordion content ตั้งแต่ต้น
+    
+    acco.querySelector('.accordion-heading').onclick = () => {
+        // Toggle active class for the clicked accordion
+        acco.classList.toggle('active');
+        
+        // Toggle display of content
+        if (acco.classList.contains('active')) {
+            content.style.display = 'block';
+        } else {
+            content.style.display = 'none';
+        }
+
+        // Close other accordions if needed
+        accordions.forEach(subAcco => {
+            if (subAcco !== acco) {
+                subAcco.classList.remove('active');
+                subAcco.querySelector('.accordion-content').style.display = 'none';  // ซ่อน accordion อื่น ๆ
             }
-        })
+        });
+    };
+});
 
-        document.querySelector('#search-btn').onclick = () => {
-            searchForm.classList.toggle('active');
-            shoppingCart.classList.remove('active');
-            profile.classList.remove('active');
-            navbar.classList.remove('active');
-        }
+document.querySelector('#search-btn').onclick = () => {
+    searchForm.classList.toggle('active');
+    shoppingCart.classList.remove('active');
+    profile.classList.remove('active');
+    navbar.classList.remove('active');
+};
 
-        document.querySelector('#cart-btn').onclick = () => {
-            shoppingCart.classList.toggle('active');
-            searchForm.classList.remove('active');
-            profile.classList.remove('active');
-            navbar.classList.remove('active');
-        }
+document.querySelector('#cart-btn').onclick = () => {
+    shoppingCart.classList.toggle('active');
+    searchForm.classList.remove('active');
+    profile.classList.remove('active');
+    navbar.classList.remove('active');
+};
 
-        document.querySelector('#user-btn').onclick = () => {
-            profile.classList.toggle('active');
-            searchForm.classList.remove('active');
-            shoppingCart.classList.remove('active');
-            navbar.classList.remove('active');
-        }
+document.querySelector('#user-btn').onclick = () => {
+    profile.classList.toggle('active');
+    searchForm.classList.remove('active');
+    shoppingCart.classList.remove('active');
+    navbar.classList.remove('active');
+};
 
-        document.querySelector('#menu-btn').onclick = () => {
-            navbar.classList.toggle('active');
-            searchForm.classList.remove('active');
-            shoppingCart.classList.remove('active');
-            profile.classList.remove('active');
-        }
+document.querySelector('#menu-btn').onclick = () => {
+    navbar.classList.toggle('active');
+    searchForm.classList.remove('active');
+    shoppingCart.classList.remove('active');
+    profile.classList.remove('active');
+};
 
-        window.onscroll = () => {
-            searchForm.classList.remove('active');
-            shoppingCart.classList.remove('active');
-            profile.classList.remove('active');
-            navbar.classList.remove('active');
-        }
+window.onscroll = () => {
+    searchForm.classList.remove('active');
+    shoppingCart.classList.remove('active');
+    profile.classList.remove('active');
+    navbar.classList.remove('active');
+};
+
+function toggleForm() {
+    var form = document.getElementById('issueForm');
+    if (form.style.display === 'none') {
+        form.style.display = 'block';
+    } else {
+        form.style.display = 'none';
+    }
+}
 
 
-        function toggleForm() {
-            var form = document.getElementById('issueForm');
-            if (form.style.display === 'none') {
-                form.style.display = 'block';
-            } else {
-                form.style.display = 'none';
-            }
-        }
 
-        /* popup */
-        function togglePopup() {
-            document.getElementById("popup-2").classList.toggle("active");
-            document.querySelector('.shopping-cart').classList.remove('active');
-        }
+    // Function to toggle popup for checkout
+function togglePopup() {
+    const popup = document.getElementById("popup-2");
+    const shoppingCart = document.querySelector('.shopping-cart'); // เลือก shopping-cart
+    const isActive = popup.classList.contains("active");
 
+    // If the popup is currently active, close it
+    if (isActive) {
+        popup.classList.remove("active");
+        return; // Exit the function
+    }
+
+    // Clear previous content
+    const popupContent = document.querySelector('.content5');
+    popupContent.innerHTML = ''; // Clear previous content in popup
+
+    // If there are no items in the cart, notify the user
+    if (userCart.length === 0) {
+        popupContent.innerHTML = '<p>ไม่มีสินค้าในตะกร้า</p>'; // "No items in the cart"
+        popup.classList.add("active"); // Show popup if cart is empty
+        return;
+    }
+
+    let total = 0;
+    const shippingFee = 50; // Assuming a static shipping fee
+
+    // Add header title (แสดงคำว่า "รายการ" แค่ครั้งเดียว)
+    popupContent.innerHTML += `<h1 class="header-title">รายการ</h1>`;
+
+    // Generate checkout content
+    userCart.forEach(item => {
+        total += parseFloat(item.price);
+        
+        // Append item details to popup content
+        popupContent.innerHTML += `
+        <div class="cart-item">
+            <div class="item-image">
+                <img src="${item.image}" alt="${item.name}">
+            </div>
+            <div class="item-info">
+                <h3>${item.name}</h3>
+                <span class="price">${item.price}฿</span>
+            </div>
+        </div>
+        `;
+    });
+
+    // Add shipping fee and total to popup
+    total += shippingFee; // Include shipping fee in total
+
+    popupContent.innerHTML += `
+    <div class="total-info">
+        <p>ค่าจัดส่ง: <span id="shipping-fee">${shippingFee}฿</span></p>
+        <p>รวม: <span id="total-price">${total}฿</span></p>
+    </div>
+    `;
+
+    // Add QR code container below total
+    popupContent.innerHTML += `
+    <div class="qr-code-container" id="qr-code-container"></div>
+    `;
+
+    // Add close button at the top of the popup
+    popupContent.innerHTML = `
+        <div class="close-btn" onclick="togglePopup()">&times;</div>
+        ${popupContent.innerHTML}  <!-- Insert previous content below the close button -->
+    `;
+
+    // Show popup
+    popup.classList.add("active");
+
+    // Hide the shopping cart when the popup is shown
+    shoppingCart.classList.remove('active'); // ซ่อน shopping-cart
+
+    // Generate QR Code for the total price
+    const qrData = "test qr code"; // ข้อมูลใน QR code (เช่น จำนวนเงินที่ต้องชำระ)
+    console.log("QR Data: ", qrData); // Log QR Data
+
+    try {
+        // Generate QR Code
+        const qrCodeContainer = document.getElementById("qr-code-container");
+        qrCodeContainer.innerHTML = ''; // Clear previous QR Code
+        new QRCode(qrCodeContainer, {
+            text: qrData,
+            width: 128,
+            height: 128
+        });
+    } catch (error) {
+        console.error("Error generating QR Code:", error);
+        alert("เกิดข้อผิดพลาดในการสร้าง QR Code กรุณาลองใหม่อีกครั้ง");
+    }
+}
+
+    // Function to remove item from cart
+    function removeFromCart(index) {
+        userCart.splice(index, 1); // Remove item at index
+        updateCart(userCart); // Update cart display
+    }
+
+    // Retrieve data from localStorage
+    document.addEventListener('DOMContentLoaded', function() {
+        const cartItems = JSON.parse(localStorage.getItem('cartItems')) || {};
+        let user_id = <?php echo json_encode($user_id); ?>; // Retrieve user_id from PHP
+        userCart = cartItems[user_id] || []; // If there's no cart data, make it an empty array
+
+        // Update the display
+        updateCart(userCart);
+    });
+
+    function updateCart(cartItems) {
+        const cartItemsContainer = document.getElementById('cart-items');
+        let cartHTML = '';
+        let total = 0;
+
+        cartItems.forEach((item, index) => {
+            cartHTML += `
+                <div class="box">
+                    <i class='bx bx-trash' onclick="removeFromCart(${index})"></i>
+                    <img src="${item.image}" alt="${item.name}">
+                    <div class="content">
+                        <h3>${item.name}</h3>
+                        <span class="price">${item.price}฿</span>
+                    </div>
+                </div>
+            `;
+            total += parseFloat(item.price);
+        });
+
+        cartItemsContainer.innerHTML = cartHTML;
+        document.getElementById('cart-total').textContent = total + '฿';
+    }
+
+    // Show cart data when the page loads
+    updateCart(userCart);
 
     </script>
 </body>
