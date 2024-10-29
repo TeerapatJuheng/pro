@@ -1,14 +1,48 @@
 <?php
 session_start();
-echo $_SESSION['shop_id'];
-$shopid = $_SESSION['shop_id'];
 include('../inc/server.php');
 
-$sql = "SELECT * FROM `tb_product` WHERE shop_id = $shopid";
-$result = $conn->query($sql);
+// ดึง shop_id จาก session
+$shopid = $_SESSION['shop_id'];
+
+// จัดการการอัปโหลดไฟล์
+$target_dir = "uploads/";
+$fileTmpPath = $_FILES["image"]["tmp_name"];
+$imageData = file_get_contents($fileTmpPath); // อ่านเนื้อหาของไฟล์ภาพ
+
+// ตรวจสอบว่ามีข้อมูลภาพที่อัปโหลดหรือไม่
+if ($_FILES['image']['error'] === UPLOAD_ERR_OK) {
+    // เตรียมและผูกข้อมูล
+    $stmt = $conn->prepare("INSERT INTO tb_product (product_img, product_name, product_type, product_details, product_price, shop_id) VALUES (?, ?, ?, ?, ?, ?)");
+    
+    // ใช้ "b" สำหรับ BLOB (Binary Large Object) 
+    $stmt->bind_param("bssssi", $imageData, $product_name, $product_type, $product_details, $product_price, $shopid);
+    
+    // ส่งข้อมูลภาพ
+    $stmt->send_long_data(0, $imageData);
+    
+    // ดำเนินการคำสั่ง
+    if ($stmt->execute()) {
+        echo "เพิ่มผลิตภัณฑ์ใหม่สำเร็จ.";
+    } else {
+        echo "ข้อผิดพลาด: " . $stmt->error;
+    }
+    
+    // ปิดคำสั่ง
+    $stmt->close();
+} else {
+    echo "เกิดข้อผิดพลาดในการอัปโหลดไฟล์: " . $_FILES['image']['error'];
+}
+
+// ดึงข้อมูลผลิตภัณฑ์จากฐานข้อมูล
+$sql = "SELECT * FROM `tb_product` WHERE shop_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $shopid);
+$stmt->execute();
+$result = $stmt->get_result();
 
 // ดึงข้อมูลชื่อและนามสกุลจากตาราง tb_shop
-$query = "SELECT * FROM tb_shop WHERE id = $shopid";
+$query = "SELECT * FROM tb_shop WHERE id = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $shopid);
 $stmt->execute();
@@ -23,10 +57,11 @@ if ($result2->num_rows > 0) {
     $profileImage = "default-image.png"; // กรณีที่ไม่พบผู้ใช้
 }
 
+// ปิดการเชื่อมต่อ
 $stmt->close();
 $conn->close();
-
 ?>
+
 
 <!DOCTYPE html>s
 <html lang="en">
@@ -392,106 +427,239 @@ $conn->close();
         }
 
         .table {
-            width: 100%;
-            margin-top: 90px;
-        }
+    margin: 8rem auto; /* Adds space between the header and the table */
+    width: 90%;
+    box-shadow: var(--box-shadow);
+    background: var(--white);
+    border-radius: .5rem;
+    padding: 2rem;
+}
 
-        .table_header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            background-color: rgb(240, 240, 240);
-        }
+.table_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+.table_header h1 {
+    font-size: 2.4rem;
+    color: var(--black);
+}
 
-        button {
-            outline: none;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            padding: 10px;
-            color: #ffffff;
-        }
+.table_header input {
+    padding: 0.8rem 1rem;
+    font-size: 1.4rem;
+    border: 1px solid var(--light-color);
+    border-radius: 0.5rem;
+}
 
-        button:hover {
-            background-color: #728FCE;
-        }
+.table_header .add_new {
+    background: #507F99;
+    color: #fff;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    font-size: 1.6rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+}
 
-        td button:nth-child(1) {
-            background-color: #0298cf;
-        }
+.table_header .add_new:hover {
+    background: #728FCE;
+}
 
-        td button:nth-child(2) {
-            background-color: #f80000;
-        }
+/* Table styling */
+.table_section table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
 
-        .add_new {
-            padding: 10px 10px;
-            color: #ffffff;
-            background-color: #0298cf;
-        }
+.table_section table th,
+.table_section table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--light-color);
+    font-size: 1.6rem;
+}
 
-        input {
-            padding: 10px 10px;
-            margin: 0 5px;
-            outline: none;
-            border: .5px solid #0298cf;
-            border-radius: 6px;
-            color: #0298cf;
-        }
+.table_section table th {
+    background: #f4f4f4;
+    color: var(--black);
+}
 
-        .table_section {
-            height: 100%;
-            overflow: auto;
-            border-radius: 10px;
-        }
+.table_section table td img {
+    width: 100px; /* Fixed width for images */
+    height: 100px; /* Fixed height for images */
+    object-fit: cover; /* Ensures the image fits within the dimensions without distortion */
+    border-radius: 0.5rem;
+}
 
-        table {
-            width: 100%;
-            table-layout: fixed;
-            min-width: 1000px;
-        }
+.table_section table td button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 2rem;
+    color: var(--black);
+}
 
-        thead th {
-            position: sticky;
-            top: 0;
-            background-color: #507F99;
-            color: #ffffff;
-            font-size: 15px;
-            text-align: center;
-            padding: 10px 20px;
-        }
+.table_section table td button:hover {
+    color: #507F99;
+}
 
-        /*th,td {
-            border-bottom: .5px solid #dddddd;
-            padding: 10px 20px;
-            word-break: break-all;
-            text-align: center;
-        }*/
+/* Media Queries for Responsiveness */
+@media (max-width: 991px) {
+    .table {
+        width: 95%;
+    }
 
-        td {
-            text-align: center;
-            padding: 5px 10px;
-        }
+    .table_section table th,
+    .table_section table td {
+        font-size: 1.4rem;
+        padding: 0.8rem;
+    }
 
-        td img {
-            height: 60px;
-            width: 60px;
-            object-fit: cover;
-            border-radius: 15px;
-            border: 1px solid #000;
-        }
+    .table_header h1 {
+        font-size: 2rem;
+    }
 
-        tr {
-            background-color: #ffffff;
-            font-size: 13px;
-        }
+    .table_header input {
+        font-size: 1.3rem;
+    }
 
-        tr:hover td {
-            color: #507F99;
-            cursor: pointer;
-            background-color: #EBF5FB;
-        }
+    .table_header .add_new {
+        font-size: 1.4rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .table {
+        margin-top: 12rem;
+        width: 100%;
+        padding: 1.5rem;
+    }
+
+    .table_section table,
+    .table_section table thead,
+    .table_section table tbody,
+    .table_section table th,
+    .table_section table td,
+    .table_section table tr {
+        display: block;
+    }
+
+    .table_section table th {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    .table_section table tr {
+        border: 1px solid var(--light-color);
+        margin-bottom: 1rem;
+    }
+    .table_section table tr:hover {
+    background-color: rgba(80, 127, 153, 0.1); /* Light background on hover */
+    transition: background-color 0.3s ease; /* Smooth hover transition */
+    }
+    .table_section table td button:hover {
+    color: #507F99;
+    transform: scale(1.1); /* Slight scaling effect on hover for buttons */
+    transition: all 0.3s ease; /* Smooth hover transition */
+    }
+
+    .table_section table td {
+        padding: 1rem;
+        border-bottom: none;
+        position: relative;
+        font-size: 1.4rem;
+    }
+
+    .table_section table td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 50%;
+        padding-left: 1.5rem;
+        font-weight: bold;
+        text-transform: capitalize;
+    }
+
+    .table_section table td img {
+        max-width: 100px;
+    }
+}
+@media (max-width: 324px) {
+    .table {
+        margin-top: 15rem;
+        width: 100%;
+        padding: 1rem;
+    }
+
+    .table_header h1 {
+        font-size: 1.6rem; /* Adjust the header font size */
+    }
+
+    .table_header input {
+        width: 100%; /* Make the input take full width */
+        font-size: 1.2rem; /* Adjust the font size for input */
+    }
+
+    .table_header .add_new {
+        font-size: 1.2rem; /* Smaller button text size */
+        padding: 0.6rem 1rem; /* Adjust padding for smaller button */
+    }
+
+    .table_section table,
+    .table_section table thead,
+    .table_section table tbody,
+    .table_section table th,
+    .table_section table td,
+    .table_section table tr {
+        display: block;
+    }
+
+    .table_section table tr {
+        border: 1px solid var(--light-color);
+        margin-bottom: 1rem;
+    }
+
+    .table_section table th {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    .table_section table td {
+        padding: 0.8rem;
+        border-bottom: none;
+        position: relative;
+        font-size: 1.2rem; /* Smaller font size for table data */
+    }
+
+    .table_section table td:before {
+        content: attr(data-label);
+        position: absolute;
+        left: 0;
+        width: 50%;
+        padding-left: 1rem;
+        font-weight: bold;
+        text-transform: capitalize;
+    }
+
+    .table_section table td img {
+        max-width: 80px; /* Reduce image size slightly */
+        height: 80px; /* Keep height proportional */
+    }
+
+    .table_section table td button {
+        font-size: 1.6rem; /* Adjust button size */
+    }
+
+    .table_section table td button:hover {
+        transform: scale(1.05); /* Slightly smaller hover effect */
+    }
+}
+
+
 
         ::placeholder {
             color: #0298cf;
@@ -797,53 +965,61 @@ $conn->close();
     <!-- product -->
 
     <div class="table">
-        <div class="table_header">
-            <h1>Product</h1>
-            <div>
-                <input placeholder="product" />
-                <button class="add_new" onclick="add()">+ Add New</button>
-            </div>
+    <div class="table_header">
+        <h1>Product</h1>
+        <div>
+            <input placeholder="product" />
+            <button class="add_new" onclick="add()">+ Add New</button>
         </div>
-        <div class="table_section">
-            <table>
-                <thead>
-                    <tr>
-                        <th>ลำดับ</th>
-                        <th>product</th>
-                        <th>ชื่อบริการ</th>
-                        <th>ประเภท</th>
-                        <th>รายละเอียด</th>
-                        <th>ราคา</th>
-                        <th>action</th>
-                    </tr>
-                </thead>
+    </div>
+    <div class="table_section">
+        <table>
+            <thead>
+                <tr>
+                    <th>ลำดับ</th>
+                    <th>รูปภาพบริการ</th> <!-- Column for product image -->
+                    <th>ชื่อบริการ</th> <!-- Column for product name -->
+                    <th>ประเภท</th> <!-- Column for product type -->
+                    <th>รายละเอียด</th> <!-- Column for product details -->
+                    <th>ราคา</th> <!-- Column for product price -->
+                    <th>การจัดการ</th> <!-- Column for actions -->
+                </tr>
+            </thead>
+            <tbody>
                 <?php
+                // Assuming $result is your fetched data from the database
                 if ($result->num_rows > 0) {
-                    echo "<table><tbody>";
+                    $index = 1; // Counter for order
                     while ($row = $result->fetch_assoc()) {
+                        // Assuming 'product_img' contains the image binary data
                         $imageData = base64_encode($row['product_img']);
                         $src = 'data:image/jpeg;base64,' . $imageData;
 
+                        // Creating a row for each product
                         echo "<tr>
-                                <td>{$row['product_id']}</td>
-                                <td><img src='{$src}' alt='Image' style='max-width: 100px;'></td>
-                                <td>{$row['product_name']}</td>
-                                <td>{$row['product_type']}</td>
-                                <td>{$row['product_details']}</td>
-                                <td>{$row['product_price']}</td>
+                                <td>{$index}</td> <!-- Displaying the order number -->
+                                <td><img src='{$src}' alt='Image' style='max-width: 100px;'></td> <!-- Displaying the image -->
+                                <td>{$row['product_name']}</td> <!-- Displaying the product name -->
+                                <td>{$row['product_type']}</td> <!-- Displaying the product type -->
+                                <td>{$row['product_details']}</td> <!-- Displaying product details -->
+                                <td>{$row['product_price']} บาท</td> <!-- Displaying product price -->
                                 <td>
                                     <button onclick='solve({$row['product_id']})'><i class='bx bx-edit-alt'></i></button>
                                     <button onclick='confirmDelete({$row['product_id']})'><i class='bx bx-trash'></i></button>
                                 </td>
                               </tr>";
+                        $index++; // Incrementing the counter for order
                     }
-                    echo "</tbody></table>";
                 } else {
-                    echo "0 results";
+                    echo "<tr><td colspan='7'>ไม่มีข้อมูลสินค้า</td></tr>"; // Message when no results found
                 }
                 ?>
-        </div>
+            </tbody>
+        </table>
     </div>
+</div>
+
+
 
     <!-- product end -->
 
@@ -887,42 +1063,46 @@ $conn->close();
 
     <!-- popup end-->
 
-    <!-- popup2-->
+     <!-- popup2-->
+     <div class="popup2" id="popup2">
+    <div class="overlay2"></div>
+    <div class="content2">
+        <div class="close-btn" onclick="solve()">&times;</div>
+        <h1>Edit Product</h1>
+        <p id="edit-product-id-display"></p> <!-- Display the product ID here -->
+        
+        <!-- Add this line to display the current image -->
+        <img id="current-image" style="display: none; max-width: 100px;"/>
 
-    <div class="popup2" id="popup2">
-        <div class="overlay2"></div>
-        <div class="content2">
-            <div class="close-btn" onclick="solve()">&times;</div>
-            <h1>Edit Product</h1>
-            <p id="edit-product-id-display"></p> <!-- Display the product ID here -->
-            <form action="edit_product.php" method="post" name="form1" enctype="multipart/form-data">
-                <input type="hidden" id="edit-hidden_product_id" name="product_id"> <!-- Hidden field for product_id -->
-                <div class="name-report">
-                    <label for="image">Product Image: </label>
-                    <span><input type="file" id="edit-image" name="image" accept="image/*"></span>
-                </div>
-                <div class="name-report">
-                    <label for="product_name">ชื่อบริการ: </label>
-                    <span><input type="text" id="edit-product_name" name="product_name" required></span>
-                </div>
-                <div class="name-report">
-                    <label for="product_type">ประเภท: </label>
-                    <span><input type="text" id="edit-product_type" name="product_type" required></span>
-                </div>
-                <div class="name-report">
-                    <label for="product_details">รายละเอียด: </label>
-                    <span><input type="text" id="edit-product_details" name="product_details" required></span>
-                </div>
-                <div class="name-report">
-                    <label for="product_price">ราคา: </label>
-                    <span><input type="text" id="edit-product_price" name="product_price" required></span>
-                </div>
-                <div class="btn-container">
-                    <button type="submit" class="btn-submit" name="add">บันทึก</button>
-                </div>
-            </form>
-        </div>
+        <form action="update_product.php" method="post" name="form1" enctype="multipart/form-data">
+            <input type="hidden" id="edit-hidden_product_id" name="product_id"> <!-- Hidden field for product_id -->
+            <div class="name-report">
+                <label for="image">Product Image: </label>
+                <span><input type="file" id="edit-image" name="image" accept="image/*"></span>
+            </div>
+            <div class="name-report">
+                <label for="product_name">ชื่อบริการ: </label>
+                <span><input type="text" id="edit-product_name" name="product_name" required></span>
+            </div>
+            <div class="name-report">
+                <label for="product_type">ประเภท: </label>
+                <span><input type="text" id="edit-product_type" name="product_type" required></span>
+            </div>
+            <div class="name-report">
+                <label for="product_details">รายละเอียด: </label>
+                <span><input type="text" id="edit-product_details" name="product_details" required></span>
+            </div>
+            <div class="name-report">
+                <label for="product_price">ราคา: </label>
+                <span><input type="text" id="edit-product_price" name="product_price" required></span>
+            </div>
+            <div class="btn-container">
+                <button type="submit" class="btn-submit" name="update">บันทึก</button>
+            </div>
+        </form>
     </div>
+</div>
+
 
     <!-- popup end-->
 
@@ -965,58 +1145,44 @@ $conn->close();
             document.getElementById("popup").classList.toggle("active");
         }
 
-        /* popup2 */
-        function solve(productId) {
-            document.getElementById("popup2").classList.toggle("active");
-            fetch(`get_product.php?product_id=${productId}`)
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.json();
-                })
-                .then(data => {
-                    if (data && data.product_id) {
-                        // document.getElementById("edit-product-id-display").textContent = `Editing Product ID: ${data.product_id}`;
-                        document.getElementById("edit-hidden_product_id").value = data.product_id;
-                        document.getElementById("edit-product_name").value = data.product_name;
-                        document.getElementById("edit-product_type").value = data.product_type;
-                        document.getElementById("edit-product_details").value = data.product_details;
-                        document.getElementById("edit-product_price").value = data.product_price;
+          /* popup2 */
+          function solve(productId) {
+        document.getElementById("popup2").classList.toggle("active");
+        fetch(`get_product.php?product_id=${productId}`)
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                if (data && data.product_id) {
+                    document.getElementById("edit-hidden_product_id").value = data.product_id;
+                    document.getElementById("edit-product_name").value = data.product_name;
+                    document.getElementById("edit-product_type").value = data.product_type;
+                    document.getElementById("edit-product_details").value = data.product_details;
+                    document.getElementById("edit-product_price").value = data.product_price;
 
-                        // Display current image if available
-                        if (data.product_img) {
-                            document.getElementById("current-image").src = `data:image/jpeg;base64,${data.product_img}`;
-                            document.getElementById("current-image").style.display = "block";
-                        } else {
-                            document.getElementById("current-image").style.display = "none";
-                        }
-
-                        
+                    // Display current image if available
+                    if (data.product_img) {
+                        document.getElementById("current-image").src = `data:image/jpeg;base64,${data.product_img}`;
+                        document.getElementById("current-image").style.display = "block";
                     } else {
-                        console.error('No data found');
+                        document.getElementById("current-image").style.display = "none";
                     }
-                })
-                .catch(error => {
-                    console.error('Error fetching product data:', error);
-                });
-        }
+                } else {
+                    console.error('No data found');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching product data:', error);
+            });
+    }
 
-        function confirmDelete(productId) {
-            if (confirm("Are you sure you want to delete this product?")) {
-                window.location.href = `delete_product.php?product_id=${productId}`;
-            }
-        }
+function confirmDelete(productId) {
+    if (confirm("Are you sure you want to delete this product?")) {
+        window.location.href = `delete_product.php?product_id=${productId}`;
+    }
+}
 
-        function fncSubmit(x) {
-            if (x == "add") {
-                //alert(document.form1.getElementById("otp"))
-                document.form1.action = "add_product.php";
-            }
-
-            if (x == "edit") {
-
-                document.form1.action = "edit_product.php";
-            }
-        }
     </script>
 </body>
 
