@@ -53,73 +53,105 @@ if (isset($_GET['lang'])) {
         }
 
         .left-side {
-            flex: 1;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
+    background: rgba(255, 255, 255, 0); /* Fully transparent background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    margin: auto;
+    text-align: center;
+    position: relative; /* For positioning child elements */
+}
 
-        .speech-bubble {
-            width: 300px;
-            border-radius: 10px;
-            padding: 20px;
-            border: none;
-            box-shadow: none;
-            font-size: 40px;
-            color: #ffffff;
-            text-align: center;
-        }
+.speech-bubble {
+    position: relative;
+    padding: 10px;
+    margin-bottom: 20px;
+}
 
-        .text-box-user,
-        .text-box-password {
-            width: 220px;
-            height: 50px;
-            border-radius: 10px;
-            padding: 10px;
-            border: none;
-            box-shadow: none;
-            font-size: 20px;
-            margin-bottom: 20px;
-            color: #000;
-        }
+.speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -10px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent transparent rgba(255, 255, 255, 0) transparent; /* Match the transparent background */
+}
 
-        .button-submit {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            background-color: #5FABBC;
-            color: #ffffff;
-            font-size: 20px;
-            margin-left: 60px;
-        }
-        .dhaa {
-            font-size: 12px;
-            color: #1E1E1E;
-            margin-left: 20px;
-        }
-        .dha{
-            margin-left: 30px;
-            font-size: 12px;
-        }
+.logo {
+    width: 80px; /* Adjust logo size */
+    margin-bottom: 15px;
+}
 
-        .register-login {
-            font-size: 12px;
-            color: #3F51B5;
-            text-decoration: none;
-            margin-top: 20px;
-            margin-left: 10px;
-        }
+.text-box-user,
+.text-box-password {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 2px solid #a5c8e1; /* Soft blue border */
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.9); /* Light background for better readability */
+    transition: border-color 0.3s, background-color 0.3s;
+}
 
-        .forgot {
-            font-size: 12px;
-            color: #3F51B5;
-            text-decoration: none;
-            margin-top: 0px;
-            margin-left: 15px;
-        }
+.text-box-user::placeholder,
+.text-box-password::placeholder {
+    color: #a0a0a0; /* Soft gray placeholder text */
+}
+
+.text-box-user:focus,
+.text-box-password:focus {
+    border-color: #0056b3; /* Darker blue on focus */
+    background: rgba(255, 255, 255, 1); /* Full white on focus for clarity */
+    outline: none;
+}
+
+
+.button-submit {
+    background-color: #507F99; /* New button color */
+    color: white; /* Text color */
+    border: none; /* No border */
+    padding: 10px 15px; /* Padding */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor */
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s; /* Smooth transitions */
+    font-size: 16px; /* Font size */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Initial shadow */
+}
+
+.button-submit:hover {
+    background-color: #4a6d7f; /* Darker shade on hover */
+    transform: translateY(-2px); /* Lift effect on hover */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
+}
+
+.button-submit:active {
+    transform: translateY(1px); /* Press down effect */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Reduced shadow on active */
+}
+
+
+.dha,
+.dhaa {
+    margin: 10px 0;
+}
+
+.forgot,
+.register-login {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.forgot:hover,
+.register-login:hover {
+    text-decoration: underline;
+    color: #0056b3; /* Darker blue on hover */
+}
+
+
+
 
         .error {
             color: red;
@@ -181,7 +213,7 @@ if (isset($_GET['lang'])) {
                 <input type="text" name="employee_id" id="employee_id" placeholder="<?php echo $lang == 'en' ? 'Username' : 'ชื่อผู้ใช้'; ?>" class="text-box-user form-control">
                 <input type="password" name="password" id="inputPassword" placeholder="<?php echo $lang == 'en' ? 'Password' : 'รหัสผ่าน'; ?>" class="text-box-password form-control">
                 <p class="dha"><?php echo $lang == 'en' ? 'Forgot Password?' : 'ลืมรหัสผ่าน'; ?><a href="resetpass.php" class="forgot"><?php echo $lang == 'en' ? 'Forgot' : 'ลืมรหัสผ่าน'; ?></a></p>
-                <button type="submit" name="login_user" class="button-submit"><?php echo $lang == 'en' ? 'Submit' : 'ยืนยัน'; ?></button>
+                <button type="submit" name="login_user" class="button-submit"><?php echo $lang == 'en' ? 'Login' : 'ยืนยัน'; ?></button>
                 <?php if (isset($_SESSION['error'])) : ?>
                     <div class="error">
                         <h6 class="text-danger">
