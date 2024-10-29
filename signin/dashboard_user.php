@@ -28,6 +28,13 @@ if ($result->num_rows > 0) {
     $fullName = "User not found";
     $profileImage = "default-image.png"; // กรณีที่ไม่พบผู้ใช้
 }
+// SQL Query เพื่อดึงข้อมูลจาก tb_shop
+$query = "SELECT * FROM tb_shop";
+$result = mysqli_query($conn, $query);
+
+if (!$result) {
+    die("Query failed: " . mysqli_error($conn));
+}
 
 $stmt->close();
 $conn->close();
@@ -37,27 +44,29 @@ $conn->close();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
     <style>
         :root {
-        --orange: #ff7800;
-        --black: #130f40;
-        --white: #fff;
-        --light-color: #666;
-        --box-shadow: 0 .5rem 1rem rgba(0,0,0,.1);
-        --border:.2rem solid rgba(0,0,0,.1);
-        --outline:.1rem solid rgba(0,0,0,.1);
-        --outline-hover:.2rem solid var(--black);
+            --orange: #ff7800;
+            --black: #130f40;
+            --white: #fff;
+            --light-color: #666;
+            --box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .1);
+            --border: .2rem solid rgba(0, 0, 0, .1);
+            --outline: .1rem solid rgba(0, 0, 0, .1);
+            --outline-hover: .2rem solid var(--black);
         }
 
         * {
@@ -99,7 +108,7 @@ $conn->close();
         }
 
         .btn:hover {
-            background:#507F99;
+            background: #507F99;
             color: #fff;
         }
 
@@ -117,7 +126,7 @@ $conn->close();
         }
 
         .ck:hover {
-            background:#507F99;
+            background: #507F99;
             color: #fff;
         }
 
@@ -131,7 +140,7 @@ $conn->close();
             align-items: center;
             justify-content: space-between;
             padding: 2rem 9%;
-            background: var(--white) ;
+            background: var(--white);
             box-shadow: var(--box-shadow);
         }
 
@@ -280,7 +289,7 @@ $conn->close();
             margin-bottom: 1rem;
         }
 
-        .header .shopping-cart .btn{
+        .header .shopping-cart .btn {
             display: block;
         }
 
@@ -293,7 +302,7 @@ $conn->close();
             box-shadow: var(--box-shadow);
             width: 25rem;
             background: var(--white);
-            text-align:center;
+            text-align: center;
         }
 
         .header .profile.active {
@@ -359,12 +368,12 @@ $conn->close();
             color: #fff;
         }
 
-        @media (max-width:991px){
-            html{
+        @media (max-width:991px) {
+            html {
                 font-size: 55%;
             }
 
-            .header{
+            .header {
                 padding: 2rem;
             }
 
@@ -390,17 +399,18 @@ $conn->close();
         }
 
         @media (max-width: 768px) {
-            .header .search-form{
+            .header .search-form {
                 width: 90%;
             }
-            
+
             #menu-btn {
                 display: inline-block;
             }
 
             .header .navbar {
                 position: absolute;
-                top: 100%; right: -110%;
+                top: 100%;
+                right: -110%;
                 width: 30rem;
                 box-shadow: var(--box-shadow);
                 border-radius: .5rem;
@@ -435,17 +445,18 @@ $conn->close();
         }
 
         @media (max-width: 450px) {
-            .header .search-form{
+            .header .search-form {
                 width: 90%;
             }
-            
+
             #menu-btn {
                 display: inline-block;
             }
 
             .header .navbar {
                 position: absolute;
-                top: 100%; right: -110%;
+                top: 100%;
+                right: -110%;
                 width: 30rem;
                 box-shadow: var(--box-shadow);
                 border-radius: .5rem;
@@ -475,24 +486,26 @@ $conn->close();
             .popup2 .name-report1 span p {
                 font-size: 14px;
             }
-            .popup2.active{
+
+            .popup2.active {
                 width: 100%;
                 height: 120%;
             }
         }
+
         .stars {
-            padding-top:12rem ;
+            padding-top: 12rem;
             /*padding-bottom:2rem ;*/
         }
 
         .stars3 {
-            font-size:2rem;
-            color:#FFBF00;
+            font-size: 2rem;
+            color: #FFBF00;
         }
 
         .stars i {
-            font-size:2rem;
-            color:#FFBF00;
+            font-size: 2rem;
+            color: #FFBF00;
         }
 
         .products .product-slider {
@@ -500,23 +513,23 @@ $conn->close();
         }
 
         .products .product-slider:first-child {
-            margin-bottom:2rem;
+            margin-bottom: 2rem;
         }
 
         .products .product-slider .box {
-            background:#fff;
-            border-radius:.5rem;
-            text-align:center;
+            background: #fff;
+            border-radius: .5rem;
+            text-align: center;
             padding: 3rem 2rem;
-            outline-offset:-1rem;
-            outline:var(--outline);
-            box-shadow:var(--box-shadow);
+            outline-offset: -1rem;
+            outline: var(--outline);
+            box-shadow: var(--box-shadow);
             transition: .2s linear;
         }
 
         .products .product-slider .box:hover {
-            outline-offset:0rem;
-            outline:var(--outline-hover);
+            outline-offset: 0rem;
+            outline: var(--outline-hover);
         }
 
         .products .product-slider .box img {
@@ -524,13 +537,13 @@ $conn->close();
         }
 
         .products .product-slider .box h3 {
-            font-size:2.5rem;
-            color:var(--black);
+            font-size: 2.5rem;
+            color: var(--black);
         }
 
         .products .product-slider .box .gps {
-            font-size:2rem;
-            color:var(--light-color);
+            font-size: 2rem;
+            color: var(--light-color);
             padding: .5rem 0;
         }
 
@@ -549,11 +562,11 @@ $conn->close();
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 1;
-            display: none; 
+            display: none;
         }
 
         #popup-2.active {
-            display: block; 
+            display: block;
         }
 
         .overlay1 {
@@ -568,7 +581,7 @@ $conn->close();
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%,-50%) scale(0);
+            transform: translate(-50%, -50%) scale(0);
             background: #fff;
             width: 450px;
             height: 580px;
@@ -600,7 +613,7 @@ $conn->close();
 
         .popup2.active .content5 {
             transition: all 300ms ease-in-out;
-            transform: translate(-50%,-50%) scale(1);
+            transform: translate(-50%, -50%) scale(1);
         }
 
         .popup2 .content5 h1 {
@@ -630,26 +643,290 @@ $conn->close();
         .popup2 .content5 .name-report1 img {
             height: 200px;
             width: 200px;
-            text-align:center;
+            text-align: center;
             margin: auto;
         }
-        
+
         .qr {
             margin: auto;
         }
 
-        
-        
+        .swiper-slide.box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* จัดกลางเนื้อหาในแนวตั้ง */
+            justify-content: center;
+            /* จัดกลางเนื้อหาในแนวนอน */
+            padding: 10px;
+            /* เพิ่มระยะห่างรอบๆ */
+            box-sizing: border-box;
+            /* ให้การคำนวณขนาดรวม padding */
+        }
+
+        .swiper-slide.box img {
+            max-width: 100%;
+            /* ทำให้รูปภาพไม่เกินขอบ */
+            height: auto;
+            /* รักษาสัดส่วน */
+            border-radius: 10px;
+            /* ปรับขอบให้มน */
+        }
+
+        .products {
+            display: flex;
+            justify-content: center;
+            /* จัดกึ่งกลางแนวนอน */
+            align-items: center;
+            /* จัดกึ่งกลางแนวตั้ง */
+            min-height: 100vh;
+            /* ตั้งค่าให้ความสูงของส่วนนี้เต็มหน้าจอ */
+            padding: 20px;
+            background-color: #f9f9f9;
+            /* สีพื้นหลัง */
+        }
+
+        .swiper {
+            width: 100%;
+            max-width: 1200px;
+            /* จำกัดความกว้างสูงสุด */
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #507F99;
+            /* Main background color */
+            color: #ffffff;
+            /* Text color */
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-around;
+            /* Evenly distribute space between sections */
+            flex-wrap: wrap;
+            /* Wrap sections on smaller screens */
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-section {
+            flex: 1;
+            margin: 1rem;
+            min-width: 250px;
+            /* Minimum width for responsiveness */
+        }
+
+        .footer-section h2 {
+            color: #ffffff;
+            /* Heading color */
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .footer-section p,
+        .footer-section ul {
+            color: #f0f0f0;
+            /* Light text color for better contrast */
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin: 0.5rem 0;
+        }
+
+        .footer-section ul li a {
+            color: #f0f0f0;
+            /* Link color */
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section ul li a:hover {
+            color: #d1e2eb;
+            /* Slightly lighter color on hover */
+        }
+
+        .footer-section.social {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .footer-section.social a {
+            display: inline-block;
+            margin: 0 10px;
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            border-radius: 50%;
+            background-color: #ffffff;
+            /* Background color for icons */
+            color: #507F99;
+            /* Icon color */
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+        }
+
+        .footer-section.social a:hover {
+            background-color: #d1e2eb;
+            /* Hover background */
+            transform: translateY(-5px) scale(1.1);
+            /* Lift effect */
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            /* Shadow effect */
+        }
+
+        .footer-bottom {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #ffffff;
+            /* Subtle top border */
+            color: #f0f0f0;
+            /* Footer bottom text color */
+            font-size: 0.9rem;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .footer-content {
+                flex-direction: column;
+                /* Stack sections vertically */
+                align-items: center;
+                /* Center align sections */
+            }
+
+            .footer-section {
+                margin-bottom: 2rem;
+                /* Increase spacing between sections */
+                max-width: 80%;
+                /* Limit width for better readability */
+            }
+
+            .footer-section.social a {
+                margin: 0 5px;
+                /* Reduce margin between icons */
+                width: 40px;
+                /* Reduce icon size */
+                height: 40px;
+                line-height: 40px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .footer-section h2 {
+                font-size: 1.5rem;
+                /* Smaller font size for headings */
+            }
+
+            .footer-bottom {
+                font-size: 0.8rem;
+                /* Smaller font size for footer bottom text */
+            }
+
+            .footer-section.social a {
+                width: 35px;
+                /* Further reduce icon size */
+                height: 35px;
+                line-height: 35px;
+                font-size: 1.2rem;
+                /* Reduce icon font size */
+            }
+        }
+
+
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .footer {
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        .footer .social a {
+            transition: transform 0.3s, color 0.3s;
+        }
+
+        .footer .social a:hover {
+            transform: translateY(-5px) scale(1.2);
+            color: #ff7800;
+        }
+
+        /* รายการในตะกร้า */
+        #cart-items-container {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            padding-right: 10px;
+            /* เพิ่ม Padding เพื่อหลีกเลี่ยงการชนของ Scrollbar */
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .cart-item img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-right: 15px;
+        }
+
+        .item-info {
+            flex-grow: 1;
+            text-align: left;
+        }
+
+        .item-info h3 {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .item-info .price {
+            color: #666;
+        }
+
+        /* Total และค่าจัดส่ง */
+        .total-info {
+            font-size: 18px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+        }
     </style>
     <title>Dashboard</title>
 </head>
 
-    <body>
+<body>
 
-        <!-- header section starts -->
-        <header class="header">
+    <!-- header section starts -->
+    <header class="header">
         <a href="dashboard_user.php" class="logo">Laundry</a>
-        
+
         <nav class="navbar">
             <a href="dashboard_user.php">Dashboard</a>
             <a href="shop_user.php">Shop</a>
@@ -670,122 +947,109 @@ $conn->close();
         </form>
 
         <div class="shopping-cart">
-            <div class="box">
-                <i class='bx bx-trash'></i>
-                <img src="../photo/ตู้ซักผ้า.jpg" alt="">
-                <div class="content">
-                    <h3>ซัก อบ </h3>
-                    <span class="price">50฿</span>
-                </div>
-            </div>
-            <div class="box">
-                <i class='bx bx-trash'></i>
-                <img src="../photo/ตู้ซักผ้า.jpg" alt="">
-                <div class="content">
-                    <h3>ซัก อบ </h3>
-                    <span class="price">50฿</span>
-                </div>
-            </div>
-            <div class="box">
-                <i class='bx bx-trash'></i>
-                <img src="../photo/ตู้ซักผ้า.jpg" alt="">
-                <div class="content">
-                    <h3>ซัก อบ </h3>
-                    <span class="price">50฿</span>
-                </div>
-            </div>
-            <div class="total"> Total : 150฿</div>
+            <div id="cart-items"></div> <!-- ส่วนนี้จะถูกอัปเดตเมื่อมีสินค้าถูกเพิ่มเข้ามา -->
+            <div class="total"> Total : <span id="cart-total">0฿</span></div>
             <button class="ck" onclick="togglePopup()">Checkout</button>
         </div>
 
 
         <div class="profile">
-            <img src="../photo/1x/รีด.png" alt="">
-            <h3>kkkkkkk oooooooo</h3>
+            <?php
+            // ตรวจสอบว่ามีรูปภาพหรือไม่ ถ้าไม่มีให้แสดงรูปภาพเริ่มต้น
+            $img = !empty($customer['img']) ? htmlspecialchars($customer['img']) : 'default.jpg';
+            ?>
+            <img src="../photo/<?php echo $img; ?>" alt="Profile Image">
+            <h3><?php echo $fullName; ?></h3>
             <span>User</span>
             <a href="profile_user.php" class="btnp">Profile</a>
             <div class="flex-btnp">
-                <a href="history.php" class="option-btnp">ประวัติ</a>
+                <a href="history.php" class="option-btnp">ประวัติการใช้งาน</a>
                 <a href="login.php" class="option-btnp">Logout</a>
             </div>
         </div>
-        </header> 
 
-   
+    </header>
+
+
     <!-- ดาว -->
 
-    <section class="stars" id="stars">
+    <!-- <section class="stars" id="stars">
         <i class='bx bxs-star'></i>
         <i class='bx bxs-star'></i>
         <i class='bx bxs-star'></i>
         <i class='bx bxs-star'></i>
         <i class='bx bxs-star'></i>
 
-    </section>
-    
-    <!-- ดาว end-->
+    </section> -->
 
-    <!-- section ของตัวเลือกที่ต้องการดู-->
+    <!-- ดาว end -->
 
+    <!-- section ของตัวเลือกที่ต้องการดู -->
     <section class="products" id="products">
-
         <div class="swiper product-slider">
-
             <div class="swiper-wrapper">
+                <?php
+                // แสดงข้อมูลร้านแต่ละร้าน
+                while ($shop = mysqli_fetch_assoc($result)) {
+                    $shopName = htmlspecialchars($shop['nameshop']);
+                    $shopImage = htmlspecialchars($shop['shop_img']);
+                    $latitude = htmlspecialchars($shop['latitude']);
+                    $longitude = htmlspecialchars($shop['longitude']);
+                    $shopAddress = htmlspecialchars($shop['shop_address']);
+                    $googleMapsUrl = "https://www.google.com/maps?q={$latitude},{$longitude}";
+                ?>
+                    <div class="swiper-slide box">
+                        <!-- รูปภาพของร้าน -->
+                        <img src="../photo/<?php echo $shopImage; ?>" alt="">
 
-                <div class="swiper-slide box">
-                    <img src="../photo/1x/ผ้า2.png" alt="">
-                    <h3>ชื่อร้าน</h3>
-                    <div class="gps">พิกัด</div>
-                    <a href="shop2_user.php" class="btn">เลือก</a>
-                </div>
+                        <!-- ชื่อร้าน -->
+                        <h3><?php echo $shopName; ?></h3>
 
-                <div class="swiper-slide box">
-                    <img src="../photo/ตู้ซักผ้า2.jpg" alt="">
-                    <h3>ชื่อร้าน</h3>
-                    <div class="gps">พิกัด</div>
-                    <a href="shop2_user.php" class="btn">เลือก</a>
-                </div>
+                        <!-- ลิงก์ไปยัง Google Maps -->
+                        <div class="gps">
+                            <a href="javascript:void(0);" onclick="showMap('<?php echo $latitude; ?>', '<?php echo $longitude; ?>')">พิกัด</a>
+                            <a href="<?php echo $googleMapsUrl; ?>" target="_blank">ดูบน Google Maps</a>
+                        </div>
 
-                <div class="swiper-slide box">
-                    <img src="../photo/ตู้ซักผ้า2.jpg" alt="">
-                    <h3>ชื่อร้าน</h3>
-                    <div class="gps">พิกัด</div>
-                    <a href="shop2_user.php" class="btn">เลือก</a>
-                </div>
-
-                <div class="swiper-slide box">
-                    <img src="../photo/ตู้ซักผ้า2.jpg" alt="">
-                    <h3>ชื่อร้าน</h3>
-                    <div class="gps">พิกัด</div>
-                    <a href="shop2_user.php" class="btn">เลือก</a>
-                </div>
-            
+                        <!-- ลิงก์สำหรับเลือกร้าน -->
+                        <a href="shop2_user.php?id=<?php echo $shop['id']; ?>" class="btn">เลือก</a>
+                    </div>
+                <?php
+                }
+                ?>
             </div>
-
         </div>
-
-        
-
     </section>
-        
+    <?php
+    // ปิดการเชื่อมต่อฐานข้อมูล
+    mysqli_close($conn);
+    ?>
+
+    <!-- iframe ของ Google Maps (เริ่มต้นซ่อนไว้) -->
+    <section id="map" style="display:none; margin-top:20px;">
+        <iframe id="map-frame"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3877.1716674163754!2d100.72505837508837!3d13.647319286733747!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x311d5d399ff73def%3A0x18f5dc31c552295!2z4Lib4Li04LmI4LiZIOC4i-C4seC4geC5geC4q-C5ieC4hyDguIvguLHguIHguK3guJrguKPguLXguJQ!5e0!3m2!1sth!2sth!4v1727145434864!5m2!1sth!2sth"
+            width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </section>
+
+
 
     <!-- card ของตัวเลือกที่ต้องการดู end-->
 
     <!-- ดาว -->
 
-    <section class="stars3" id="stars">
+    <!-- <section class="stars3" id="stars">
             <i class='bx bxs-star'></i>
             <i class='bx bxs-star'></i>
             <i class='bx bxs-star'></i>
             <i class='bx bxs-star'></i>
-    </section>
+    </section> -->
 
     <!-- ดาว end-->
-    
+
     <!-- section ของตัวเลือกที่ต้องการดู-->
 
-    <section class="products" id="products">
+    <!-- <section class="products" id="products">
 
         <div class="swiper product-slider">
 
@@ -823,24 +1087,24 @@ $conn->close();
 
         </div>
 
-    </section>
-        
+    </section> -->
+
 
     <!-- section ของตัวเลือกที่ต้องการดู end-->
 
     <!-- ดาว -->
 
-    <section class="stars3" id="stars">
+    <!-- <section class="stars3" id="stars">
             <i class='bx bxs-star'></i>
             <i class='bx bxs-star'></i>
             <i class='bx bxs-star'></i>
-    </section>
+    </section> -->
 
     <!-- ดาว end-->
 
     <!-- section ของตัวเลือกที่ต้องการดู-->
 
-    <section class="products" id="products">
+    <!-- <section class="products" id="products">
 
         <div class="swiper product-slider">
 
@@ -878,22 +1142,22 @@ $conn->close();
 
         </div>
 
-    </section>
-        
+    </section> -->
+
 
     <!-- section ของตัวเลือกที่ต้องการดู end-->
 
     <!-- ดาว -->
 
-    <section class="stars3" id="stars">
+    <!-- <section class="stars3" id="stars">
             <i class='bx bxs-star'></i>
             <i class='bx bxs-star'></i>
-    </section>
+    </section> -->
 
     <!-- ดาว end-->
 
     <!-- section ของตัวเลือกที่ต้องการดู-->
-
+    <!-- 
     <section class="products" id="products">
 
         <div class="swiper product-slider">
@@ -932,22 +1196,22 @@ $conn->close();
 
         </div>
 
-    </section>
-        
+    </section> -->
+
 
     <!-- section ของตัวเลือกที่ต้องการดู end-->
 
     <!-- ดาว -->
 
-    <section class="stars3" id="stars">
+    <!-- <section class="stars3" id="stars">
             <i class='bx bxs-star'></i>
-    </section>
+    </section> -->
 
     <!-- ดาว end-->
 
     <!-- section ของตัวเลือกที่ต้องการดู-->
 
-    <section class="products" id="products">
+    <!-- <section class="products" id="products">
 
         <div class="swiper product-slider">
 
@@ -985,81 +1249,108 @@ $conn->close();
 
         </div>
 
-    </section>
-        
+    </section> -->
+
 
     <!-- section ของตัวเลือกที่ต้องการดู end-->
 
 
-        
+
     <!-- popup-->
 
-    <div class="popup2" id="popup-2"> 
+    < <div class="popup2" id="popup-2">
         <div class="overlay1"></div>
         <div class="content5">
             <div class="close-btn" onclick="togglePopup()">&times;</div>
-            <h1>รายการ</h1>
-            <div class="name-report1">
-                <label for="text">ชื่อร้าน : </label>
-                <span><p>ซักรีด1</p></span>
+
+            <!-- หัวข้อแสดงคำว่า "รายการ" ที่ด้านบนสุด -->
+            <h1 class="header-title">รายการ</h1>
+
+            <!-- รายการสินค้า -->
+            <div id="cart-items-container">
+                <div class="cart-item">
+                    <div class="item-image">
+                        <img src="${item.image}" alt="${item.name}">
+                    </div>
+                    <div class="item-info">
+                        <h3>${item.name}</h3>
+                        <span class="price">${item.price}฿</span>
+                    </div>
+                </div>
             </div>
-            <div class="name-report1">
-                <label for="text">หมายเหตุ : </label>
-                <span><p></p></span>
+
+            <!-- Total และ QR Code -->
+            <div class="total-info">
+                <!-- Total info will be injected here -->
             </div>
-            <div class="name-report1">
-                <label for="text">ประเภท : </label>
-                <span><p>เสื้อผ้า</p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text">ขนาด : </label>
-                <span><p> M </p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text">บริการ : </label>
-                <span><p>ซัก อบแห้ง</p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text">ราคา : </label>
-                <span><p>80 บาท</p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text">ระยะทาง : </label>
-                <span><p>5 Km.</p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text">ค่าขนส่ง : </label>
-                <span><p>50 บาท</p></span>
-            </div>
-            
-            <div class="name-report1">
-                <label for="text">ราคารวม : </label>
-                <span><p>130 บาท</p></span>
-            </div>
-            <div class="name-report1">
-                <label for="text" class="qr">แสกน QR ชำระเงิน</label>
-            </div>
-            <div class="name-report1">
-                <img src="../photo/ตู้ซักผ้า2.jpg" alt="" for="qr">
+            <div class="qr-code-container" id="qr-code-container">
+                <!-- QR code will be generated here -->
             </div>
         </div>
-    </div>
+        </div>
 
-    <!-- popup end-->
+        <!-- popup end-->
 
+        <!-- Footer Section -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section about">
+                    <h2>About Us</h2>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur eleifend libero nec libero convallis, id molestie nulla dignissim.</p>
+                </div>
+                <div class="footer-section links">
+                    <h2>Quick Links</h2>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Shop</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section social">
+                    <h2>Follow Us</h2>
+                    <a href="#"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="#"><i class="fa-brands fa-facebook"></i></a>
+                    <a href="#"><i class="fa-brands fa-line"></i></a>
+                    <a href="#"><i class="fa-regular fa-envelope"></i></a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                &copy; 2024 Laundry Service | Designed by YourName
+            </div>
+        </footer>
+        <!-- Footer End -->
 
-
-
-
-
-
-
-
-    
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
         <!--custom js file link -->
         <script src="js/script.js"></script>
+
+
+
+        <!-- สคริปต์แสดงแผนที่ -->
+        <script>
+            function showMap(lat, lng) {
+                // เปลี่ยน src ของ iframe ให้ตรงกับละติจูดและลองจิจูดที่เลือก
+                var mapFrame = document.getElementById("map-frame");
+                mapFrame.src = `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3877.1716674163754!2d${lng}!3d${lat}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x311d5d399ff73def%3A0x18f5dc31c552295!2z4Lib4Li04LmI4LiZIOC4i-C4seC4geC5geC4q-C5ieC4hyDguIvguLHguIHguK3guJrguKPguLXguJQ!5e0!3m2!1sth!2sth!4v1727145434864!5m2!1sth!2sth`;
+
+                // แสดงแผนที่ที่ซ่อนอยู่
+                document.getElementById("map").style.display = "block";
+            }
+        </script>
+        <!-- คำอธิบาย:
+ลิงก์พิกัดไปยัง Google Maps: ลิงก์แรก (เช่น <a href="javascript:void(0);" onclick="showMap('13.647319', '100.725058')">พิกัด</a>) จะเรียกฟังก์ชัน showMap() เพื่อแสดง iframe ที่มีพิกัดที่ระบุ
+ลิงก์เปิดใน Google Maps: ลิงก์ที่สอง (เช่น <a href="https://www.google.com/maps?q=13.647319,100.725058" target="_blank">ดูบน Google Maps</a>) จะเปิด Google Maps ในแท็บใหม่
+สคริปต์แสดงแผนที่: ฟังก์ชัน showMap(lat, lng) จะเปลี่ยนพิกัดใน iframe ของแผนที่ให้ตรงกับพิกัดที่ส่งมาและแสดงแผนที่ที่ถูกซ่อนอยู่
+ -->
+
+
+
+
+
+
+
 
         <script>
             let searchForm = document.querySelector('.search-form');
@@ -1074,7 +1365,12 @@ $conn->close();
                 navbar.classList.remove('active');
             }
 
-            
+            document.querySelector('#cart-btn').onclick = () => {
+                shoppingCart.classList.toggle('active');
+                searchForm.classList.remove('active');
+                profile.classList.remove('active');
+                navbar.classList.remove('active');
+            }
 
             document.querySelector('#user-btn').onclick = () => {
                 profile.classList.toggle('active');
@@ -1090,13 +1386,6 @@ $conn->close();
                 profile.classList.remove('active');
             }
 
-            document.querySelector('#cart-btn').onclick = () => {
-                shoppingCart.classList.toggle('active');
-                searchForm.classList.remove('active');
-                profile.classList.remove('active');
-                navbar.classList.remove('active');
-            }
-
             window.onscroll = () => {
                 searchForm.classList.remove('active');
                 shoppingCart.classList.remove('active');
@@ -1105,36 +1394,167 @@ $conn->close();
             }
 
 
-        var swiper = new Swiper(".product-slider", {
-            loop:true,
-            spaceBetween: 20,
-            autoplay: {
-                delay:7500,
-                disableOnInteraction:false,
-            },
-            centeredSlides:true,
-            breakpoints: {
-                0: {
-                slidesPerView: 1,
+            var swiper = new Swiper(".product-slider", {
+                loop: true,
+                spaceBetween: 20,
+                autoplay: {
+                    delay: 7500,
+                    disableOnInteraction: false,
                 },
-                768: {
-                slidesPerView: 2,
+                centeredSlides: true,
+                breakpoints: {
+                    0: {
+                        slidesPerView: 1,
+                    },
+                    768: {
+                        slidesPerView: 2,
+                    },
+                    1020: {
+                        slidesPerView: 3,
+                    },
                 },
-                1020: {
-                slidesPerView: 3,
-                },
-            },
-        });
+            });
 
-        
 
-        /* popup */
-        function togglePopup() {
-            document.getElementById("popup-2").classList.toggle("active");
-            document.querySelector('.shopping-cart').classList.remove('active');
-        }
 
+            /* popup */
+            // Function to toggle popup for checkout
+            function togglePopup() {
+                const popup = document.getElementById("popup-2");
+                const shoppingCart = document.querySelector('.shopping-cart'); // เลือก shopping-cart
+                const isActive = popup.classList.contains("active");
+
+                // If the popup is currently active, close it
+                if (isActive) {
+                    popup.classList.remove("active");
+                    return; // Exit the function
+                }
+
+                // Clear previous content
+                const popupContent = document.querySelector('.content5');
+                popupContent.innerHTML = ''; // Clear previous content in popup
+
+                // If there are no items in the cart, notify the user
+                if (userCart.length === 0) {
+                    popupContent.innerHTML = '<p>ไม่มีสินค้าในตะกร้า</p>'; // "No items in the cart"
+                    popup.classList.add("active"); // Show popup if cart is empty
+                    return;
+                }
+
+                let total = 0;
+                const shippingFee = 50; // Assuming a static shipping fee
+
+                // Add header title (แสดงคำว่า "รายการ" แค่ครั้งเดียว)
+                popupContent.innerHTML += `<h1 class="header-title">รายการ</h1>`;
+
+                // Generate checkout content
+                userCart.forEach(item => {
+                    total += parseFloat(item.price);
+
+                    // Append item details to popup content
+                    popupContent.innerHTML += `
+        <div class="cart-item">
+            <div class="item-image">
+                <img src="${item.image}" alt="${item.name}">
+            </div>
+            <div class="item-info">
+                <h3>${item.name}</h3>
+                <span class="price">${item.price}฿</span>
+            </div>
+        </div>
+        `;
+                });
+
+                // Add shipping fee and total to popup
+                total += shippingFee; // Include shipping fee in total
+
+                popupContent.innerHTML += `
+    <div class="total-info">
+        <p>ค่าจัดส่ง: <span id="shipping-fee">${shippingFee}฿</span></p>
+        <p>รวม: <span id="total-price">${total}฿</span></p>
+    </div>
+    `;
+
+                // Add QR code container below total
+                popupContent.innerHTML += `
+    <div class="qr-code-container" id="qr-code-container"></div>
+    `;
+
+                // Add close button at the top of the popup
+                popupContent.innerHTML = `
+        <div class="close-btn" onclick="togglePopup()">&times;</div>
+        ${popupContent.innerHTML}  <!-- Insert previous content below the close button -->
+    `;
+
+                // Show popup
+                popup.classList.add("active");
+
+                // Hide the shopping cart when the popup is shown
+                shoppingCart.classList.remove('active'); // ซ่อน shopping-cart
+
+                // Generate QR Code for the total price
+                const qrData = "test qr code"; // ข้อมูลใน QR code (เช่น จำนวนเงินที่ต้องชำระ)
+                console.log("QR Data: ", qrData); // Log QR Data
+
+                try {
+                    // Generate QR Code
+                    const qrCodeContainer = document.getElementById("qr-code-container");
+                    qrCodeContainer.innerHTML = ''; // Clear previous QR Code
+                    new QRCode(qrCodeContainer, {
+                        text: qrData,
+                        width: 128,
+                        height: 128
+                    });
+                } catch (error) {
+                    console.error("Error generating QR Code:", error);
+                    alert("เกิดข้อผิดพลาดในการสร้าง QR Code กรุณาลองใหม่อีกครั้ง");
+                }
+            }
+
+            // Function to remove item from cart
+            function removeFromCart(index) {
+                userCart.splice(index, 1); // Remove item at index
+                updateCart(userCart); // Update cart display
+            }
+
+            // Retrieve data from localStorage
+            document.addEventListener('DOMContentLoaded', function() {
+                const cartItems = JSON.parse(localStorage.getItem('cartItems')) || {};
+                let user_id = <?php echo json_encode($user_id); ?>; // Retrieve user_id from PHP
+                userCart = cartItems[user_id] || []; // If there's no cart data, make it an empty array
+
+                // Update the display
+                updateCart(userCart);
+            });
+
+            function updateCart(cartItems) {
+                const cartItemsContainer = document.getElementById('cart-items');
+                let cartHTML = '';
+                let total = 0;
+
+                cartItems.forEach((item, index) => {
+                    cartHTML += `
+                <div class="box">
+                    <i class='bx bx-trash' onclick="removeFromCart(${index})"></i>
+                    <img src="${item.image}" alt="${item.name}">
+                    <div class="content">
+                        <h3>${item.name}</h3>
+                        <span class="price">${item.price}฿</span>
+                    </div>
+                </div>
+            `;
+                    total += parseFloat(item.price);
+                });
+
+                cartItemsContainer.innerHTML = cartHTML;
+                document.getElementById('cart-total').textContent = total + '฿';
+            }
+
+            // Show cart data when the page loads
+            updateCart(userCart);
+        </script>
 
         </script>
-    </body>
+</body>
+
 </html>
