@@ -27,6 +27,7 @@ $conn->close();
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -36,18 +37,18 @@ $conn->close();
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
     <style>
         :root {
-        --orange: #ff7800;
-        --black: #130f40;
-        --white: #fff;
-        --light-color: #666;
-        --box-shadow: 0 .5rem 1rem rgba(0,0,0,.1);
-        --border:.2rem solid rgba(0,0,0,.1);
-        --outline:.1rem solid rgba(0,0,0,.1);
-        --outline-hover:.2rem solid var(--black);
+            --orange: #ff7800;
+            --black: #130f40;
+            --white: #fff;
+            --light-color: #666;
+            --box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .1);
+            --border: .2rem solid rgba(0, 0, 0, .1);
+            --outline: .1rem solid rgba(0, 0, 0, .1);
+            --outline-hover: .2rem solid var(--black);
         }
 
         * {
@@ -71,6 +72,10 @@ $conn->close();
 
         body {
             background: #eee;
+            display: grid;
+            place-items: center;
+            min-height: 100vh;
+            margin: 0;
         }
 
         section {
@@ -89,7 +94,7 @@ $conn->close();
         }
 
         .btn:hover {
-            background:#507F99;
+            background: #507F99;
             color: #fff;
         }
 
@@ -103,7 +108,7 @@ $conn->close();
             align-items: center;
             justify-content: space-between;
             padding: 2rem 9%;
-            background: var(--white) ;
+            background: var(--white);
             box-shadow: var(--box-shadow);
         }
 
@@ -188,7 +193,7 @@ $conn->close();
         .header .search-form label:hover {
             color: #507F99;
         }
-        
+
 
 
         .header .profile {
@@ -200,7 +205,7 @@ $conn->close();
             box-shadow: var(--box-shadow);
             width: 25rem;
             background: var(--white);
-            text-align:center;
+            text-align: center;
         }
 
         .header .profile.active {
@@ -266,33 +271,96 @@ $conn->close();
             color: #fff;
         }
 
-        @media (max-width:991px){
-            html{
+        /* Card-condition */
+        .card-condition {
+            background-color: #f9f9f9;
+            /* สีพื้นหลัง */
+            border-radius: 8px;
+            /* มุมมน */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            /* เงา */
+            margin: 20px;
+            /* ระยะห่างรอบๆ */
+            padding: 20px;
+            /* ช่องว่างภายใน */
+            max-width: 800px;
+            /* ความกว้างสูงสุด */
+            font-family: 'Arial', sans-serif;
+            /* ฟอนต์ */
+        }
+
+        .card-body {
+            line-height: 1.6;
+            /* ระยะห่างระหว่างบรรทัด */
+        }
+
+        .heading {
+            font-size: 24px;
+            /* ขนาดฟอนต์หัวเรื่อง */
+            color: #333;
+            /* สีข้อความ */
+            margin-bottom: 20px;
+            /* ระยะห่างด้านล่าง */
+        }
+
+        h6 {
+            font-size: 18px;
+            /* ขนาดฟอนต์หัวข้อย่อย */
+            color: #555;
+            /* สีข้อความหัวข้อย่อย */
+            margin-top: 15px;
+            /* ระยะห่างด้านบน */
+            margin-bottom: 5px;
+            /* ระยะห่างด้านล่าง */
+        }
+
+        p {
+            margin-bottom: 10px;
+            /* ระยะห่างด้านล่าง */
+        }
+
+        ul {
+            margin: 0;
+            /* ลบระยะห่างด้านนอก */
+            padding-left: 20px;
+            /* ระยะห่างด้านซ้าย */
+        }
+
+        li {
+            margin-bottom: 5px;
+            /* ระยะห่างระหว่างรายการ */
+            color: #444;
+            /* สีข้อความในรายการ */
+        }
+
+        @media (max-width:991px) {
+            html {
                 font-size: 55%;
             }
 
-            .header{
+            .header {
                 padding: 2rem;
             }
 
             section {
                 padding: 2rem;
             }
-            
+
         }
 
         @media (max-width: 768px) {
-            .header .search-form{
+            .header .search-form {
                 width: 90%;
             }
-            
+
             #menu-btn {
                 display: inline-block;
             }
 
             .header .navbar {
                 position: absolute;
-                top: 100%; right: -110%;
+                top: 100%;
+                right: -110%;
                 width: 30rem;
                 box-shadow: var(--box-shadow);
                 border-radius: .5rem;
@@ -309,52 +377,50 @@ $conn->close();
                 margin: 2rem 2.5rem;
                 display: block;
             }
-            
+
         }
 
-        @media (max-while:450px){
-            html{
-                font-size:50%;
+        @media (max-while:450px) {
+            html {
+                font-size: 50%;
             }
         }
 
-        .card-condition{
+        .card-condition {
             margin: 2rem 2rem;
-            font-size:15px;
+            font-size: 15px;
         }
 
-        .card-condition h6{
-            font-size:16px;
+        .card-condition h6 {
+            font-size: 16px;
             padding: 5px;
         }
 
-        .card-condition h1{
+        .card-condition h1 {
             text-align: center;
-            margin-top:100px;
-            color:#507F99;
+            margin-top: 100px;
+            color: #507F99;
         }
 
-        .btn-condition{
-            font-size:15px;
-            margin-left:2rem;
+        .btn-condition {
+            font-size: 15px;
+            margin-left: 2rem;
         }
 
-        .ser2, .ser3{
-            color:#507F99;
+        .ser2,
+        .ser3 {
+            color: #507F99;
         }
-        
-
-        
     </style>
     <title>Sevice shop</title>
 </head>
 
-    <body>
+<body>
 
-        <!-- header section starts -->
-        <header class="header">
-        <a href="#" class="logo">Laundry</a>
-        
+    <!-- header section starts -->
+    <header class="header">
+        <a href="dashboard_shop.php" class="logo">Laundry</a>
+
         <nav class="navbar">
             <a href="dashboard_shop.php">Dashboard</a>
             <a href="store_shop.php">Shop</a>
@@ -375,41 +441,54 @@ $conn->close();
 
 
         <div class="profile">
-        <?php 
-        // ตรวจสอบว่ามีรูปภาพหรือไม่ ถ้าไม่มีให้แสดงรูปภาพเริ่มต้น
-        $shopimg = !empty($shop['shop_img']) ? htmlspecialchars($shop['shop_img']) : 'default.jpg'; 
-        ?>
-            <img src="../photo/<?php echo $shopimg; ?>" alt="Profile Image">
+            <?php
+            // ตรวจสอบว่ามีรูปภาพหรือไม่ ถ้าไม่มีให้แสดงรูปภาพเริ่มต้น
+            $img = !empty($shop['shop_img']) ? htmlspecialchars($shop['shop_img']) : 'default.jpg';
+            ?>
+            <img src="../photo/<?php echo $img; ?>" alt="Profile Image">
             <h3><?php echo $fullName; ?></h3>
             <span>shop</span>
             <a href="profile_shop.php" class="btnp">Profile</a>
             <div class="flex-btnp">
-                <a href="history_shop.php" class="option-btnp">ประวัติ</a>
+                <a href="report_shop.php" class="option-btnp">รายงาน</a>
                 <a href="login.php" class="option-btnp">Logout</a>
             </div>
         </div>
-        </header> 
+    </header>
 
-   
+
     <!-- นโยบาย card-->
     <div class="card-condition">
         <div class="card-body">
-        <h1 class="heading">เงื่อนไข <span>การใช้บริการ</span></h1>
-            <h6>การบริการ</h6>
-            <p>* ค่าบริการในการ ซัก อบ รีด จะมีราคาบริการเริ่มต้นประมาณ 40 บาท ต่อตระกร้า (1 เครื่อง) ราคาจะขึ้นอยู่กับแต่ละร้านค้า </p>
-            <p>* โดยค่าบริการนี้ รวมน้ำยาซักผ้า และน้ำยาปรับผ้านุ่มที่ทางร้านมีบริการให้แล้ว </p>
-            <p>* หากลูกค้าต้องการจะใช้น้ำยาซักผ้า หรือน้ำยาปรับผ้านุ่มที่ต้องการ ลูกค้าสามารถทำได้โดยแจ้งร้านค้าผ่าน หมายเหตุ หรือใส่น้ำยาซักผ้าและน้ำยาปรับผ้านุ่มไว้ในตระกร้า</p>
-            <p>* บริการนี้จะไม่บริการ ผ้าที่ใช้วัสดุหนัง เช่น หนังแท้ หนังเทียม ขนสัตว์แท้ ขนสัตว์เทียม ผ้าไหม ผ้าลูกไม้ ผ้าเลื่อม หรือเสื้อผ้าที่ต้องซักพิเศษ (ซักแห้งเท่านั้น) </p>
-            <p>* รับชำระค่าบริการผ่านช่องทางออนไลน์ในเว็บไซต์เท่านั้น</p>
-            <br>
-            <h6>การชดใช้ความเสียหาย</h6>
-            <p>* ไม่รับผิดชอบกรณี ผ้าขาด ผ้าสีตก กระดุมหลุด กระดุมหาย ยางยืดเสียหาย การเสื่อมสภาพจากการใช้งาน การส่งผ้าผิดประเภทการซัก หรือปัญหาจากการตัดเย็บ ผ้าที่มีคราบฝังลึกเป็นเวลานานไม่สามารถซักออกได้</p>
-            <p>* ทางร้านซักผ้าจะทำการยืนยันออเดอร์ และแจ้งตำหนิ (หากมี) ก่อนให้บริการ</p>
-            <p>* หากทางผู้ใช้บริการต้องการให้บุคคลอื่นมารับผ้าแทนตอนทางร้านนำผ้าไปส่ง ให้แจ้งในหมายเหตุและเลขออเดอร์แก่บุคคลที่จะรับผ้าแทน เพื่อไม่ให้เกิดการเข้าใจผิด และทางร้านผู้ให้บริการจะไม่รับผิดชอบต่อความเสียหายและการสูญหายหลังจากมอบสินค้า </p>
-            <p>* กรณีผ้าเสียหาย ฉีกขาด ชำรุด หรือสูญหาย ไม่สามารถใช้งานได้อีก อันเกิดจากการกระทำของทางร้านผู้ให้บริการ จะชดใช้ค่าเสียหายจำนวน 10 เท่าของค่าบริการเท่านั้น</p>
-            <p>* การเรียกร้องค่าเสียหายต้องภายในเวลา 24 ชม. หลังได้รับผ้าคืน และต้องมีเลขออเดอร์เพื่อยืนยันการใช้บริการ รายละเอียดข้อมูลการใช้บริการในเว็บไซต์ เพื่อเรียกร้องค่าเสียหาย</p>
-            <p>* ทางผู้ให้บริการขอสงวนสิทธิ์ในการยกเลิก หรือเปลี่ยนแปลงเงื่อนไขโดยไม่ต้องแจ้งให้ทราบล่วงหน้า</p>
-            <p>* ทางผู้ให้บริการขอสงวนสิทธิ์ไม่คืนค่าบริการทั้งหมด หรือบางส่วน ในกรณียกเลิกการรับบริการไม่ว่ากรณีใดๆก็ตาม</p>
+            <h1 class="heading">เงื่อนไข <span>การใช้บริการสำหรับร้านฝากซักผ้า</span></h1>
+
+            <h6>1. การลงทะเบียนร้านค้า</h6>
+            <p>- ร้านค้าต้องสร้างบัญชีผู้ใช้ในระบบและกรอกข้อมูลที่จำเป็น เช่น ชื่อร้าน, ที่อยู่, หมายเลขโทรศัพท์, และข้อมูลบัญชีธนาคารสำหรับการชำระเงิน</p>
+            <p>- ร้านค้าต้องตรวจสอบและยืนยันข้อมูลที่ให้ไว้เพื่อความถูกต้อง</p>
+
+            <h6>2. การจัดการบริการ</h6>
+            <p>- ร้านค้าต้องอัปเดตบริการที่มีอยู่ในระบบ เช่น ประเภทของบริการซักผ้า, ราคา, และระยะเวลาในการให้บริการ</p>
+            <p>- ร้านค้าต้องจัดเตรียมอุปกรณ์และทรัพยากรที่จำเป็นในการดำเนินการตามคำสั่งซื้อ</p>
+
+            <h6>3. การรับคำสั่งซื้อ</h6>
+            <p>- ร้านค้าจะต้องรับและดำเนินการตามคำสั่งซักผ้าจากผู้ใช้ภายในระยะเวลาที่กำหนด</p>
+            <p>- หากไม่สามารถดำเนินการตามคำสั่งได้ ร้านค้าต้องแจ้งผู้ใช้อย่างรวดเร็ว</p>
+
+            <h6>4. การชำระเงิน</h6>
+            <p>- ร้านค้าต้องตรวจสอบการชำระเงินจากผู้ใช้ให้ถูกต้องก่อนเริ่มให้บริการ</p>
+            <p>- ร้านค้าจะต้องส่งใบเสร็จหรือหลักฐานการชำระเงินให้กับผู้ใช้</p>
+
+            <h6>5. การติดตามและแจ้งเตือน</h6>
+            <p>- ร้านค้าต้องอัปเดตสถานะของคำสั่งซักผ้าในระบบเพื่อให้ผู้ใช้สามารถติดตามได้</p>
+            <p>- ร้านค้าต้องแจ้งเตือนผู้ใช้เมื่อซักผ้าสำเร็จและพร้อมรับกลับ</p>
+
+            <h6>6. การเก็บรักษาเสื้อผ้า</h6>
+            <p>- ร้านค้าจะต้องเก็บรักษาเสื้อผ้าที่ฝากซักในสถานที่ที่ปลอดภัยและเหมาะสม</p>
+            <p>- หากผู้ใช้ไม่มารับเสื้อผ้าภายใน 30 วัน ร้านค้าจะต้องจัดการตามนโยบายที่กำหนด</p>
+
+            <h6>7. ข้อกำหนดทั่วไป</h6>
+            <p>- ร้านค้าสามารถปรับเปลี่ยนเงื่อนไขการให้บริการได้ตามความเหมาะสม แต่ต้องแจ้งให้ผู้ใช้ทราบ</p>
+            <p>- ร้านค้าต้องปฏิบัติตามกฎหมายและระเบียบข้อบังคับที่เกี่ยวข้องกับการให้บริการ</p>
         </div>
     </div>
 
@@ -430,42 +509,41 @@ $conn->close();
 
 
 
-    
+
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
-        <!--custom js file link -->
-        <script src="js/script.js"></script>
+    <!--custom js file link -->
+    <script src="js/script.js"></script>
 
-        <script>
-            let searchForm = document.querySelector('.search-form');
-            let profile = document.querySelector('.header .profile');
-            let navbar = document.querySelector('.header .navbar');
+    <script>
+        let searchForm = document.querySelector('.search-form');
+        let profile = document.querySelector('.header .profile');
+        let navbar = document.querySelector('.header .navbar');
 
-            document.querySelector('#search-btn').onclick = () => {
-                searchForm.classList.toggle('active');
-                profile.classList.remove('active');
-                navbar.classList.remove('active');
-            }
+        document.querySelector('#search-btn').onclick = () => {
+            searchForm.classList.toggle('active');
+            profile.classList.remove('active');
+            navbar.classList.remove('active');
+        }
 
-            document.querySelector('#user-btn').onclick = () => {
-                profile.classList.toggle('active');
-                searchForm.classList.remove('active');
-                navbar.classList.remove('active');
-            }
+        document.querySelector('#user-btn').onclick = () => {
+            profile.classList.toggle('active');
+            searchForm.classList.remove('active');
+            navbar.classList.remove('active');
+        }
 
-            document.querySelector('#menu-btn').onclick = () => {
-                navbar.classList.toggle('active');
-                searchForm.classList.remove('active');
-                profile.classList.remove('active');
-            }
+        document.querySelector('#menu-btn').onclick = () => {
+            navbar.classList.toggle('active');
+            searchForm.classList.remove('active');
+            profile.classList.remove('active');
+        }
 
-            window.onscroll = () => {
-                searchForm.classList.remove('active');
-                profile.classList.remove('active');
-                navbar.classList.remove('active');
-            }
+        window.onscroll = () => {
+            searchForm.classList.remove('active');
+            profile.classList.remove('active');
+            navbar.classList.remove('active');
+        }
+    </script>
+</body>
 
-
-        </script>
-    </body>
 </html>
