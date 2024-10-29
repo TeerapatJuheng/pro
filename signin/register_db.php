@@ -15,7 +15,8 @@ $_SESSION['e_email_add'] = isset($_POST['email']) ? $_POST['email'] : '';
 $_SESSION['e_role_add'] = isset($_POST['role']) ? $_POST['role'] : '';
 $_SESSION['e_pass_add'] = isset($_POST['pass']) ? $_POST['pass'] : '';
 $_SESSION['e_conpass_add'] = isset($_POST['conpass']) ? $_POST['conpass'] : '';
-$_SESSION['e_phone_add'] = isset($_POST['phone']) ? $_POST['phone'] : '';
+$_SESSION['e_age_add'] = isset($_POST['age']) ? $_POST['age'] : '';
+$_SESSION['e_job_add'] = isset($_POST['job']) ? $_POST['job'] : '';
 $_SESSION['e_sex_add'] = isset($_POST['sex']) ? $_POST['sex'] : '';
 
 if (isset($_POST['reg_user'])) {
@@ -24,7 +25,8 @@ if (isset($_POST['reg_user'])) {
     $role = mysqli_real_escape_string($conn, $_POST['role']);
     $pass = mysqli_real_escape_string($conn, $_POST['pass']);
     $conpass = mysqli_real_escape_string($conn, $_POST['conpass']);
-    $phone = mysqli_real_escape_string($conn, $_POST['phone']);
+    $age = mysqli_real_escape_string($conn, $_POST['age']);
+    $job = mysqli_real_escape_string($conn, $_POST['job']);
     $sex = mysqli_real_escape_string($conn, $_POST['sex']);
 
     if (empty($user)) {
@@ -63,10 +65,10 @@ if (isset($_POST['reg_user'])) {
             if (mysqli_num_rows($result1) <= 0 && mysqli_num_rows($result2) <= 0) {
                 // เพิ่มข้อมูลใหม่เข้าไปในฐานข้อมูล
                 if($role == "user"){
-                    $sql_insert = "INSERT INTO `tb_customer` (`username`, `password`, `email`, `phone`, `sex`) VALUES ('$user', '$pass', '$email', '$phone', '$sex')";
+                    $sql_insert = "INSERT INTO `tb_customer` (`username`, `password`, `email`, `age`, `job`, `sex`) VALUES ('$user', '$pass', '$email', '$age', '$job', '$sex')";
                 }
                 else{
-                    $sql_insert = "INSERT INTO `tb_shop` (`shop_user`, `shop_pass`, `shop_email`, `shop_phone`, `shop_sex`) VALUES ('$user', '$pass', '$email', '$phone', '$sex')";
+                    $sql_insert = "INSERT INTO `tb_shop` (`shop_user`, `shop_pass`, `shop_email`, `shop_age`, `shop_job`, `shop_sex`) VALUES ('$user', '$pass', '$email', '$age', '$job', '$sex')";
                 }
                 $result_insert = mysqli_query($conn, $sql_insert);
 
