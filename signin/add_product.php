@@ -57,4 +57,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Close the connection
 $conn->close();
-?>
