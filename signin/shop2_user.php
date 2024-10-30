@@ -67,29 +67,35 @@ if ($shop_id > 0) {
     $result_products = $stmt->get_result();
     $stmt->close();
 
-    // ดึงข้อมูลรีวิว
+    // ดึงข้อมูลรีวิวพร้อมคะแนนเฉลี่ย
     $query = "
-    SELECT 
-        r.review_stars, 
-        r.review_commant, 
-        c.name AS customer_name, 
-        c.lastname AS customer_lastname, 
-        c.img AS customer_img 
-    FROM 
-        tb_review r 
-    JOIN 
-        tb_sell s ON r.review_order = s.sell_order 
-    JOIN 
-        tb_customer c ON s.ct_id = c.id 
-    WHERE 
-        s.shop_id = ?";
+SELECT 
+    r.review_stars, 
+    r.review_commant, 
+    c.name AS customer_name, 
+    c.lastname AS customer_lastname, 
+    c.img AS customer_img,
+    (SELECT AVG(r2.review_stars) 
+     FROM tb_review r2 
+     JOIN tb_sell s2 ON r2.review_order = s2.sell_order 
+     WHERE s2.shop_id = ?) AS average_rating
+FROM 
+    tb_review r 
+JOIN 
+    tb_sell s ON r.review_order = s.sell_order 
+JOIN 
+    tb_customer c ON s.ct_id = c.id 
+WHERE 
+    s.shop_id = ?";
 
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("i", $shop_id);
+    $stmt->bind_param("ii", $shop_id, $shop_id); // ใช้ $shop_id สองครั้ง
     $stmt->execute();
     $result_reviews = $stmt->get_result();
 
     $reviews = [];
+    $average_rating = 0; // ตัวแปรสำหรับเก็บคะแนนเฉลี่ย
+
     if ($result_reviews->num_rows > 0) {
         while ($row = $result_reviews->fetch_assoc()) {
             // เช็คว่ามีรูปภาพหรือไม่
@@ -100,6 +106,12 @@ if ($shop_id > 0) {
                 // ใช้รูปภาพดีฟอลต์ถ้าไม่มีรูปภาพ
                 $row['customer_img'] = '../photo/default-avatar.jpg';
             }
+
+            // เก็บคะแนนเฉลี่ยจากรีวิว
+            if (isset($row['average_rating'])) {
+                $average_rating = $row['average_rating'];
+            }
+
             $reviews[] = $row;
         }
     } else {
@@ -1950,7 +1962,7 @@ $conn->close();
     <section class="review" id="review">
         <h1 class="review-name">Rating & Review</h1>
         <div class="we-customer-ratings__averages">
-            <span class="we-customer-ratings__averages__display">4.6</span> จาก 5
+            <span class="we-customer-ratings__averages__display"><?php echo number_format($average_rating, 1); ?></span> จาก 5
         </div>
         <div class="swiper review-slider">
             <div class="swiper-wrapper">
