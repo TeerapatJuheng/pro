@@ -13,11 +13,14 @@ $Query2 = "SELECT COUNT(*) as total FROM `tb_sell` WHERE shop_id = $_SESSION[sho
 $result2 = mysqli_query($conn, $Query2) or die("database error:" . mysqli_error($conn));
 $total = mysqli_fetch_assoc($result2);
 
-$Query3 = "SELECT SUM(sell_total) as sell_total
+$query3 = "SELECT SUM(sell_total) as sell_total
 FROM tb_sell 
-WHERE DATE(sell_date) = CURDATE()";
-$result3 = mysqli_query($conn, $Query3) or die("database error:" . mysqli_error($conn));
-$sale_date = mysqli_fetch_assoc($result3);
+WHERE DATE(sell_date) = CURDATE() AND shop_id = ?";
+$stmt3 = $conn->prepare($query3);
+$stmt3->bind_param("i", $_SESSION['shop_id']);
+$stmt3->execute();
+$result3 = $stmt3->get_result();
+$sale_date = $result3->fetch_assoc();
 
 $Query4 = "SELECT SUM(sell_total) as sell_total FROM `tb_sell` WHERE shop_id = $_SESSION[shop_id]";
 $result4 = mysqli_query($conn, $Query4) or die("database error:" . mysqli_error($conn));
