@@ -86,7 +86,9 @@ JOIN
 JOIN 
     tb_customer c ON s.ct_id = c.id 
 WHERE 
-    s.shop_id = ?";
+    s.shop_id = ? 
+GROUP BY 
+    r.review_order"; // จัดกลุ่มโดย order เพื่อป้องกันการซ้ำซ้อน
 
     $stmt = $conn->prepare($query);
     $stmt->bind_param("ii", $shop_id, $shop_id); // ใช้ $shop_id สองครั้ง
@@ -100,8 +102,8 @@ WHERE
         while ($row = $result_reviews->fetch_assoc()) {
             // เช็คว่ามีรูปภาพหรือไม่
             if (!empty($row['customer_img'])) {
-                // แปลง BLOB เป็น Base64
-                $row['customer_img'] = 'data:image/jpeg;base64,' . base64_encode($row['customer_img']);
+                // ใช้ path ของภาพแทนการแปลงเป็น Base64
+                $row['customer_img'] = '../photo/' . htmlspecialchars($row['customer_img']);
             } else {
                 // ใช้รูปภาพดีฟอลต์ถ้าไม่มีรูปภาพ
                 $row['customer_img'] = '../photo/default-avatar.jpg';
@@ -115,7 +117,7 @@ WHERE
             $reviews[] = $row;
         }
     } else {
-        echo "ไม่พบรีวิวสำหรับ shop_id: " . htmlspecialchars($shop_id);
+        // echo "ไม่พบรีวิวสำหรับ shop_id: " . htmlspecialchars($shop_id);
     }
 
     $stmt->close();
@@ -649,149 +651,194 @@ $conn->close();
 
 
         /* shop2 */
+
         .box-container {
             min-height: 100vh;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
+            /* ใช้ flex-start เพื่อให้เนื้อหาเริ่มที่ด้านบน */
             justify-content: center;
-            /*padding-bottom: 20px;*/
-            /*background: #ccc;*/
-            margin-top: 100px;
+            padding-top: 50px;
+            /* เพิ่มพื้นที่ว่างที่ด้านบน */
+            margin-top: 0;
+            /* ลบ margin-top ที่ไม่จำเป็น */
         }
 
-        .box-container .box {
+        .box {
             display: flex;
-            /*align-items: center;*/
-            /*justify-content: center;*/
             background: #fff;
-            width: 100%;
-            padding: 1rem;
-            margin: 2rem;
-        }
-
-        .box-container .box .image-container {
-            text-align: center;
-            padding: 1rem 2rem;
-        }
-
-        .box-container .box .image-container .big-image {
-            border: 1px solid #507F99;
-            padding: 2rem 1rem;
-        }
-
-        .box-container .box .image-container .big-image img {
-            height: 25rem;
-        }
-
-        .box-container .box .content {
-            padding: 1rem;
-        }
-
-        .box-container .box .content .title,
-        .box-container .box .content .address,
-        .box-container .box .content .time,
-        .box-container .box .content .cont {
-            font-size: 16px;
-            color: #333;
-            padding: 5px 0;
-            text-transform: uppercase;
-        }
-
-        .box-container .box .content .p1 {
-            padding: 5px 0;
-            font-size: 13px;
-            color: #666;
-        }
-
-        .box-container .box .content form .dropDown span {
-            font-size: 18px;
-            display: block;
-            color: #333;
-            padding: 5px 0;
-        }
-
-        .box-container .box .content form .dropDown select {
-            width: 100%;
-            height: 3rem;
-            font-size: 1.5rem;
-            color: #666;
-            border: .1rem solid #507F99;
             border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 1200px;
+            margin: 2rem;
+            flex-wrap: wrap;
+            /* เพื่อให้กล่องยืดหยุ่น */
         }
 
-        .price2 {
-            font-size: 16px;
-            /* ขนาดตัวอักษรสำหรับราคาบริการ */
+        .image-container {
+            flex: 1 1 40%;
+            /* กำหนดพื้นที่ให้ภาพ */
+            padding: 1rem;
+        }
+
+        .big-image {
+            border: 1px solid #507F99;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .big-image img {
+            height: auto;
+            max-height: 25rem;
+            max-width: 100%;
+        }
+
+        .content {
+            flex: 1 1 60%;
+            /* กำหนดพื้นที่ให้เนื้อหา */
+            padding: 2rem;
+            /* เพิ่ม padding เพื่อความห่างหาย */
+        }
+
+        .title {
+            font-size: 26px;
+            /* ขนาดตัวอักษรสำหรับชื่อร้าน */
             color: #007BFF;
-            /* เปลี่ยนสีให้เห็นเด่นชัด */
-            font-weight: bold;
-            /* ทำให้ตัวหนา */
-            margin: 10px 0;
-            /* ระยะห่างด้านบนและด้านล่าง */
-            white-space: nowrap;
-            /* ไม่ให้ข้อความแตกบรรทัด */
-            overflow: hidden;
-            /* ซ่อนข้อมูลที่เกิน */
-            text-overflow: ellipsis;
-            /* แสดง "..." ถ้าข้อความยาวเกินไป */
+            margin-bottom: 15px;
+            /* เพิ่มระยะห่างด้านล่าง */
         }
 
-        .box-container .box .content form .quantity2 {
-            padding: 1rem 0;
-        }
-
-        .box-container .box .content form .quantity2 span {
-            font-size: 15px;
+        .address,
+        .time,
+        .cont {
+            font-size: 20px;
+            /* ขนาดตัวอักษรสำหรับหัวข้อ */
             color: #333;
+            margin: 15px 0;
+            /* เพิ่มระยะห่าง */
         }
 
-        .box-container .box .content form .quantity2 .q {
-            height: 3rem;
-            width: 6rem;
-            text-align: center;
-            font-size: 15px;
-            color: #666;
-            margin: 0 1rem;
-            border: .1rem solid #000;
-            border-radius: 5px;
-        }
-
-        /*.box-container .box .content form .tt {
-            padding: 1rem 0;
-        }*/
-
-        .box-container .box .content form .tt span {
-            font-size: 18px;
-            color: #333;
+        .p1 {
             padding: 5px 0;
+            font-size: 16px;
+            /* ปรับขนาดตัวอักษร */
+            color: #666;
         }
 
-        .box-container .box .content form .tt textarea {
-            border: .1rem solid #000;
-            border-radius: 5px;
+        .btn2 {
+            height: 50px;
             width: 100%;
-        }
-
-        .box-container .box .content .btn2 {
-            height: 4rem;
-            width: 18rem;
             background: #507F99;
             color: #fff;
             border: none;
             cursor: pointer;
-            font-size: 1.7rem;
+            font-size: 1.5rem;
             border-radius: 5px;
-            float: right;
+            margin-top: 20px;
+            /* เพิ่มระยะห่างด้านบน */
+            transition: background 0.3s;
         }
 
-        .box-container .box .content .btn2:hover {
+        .btn2:hover {
             background: #728FCE;
         }
 
-        .box {
-            font-family: Arial, sans-serif;
-            /* เลือกฟอนต์ที่ต้องการใช้ */
+        .card-service {
+            margin: 15px 0;
         }
+
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            /* ทำให้การ์ดเรียงกันแบบยืดหยุ่น */
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            margin: 10px;
+            flex: 1 1 calc(33% - 20px);
+            /* กำหนดขนาดการ์ด */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            /* เพิ่มเอฟเฟกต์เมื่อวางเมาส์ */
+        }
+
+        .price2 {
+            font-size: 16px;
+            color: #007BFF;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .tt {
+            margin-top: 15px;
+        }
+
+        .tt textarea {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            padding: 10px;
+            resize: none;
+            /* ปิดการปรับขนาด */
+        }
+
+        .dropDown {
+            background-color: #f0f8ff;
+            /* สีพื้นหลังที่สว่าง */
+            border: 1px solid #007BFF;
+            /* สีกรอบ */
+            border-radius: 8px;
+            /* มุมมน */
+            padding: 15px;
+            /* ระยะห่างภายใน */
+            margin: 20px 0;
+            /* ระยะห่างด้านบนและด้านล่าง */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            /* เงา */
+        }
+
+        .dropDown h5 {
+            margin: 0;
+            /* ลบระยะห่างเริ่มต้น */
+            font-size: 20px;
+            /* ขนาดตัวอักษรใหญ่ขึ้น */
+            color: #333;
+            /* สีตัวอักษร */
+        }
+
+        .dropDown select {
+            width: 100%;
+            /* ให้เลือกขนาดเต็มที่ */
+            padding: 10px;
+            /* ระยะห่างภายใน */
+            border: 1px solid #007BFF;
+            /* สีกรอบ */
+            border-radius: 5px;
+            /* มุมมน */
+            font-size: 16px;
+            /* ขนาดตัวอักษร */
+            background-color: #ffffff;
+            /* สีพื้นหลังของ select */
+            transition: border-color 0.3s;
+            /* เอฟเฟกต์เปลี่ยนสี */
+        }
+
+        .dropDown select:focus {
+            border-color: #0056b3;
+            /* เปลี่ยนสีกรอบเมื่อเลือก */
+            outline: none;
+            /* ลบเส้นขอบที่ไม่ต้องการ */
+        }
+
+
 
         /* ช่องบริการ */
         .card-container {
@@ -809,13 +856,15 @@ $conn->close();
             /* เพิ่มระยะห่างระหว่างการ์ด */
         }
 
-        .dropDown h5,
-        .card-service h5,
-        .tt h5 {
+        h5 {
             font-size: 18px;
-            /* ขนาดตัวอักษรสำหรับหัวข้อในฟอร์ม */
-            margin-bottom: 10px;
-            /* ระยะห่างด้านล่าง */
+            /* ขนาดตัวอักษรเท่ากันสำหรับทุกหัวข้อ */
+            color: #333;
+            /* สีตัวอักษร */
+            margin: 10px 0;
+            /* ระยะห่างด้านบนและด้านล่าง */
+            font-weight: bold;
+            /* ทำให้ตัวอักษรหนา */
         }
 
         .card-service {
@@ -1213,59 +1262,129 @@ $conn->close();
         /*review */
         .review {
             margin-left: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            /* สีพื้นหลังเพื่อให้ดูสบายตา */
+            border-radius: 1rem;
+            /* ทำมุมมน */
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            /* เงาเบา ๆ รอบกล่อง */
+        }
+
+        .review h1 {
+            text-align: left;
+            font-size: 26px;
+            /* ขนาดฟอนต์ใหญ่ขึ้น */
+            color: #333;
+            /* สีเข้มขึ้น */
+            margin-bottom: 20px;
+            /* เว้นระยะด้านล่าง */
         }
 
         .review .review-slider {
             padding: 1rem;
         }
 
-        .review .review-slider:first-child {
-            margin-bottom: 2rem;
-        }
-
         .review .review-slider .box3 {
             background: #fff;
             border-radius: .5rem;
             text-align: center;
-            padding: 3rem 2rem;
+            padding: 2rem;
             outline-offset: -1rem;
             outline: var(--outline);
-            box-shadow: var(--box-shadow);
-            transition: .2s linear;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: .3s ease;
+            margin: 1rem;
+            /* เพิ่มระยะห่างระหว่างกล่อง */
+            min-height: 150px;
+            /* กำหนดความสูงขั้นต่ำ */
+            max-height: 250px;
+            /* กำหนดความสูงสูงสุด */
+            display: flex;
+            /* ใช้ Flexbox */
+            flex-direction: column;
+            /* แนวตั้ง */
+            justify-content: center;
+            /* จัดกลางแนวตั้ง */
+            align-items: center;
+            /* จัดกลางแนวนอน */
+            position: relative;
+            /* เพื่อความยืดหยุ่นในการจัดวาง */
+        }
+
+        /* ปรับให้ไม่ยืดเมื่อไม่มีข้อมูล */
+        .review .review-slider .box3 p {
+            margin: 0;
+            /* เอา margin ออกเพื่อไม่ให้ยืด */
+            padding: 0;
+            /* เอา padding ออก */
+            line-height: 1.5;
+            /* เพิ่มระยะห่างระหว่างบรรทัด */
+            font-size: 14px;
+            /* ขนาดฟอนต์ */
+            color: #666;
+            /* สีเทาอ่อน */
+        }
+
+        /* เพิ่มการจัดการเมื่อไม่มีข้อมูล */
+        .review .review-slider .box3.empty {
+            min-height: 100px;
+            /* ความสูงเมื่อไม่มีข้อมูล */
+            max-height: 100px;
+            /* ความสูงสูงสุดเมื่อไม่มีข้อมูล */
+            display: flex;
+            /* ใช้ Flexbox */
+            justify-content: center;
+            /* จัดกลางแนวตั้ง */
+            align-items: center;
+            /* จัดกลางแนวนอน */
         }
 
         .review .review-slider .box3:hover {
             outline-offset: 0rem;
             outline: var(--outline-hover);
+            transform: translateY(-5px);
+            /* ทำให้กล่องยกขึ้นเมื่อ hover */
         }
 
         .review .review-slider .box3 img {
             height: 100px;
             width: 100px;
-            border: 1px solid #000;
+            border-radius: 50%;
+            /* ทำให้รูปภาพกลม */
+            border: 2px solid #007bff;
+            /* เปลี่ยนสีขอบให้สดใส */
+            margin-bottom: 15px;
+            /* เพิ่มระยะห่างด้านล่างรูปภาพ */
         }
 
         .review .review-slider .box3 h3 {
-            font-size: 15px;
-            color: var(--black);
+            font-size: 20px;
+            /* ขนาดฟอนต์ใหญ่ขึ้น */
+            color: #333;
+            /* สีเข้มขึ้น */
+            margin: 10px 0;
+            /* เพิ่มระยะห่างด้านบนและล่าง */
         }
 
         .review .review-slider .box3 p {
-            font-size: 12px;
-            color: var(--light-color);
-            padding: .2rem 0;
+            font-size: 14px;
+            /* ขนาดฟอนต์ที่เหมาะสม */
+            color: #666;
+            /* สีเทาอ่อน */
+            padding: .5rem 0;
+            /* เพิ่มระยะห่าง */
+            line-height: 1.5;
+            /* เพิ่มระยะห่างระหว่างบรรทัด */
         }
 
         .review .review-slider .box3 .stars i {
             font-size: 1.7rem;
+            /* ขนาดดาวที่ใหญ่ขึ้น */
             color: #FFBF00;
-            padding: 0.5rem 0;
-        }
-
-        .review h1 {
-            text-align: left;
-            font-size: 22px;
-            color: #000;
+            /* สีดาว */
+            padding: 0 0.2rem;
+            /* เพิ่มระยะห่างระหว่างดาว */
         }
 
         /* popup2 */
@@ -1820,11 +1939,14 @@ $conn->close();
                     }
 
                     // แสดงผล
-                    if (!empty($openDays)) {
+                    if (count($openDays) === 7) {
+                        // หากเปิดทุกวัน
+                        echo "เปิดทุกวัน: $formattedOpenTime - $formattedCloseTime";
+                    } elseif (!empty($openDays)) {
                         $firstDay = $openDays[0]; // วันแรกที่เปิด
                         $lastDay = end($openDays); // วันสุดท้ายที่เปิด
 
-                        // ถ้ามีวันเดียวแสดงแค่วันนั้น
+                        // หากมีวันเดียวให้แสดงวันนั้น
                         if (count($openDays) === 1) {
                             $daysText = $firstDay;
                         } else {
@@ -1846,7 +1968,7 @@ $conn->close();
                 <form id="orderForm" method="POST" action="service_user.php">
                     <div class="dropDown">
                         <span>
-                            <h5>ขนาด :</h5>
+                            <h5>ขนาดของตะกร้า :</h5>
                         </span>
                         <select name="size" id="size" required>
                             <option value="" selected disabled>เลือกขนาด</option>
@@ -1855,11 +1977,12 @@ $conn->close();
                             <option value="big">L (ขนาดใหญ่)</option>
                         </select>
                     </div>
+                    <span>
+                        <h5>บริการ :</h5>
+                    </span>
 
                     <div class="card-service">
-                        <span>
-                            <h5>บริการ :</h5>
-                        </span>
+
                         <div class="card-container">
                             <?php while ($product = $result_products->fetch_assoc()): ?>
                                 <input type="radio" name="service" id="card_<?php echo $product['product_id']; ?>" value="<?php echo $product['product_id']; ?>" required onchange="generateSellOrder()">
@@ -1892,7 +2015,6 @@ $conn->close();
                         </span>
                         <textarea name="textarea" id="textarea" cols="50" rows="3"></textarea>
                     </div>
-
                     <!-- ฟิลด์แสดงหมายเลขการสั่งซื้อ
                     <div class="tt">
                         <span>
@@ -1900,16 +2022,10 @@ $conn->close();
                         </span>
                         <input type="text" name="sell_order" id="sell_order" readonly required>
                     </div> -->
-
                     <button type="submit" class="btn2">ใส่ตะกร้า</button>
                 </form>
-
-
-
             </div>
-
         </div>
-
     </div>
     <!-- ให้คะแนนรีวิว
     <div class="review-form-container">
@@ -1968,15 +2084,19 @@ $conn->close();
             <div class="swiper-wrapper">
                 <?php if (!empty($reviews)): ?>
                     <?php foreach ($reviews as $review): ?>
-                        <div class="swiper-slide box3">
-                            <img src="<?php echo $review['customer_img']; ?>" alt="">
-                            <h3><?php echo htmlspecialchars($review['customer_name'] . ' ' . $review['customer_lastname']); ?></h3>
-                            <div class="stars">
-                                <?php for ($i = 0; $i < 5; $i++): ?>
-                                    <i class='bx bxs-star' style="color: <?php echo ($i < $review['review_stars']) ? 'gold' : 'gray'; ?>;"></i>
-                                <?php endfor; ?>
-                            </div>
-                            <p><?php echo htmlspecialchars($review['review_commant']); ?></p>
+                        <div class="swiper-slide box3 <?php echo empty($reviews) ? 'empty' : ''; ?>">
+                            <?php if (empty($reviews)): ?>
+                                <p>ยังไม่มีรีวิวสำหรับร้านนี้</p>
+                            <?php else: ?>
+                                <img src="<?php echo $review['customer_img']; ?>" alt="Profile Image">
+                                <h3><?php echo htmlspecialchars($review['customer_name'] . ' ' . $review['customer_lastname']); ?></h3>
+                                <div class="stars">
+                                    <?php for ($i = 0; $i < 5; $i++): ?>
+                                        <i class='bx bxs-star' style="color: <?php echo ($i < $review['review_stars']) ? 'gold' : 'gray'; ?>;"></i>
+                                    <?php endfor; ?>
+                                </div>
+                                <p><?php echo htmlspecialchars($review['review_commant']); ?></p>
+                            <?php endif; ?>
                         </div>
                     <?php endforeach; ?>
                 <?php else: ?>
@@ -1990,16 +2110,46 @@ $conn->close();
     <!-- review end -->
 
     <!-- popup-->
-
     <div class="popup2" id="popup-2">
         <div class="overlay1"></div>
         <div class="content5">
             <div class="close-btn" onclick="togglePopup()">&times;</div>
 
             <!-- Form starts here -->
-            <form action="service_user.php" method="post">
-                <!-- หัวข้อแสดงคำว่า "รายการ" ที่ด้านบนสุด -->
+            <form action="demo_pay.php" method="post">
                 <h1 class="header-title">รายการ</h1>
+
+                <!-- เพิ่มช่องสำหรับหมายเลขคำสั่งซื้อ -->
+                <div class="group">
+                    <label>หมายเลขคำสั่งซื้อ</label>
+                    <div>
+                        <input type="text" name="mch_order_no" id="mch_order_no" value="<?php echo date('YmdHis', time()) . rand(100000, 999999); ?>" readonly />
+                    </div>
+                </div>
+
+                <!-- เพิ่มช่องสำหรับ fee_type -->
+                <div class="group">
+                    <label>ประเภทค่าธรรมเนียม</label>
+                    <div>
+                        <select name="fee_type">
+                            <option value="THB">THB</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- เพิ่มช่องสำหรับ channel -->
+                <div class="group">
+                    <label>ช่องทางการชำระเงิน</label>
+                    <div>
+                        <select name="channel">
+                            <option value="promptpay">Promptpay</option>
+                            <option value="alipay">Alipay</option>
+                            <option value="wechat">Wechat</option>
+                            <option value="airpay">Airpay</option>
+                            <option value="truemoney">Truemoney</option>
+                        </select>
+                    </div>
+                </div>
 
                 <!-- รายการสินค้า -->
                 <div id="cart-items-container">
@@ -2014,7 +2164,14 @@ $conn->close();
                     <!-- QR code will be generated here -->
                 </div>
 
-                <button type="submit" class="submit-btn">ไปชำระเงิน</button>
+                <!-- ปรับปุ่มที่นี่ -->
+                <div class="group">
+                    <label>&nbsp;</label>
+                    <input type='hidden' name='action' value='native_pay' />
+                    <div>
+                        <input type="submit" value="ไปชำระเงิน" />
+                    </div>
+                </div>
             </form>
             <!-- Form ends here -->
 
@@ -2333,25 +2490,53 @@ $conn->close();
         let userCart = cartData[user_id] || []; // If user has no cart data, initialize to empty array
         // Function to handle checkout
         function checkout() {
-            const cartItems = userCart; // Assuming userCart holds the current cart items
+            const cartItems = userCart; // สมมติว่า userCart เก็บรายการสินค้าปัจจุบัน
             const totalAmount = cartItems.reduce((total, item) => total + parseFloat(item.price), 0);
+
+            // ดึงค่า mch_order_no จากฟอร์ม
+            const mch_order_no = document.querySelector('input[name="mch_order_no"]').value;
+
+            // ดึงค่าจาก fee_type และ channel
+            const fee_type = document.querySelector('select[name="fee_type"]').value;
+            const channel = document.querySelector('select[name="channel"]').value;
+
+            // Log ข้อมูลที่ส่งไปยังเซิร์ฟเวอร์
+            console.log('Sending data:', {
+                cartData: cartItems,
+                total_fee: totalAmount,
+                mch_order_no: mch_order_no,
+                fee_type: fee_type,
+                channel: channel
+            });
 
             fetch('payment_load.php', {
                     method: 'POST',
                     body: new URLSearchParams({
                         cartData: JSON.stringify(cartItems),
-                        cartTotal: totalAmount
+                        total_fee: totalAmount,
+                        mch_order_no: mch_order_no,
+                        fee_type: fee_type,
+                        channel: channel
                     })
                 })
-                .then(response => response.json())
+                .then(response => {
+                    // ตรวจสอบว่าการตอบสนองเป็น 200 OK
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json(); // แปลงข้อมูล JSON
+                })
                 .then(data => {
                     if (data.success) {
                         console.log(data.message); // ข้อความจากเซิร์ฟเวอร์
 
-                        // อัปเดต UI หรือทำการรีเฟรชตะกร้าสินค้า
-                        updateCart(cartItems); // อัปเดตการแสดงผลตะกร้าให้มีรายการสินค้า
+                        const ct_id = data.ct_id;
+                        const orderNumber = data.order_number;
 
-                        // แสดง popup สำหรับการชำระเงิน
+                        // Update UI or refresh cart items
+                        updateCart(cartItems); // อัปเดตการแสดงผลตะกร้า
+
+                        // Show payment popup
                         togglePopup(); // เรียกใช้ togglePopup เพื่อแสดง popup
 
                         // Populate popup with cart items and total amount
@@ -2361,38 +2546,60 @@ $conn->close();
 
                         cartItems.forEach(item => {
                             popupItemsContainer.innerHTML += `
-                    <div class="cart-item">
-                        <div class="item-image">
-                            <img src="${item.image}" alt="${item.name}">
-                        </div>
-                        <div class="item-info">
-                            <h3>${item.name}</h3>
-                            <span class="price">${item.price}฿</span>
-                        </div>
+                <div class="cart-item">
+                    <div class="item-image">
+                        <img src="${item.image}" alt="${item.name}">
                     </div>
+                    <div class="item-info">
+                        <h3>${item.name}</h3>
+                        <span class="price">${item.price}฿</span>
+                    </div>
+                </div>
                 `;
                         });
 
-                        // Show total amount in the popup
-                        const totalInfo = `
-                <div class="total-info">
-                    <p>รวม: <span id="total-price">${totalAmount}฿</span></p>
-                </div>
-            `;
-                        popupContent.innerHTML += totalInfo;
+                        // สร้างหรืออัปเดต total-info
+                        let totalInfoElement = popupContent.querySelector('.total-info');
 
-                        // Add payment button
+                        if (!totalInfoElement) {
+                            // ถ้ายังไม่มี .total-info ให้สร้างใหม่
+                            totalInfoElement = document.createElement('div');
+                            totalInfoElement.className = 'total-info';
+                            popupContent.appendChild(totalInfoElement); // เพิ่มไปยัง popupContent
+                        }
+
+                        // กำหนดค่า innerHTML
+                        totalInfoElement.innerHTML = `
+            <p>รวม: <span id="total-price">${totalAmount}฿</span></p>
+            `;
+
+                        // Add edit button to the popup โดยส่งค่าที่จำเป็น
                         popupContent.innerHTML += `
-                <button class="submit-btn" onclick="generateQRCode()">ชำระเงิน</button>
+            <button class="submit-btn" onclick="edit('${orderNumber}', '${ct_id}', ${totalAmount}, '${mch_order_no}', '${fee_type}', '${channel}')">ชำระเงิน</button>
             `;
 
                     } else {
-                        console.error(data.message); // ข้อความผิดพลาด
+                        console.error(data.message); // ข้อความผิดพลาดจากเซิร์ฟเวอร์
+                        alert('Error: ' + data.message); // แจ้งผู้ใช้เกี่ยวกับข้อผิดพลาด
                     }
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => {
+                    console.error('Error:', error); // แสดงข้อผิดพลาดใน console
+                    alert('เกิดข้อผิดพลาด: ' + error.message); // แจ้งผู้ใช้เกี่ยวกับข้อผิดพลาด
+                });
         }
 
+        // Function to redirect to demo_pay.php
+        function edit(orderNumber, ct_id, totalAmount, mch_order_no, fee_type, channel) {
+            // เปลี่ยนเส้นทางไปยังไฟล์ demo_pay.php และส่งข้อมูลที่จำเป็น
+            window.location.href = `../test_qrcode/demo_pay.php?orderNumber=${orderNumber}&ct_id=${ct_id}&total_fee=${totalAmount}&mch_order_no=${mch_order_no}&fee_type=${fee_type}&channel=${channel}`;
+        }
+
+        // Function to redirect to demo_pay.php
+        function edit(orderNumber, ct_id, totalAmount, mch_order_no, fee_type, channel) {
+            // เปลี่ยนเส้นทางไปยังไฟล์ demo_pay.php และส่งข้อมูลที่จำเป็น
+            window.location.href = `../test_qrcode/demo_pay.php?orderNumber=${orderNumber}&ct_id=${ct_id}&total_fee=${totalAmount}&mch_order_no=${mch_order_no}&fee_type=${fee_type}&channel=${channel}`;
+        }
         // Function to add item to the cart
         function addToCart(item) {
             userCart.push(item); // Add new item to user's cart
