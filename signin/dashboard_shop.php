@@ -2,16 +2,28 @@
 session_start();
 include('../inc/server.php');
 
+// ตรวจสอบว่ามีค่า shop_id ใน session หรือไม่
+if (!isset($_SESSION['shop_id'])) {
+    die("Shop ID not found in session.");
+}
+
+// Queries to get various statistics
 $Query1 = "SELECT COUNT(*) as total 
 FROM tb_sell 
-WHERE shop_id = '$_SESSION[shop_id]' 
+WHERE shop_id = ? 
 AND DATE(sell_date) = CURDATE()";
-$result1 = mysqli_query($conn, $Query1) or die("database error:" . mysqli_error($conn));
-$total_date = mysqli_fetch_assoc($result1);
+$stmt1 = $conn->prepare($Query1);
+$stmt1->bind_param("i", $_SESSION['shop_id']);
+$stmt1->execute();
+$result1 = $stmt1->get_result();
+$total_date = $result1->fetch_assoc();
 
-$Query2 = "SELECT COUNT(*) as total FROM `tb_sell` WHERE shop_id = $_SESSION[shop_id]";
-$result2 = mysqli_query($conn, $Query2) or die("database error:" . mysqli_error($conn));
-$total = mysqli_fetch_assoc($result2);
+$Query2 = "SELECT COUNT(*) as total FROM `tb_sell` WHERE shop_id = ?";
+$stmt2 = $conn->prepare($Query2);
+$stmt2->bind_param("i", $_SESSION['shop_id']);
+$stmt2->execute();
+$result2 = $stmt2->get_result();
+$total = $result2->fetch_assoc();
 
 $query3 = "SELECT SUM(sell_total) as sell_total
 FROM tb_sell 
@@ -22,21 +34,25 @@ $stmt3->execute();
 $result3 = $stmt3->get_result();
 $sale_date = $result3->fetch_assoc();
 
-$Query4 = "SELECT SUM(sell_total) as sell_total FROM `tb_sell` WHERE shop_id = $_SESSION[shop_id]";
-$result4 = mysqli_query($conn, $Query4) or die("database error:" . mysqli_error($conn));
-$sale_total = mysqli_fetch_assoc($result4);
+$Query4 = "SELECT SUM(sell_total) as sell_total FROM `tb_sell` WHERE shop_id = ?";
+$stmt4 = $conn->prepare($Query4);
+$stmt4->bind_param("i", $_SESSION['shop_id']);
+$stmt4->execute();
+$result4 = $stmt4->get_result();
+$sale_total = $result4->fetch_assoc();
 
 $Query5 = "SELECT COUNT(date_service) as date_service
 FROM tb_service 
-WHERE DATE(date_service) = CURDATE()";
-$result5 = mysqli_query($conn, $Query5) or die("database error:" . mysqli_error($conn));
-$date_service = mysqli_fetch_assoc($result5);
+WHERE DATE(date_service) = CURDATE() AND ct_id = ?";
+$stmt5 = $conn->prepare($Query5);
+$stmt5->bind_param("i", $_SESSION['shop_id']);
+$stmt5->execute();
+$result5 = $stmt5->get_result();
+$date_service = $result5->fetch_assoc();
 
-// สมมติว่ามีการเก็บ shop_id ในเซสชันเมื่อผู้ใช้ล็อกอิน
-$shop_id = $_SESSION['shop_id']; // ควรตั้งค่านี้เมื่อผู้ใช้ทำการล็อกอิน
-
-// ดึงข้อมูลชื่อและนามสกุลจากตาราง tb_shop
-$query = "SELECT * FROM tb_shop WHERE id = $shop_id";
+// Fetch shop details
+$shop_id = $_SESSION['shop_id'];
+$query = "SELECT * FROM tb_shop WHERE id = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $shop_id);
 $stmt->execute();
@@ -48,18 +64,78 @@ if ($result->num_rows > 0) {
     $profileImage = htmlspecialchars($shop['shop_img']);
 } else {
     $fullName = "User not found";
-    $profileImage = "default-image.png"; // กรณีที่ไม่พบผู้ใช้
+    $profileImage = "default-image.png";
 }
 
 $stmt->close();
+
+// Query to fetch services related to the shop
+$serviceQuery = "
+    SELECT 
+        s.id,
+        s.head_sevice,
+        s.details_sevice,
+        s.date_service,
+        c.name AS customer_name,
+        c.lastname AS customer_lastname
+    FROM 
+        tb_service s
+    LEFT JOIN 
+        tb_sell sel ON s.sell_id = sel.sell_id
+    LEFT JOIN 
+        tb_customer c ON s.ct_id = c.id
+    WHERE 
+        sel.shop_id = ?";
+
+$serviceStmt = $conn->prepare($serviceQuery);
+$serviceStmt->bind_param("i", $_SESSION['shop_id']);
+$serviceStmt->execute();
+$result_service = $serviceStmt->get_result();
+
+// New Query to get order details
+$orderQuery = "
+    SELECT 
+        s.sell_id,
+        s.sell_order, 
+        CONCAT(c.name, ' ', c.lastname) AS customer_name,
+        s.sell_date 
+    FROM 
+        tb_sell s 
+    JOIN 
+        tb_customer c ON s.ct_id = c.id
+    WHERE 
+        s.shop_id = ?";
+$orderStmt = $conn->prepare($orderQuery);
+$orderStmt->bind_param("i", $shop_id);
+$orderStmt->execute();
+$orderResult = $orderStmt->get_result();
+
+// New Query to get reviews
+$reviewQuery = "
+    SELECT 
+        c.name,
+        c.lastname,
+        c.img,
+        r.review_commant,
+        r.review_stars
+    FROM 
+        tb_review r
+    JOIN 
+        tb_sell s ON r.review_order = s.sell_order
+    JOIN 
+        tb_customer c ON s.ct_id = c.id
+    WHERE 
+        s.shop_id = ?";
+$reviewStmt = $conn->prepare($reviewQuery);
+$reviewStmt->bind_param("i", $shop_id);
+$reviewStmt->execute();
+$reviewResult = $reviewStmt->get_result();
+
 $conn->close();
 
-// แสดงผลราคาที่จัดรูปแบบ
+// Format sales totals
 $sellTotalToday = isset($sale_date['sell_total']) ? number_format($sale_date['sell_total'], 2) . ' บาท' : '0 บาท';
 $totalSell = isset($sale_total['sell_total']) ? number_format($sale_total['sell_total'], 2) . ' บาท' : '0 บาท';
-
-// echo "<div class='number'>ยอดขายวันนี้: $sellTotalToday</div>";
-// echo "<div class='number'>ยอดขายทั้งหมด: $totalSell</div>";
 ?>
 
 
@@ -615,6 +691,7 @@ $totalSell = isset($sale_total['sell_total']) ? number_format($sale_total['sell_
                 height: 100%;
             }
 
+
             /* popup messenger */
             .popup3 .content3 {
                 padding: 15px;
@@ -945,7 +1022,8 @@ $totalSell = isset($sale_total['sell_total']) ? number_format($sale_total['sell_
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            z-index: 1;
+            z-index: 1000;
+            /* เพิ่ม z-index เพื่อให้แน่ใจว่ามันอยู่บนสุด */
             display: none;
         }
 
@@ -954,25 +1032,39 @@ $totalSell = isset($sale_total['sell_total']) ? number_format($sale_total['sell_
         }
 
         .overlay1 {
-            width: 1000vw;
-            height: 1000vh;
+            width: 100vw;
+            /* ปรับให้เข้ากับขนาดหน้าจอ */
+            height: 100vh;
+            /* ปรับให้เข้ากับขนาดหน้าจอ */
             background: rgba(0, 0, 0, 0.7);
-            z-index: 1;
+            z-index: 999;
+            /* ให้แน่ใจว่ามันอยู่ใต้ popup */
             display: none;
         }
 
         .popup2 .content5 {
-            position: absolute;
+            position: fixed;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) scale(0);
+            transform: translate(-50%, -50%);
             background: #fff;
-            width: 450px;
-            height: 585px;
-            z-index: 2;
+            width: 500px;
+            /* ความกว้างของ container */
+            max-width: 90%;
+            /* ให้แน่ใจว่ามันไม่เกินขนาดหน้าจอ */
+            height: auto;
+            /* ทำให้ความสูงเป็นอัตโนมัติ */
+            max-height: 90vh;
+            /* ปรับความสูงสูงสุดให้มากขึ้น */
+            z-index: 1000;
+            /* ให้แน่ใจว่ามันอยู่บนสุด */
             padding: 20px;
+            /* เพิ่ม padding ให้น้อยลง */
             box-sizing: border-box;
             border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            /* ซ่อน scrollbar */
         }
 
         .popup2 .close-btn {
@@ -982,13 +1074,22 @@ $totalSell = isset($sale_total['sell_total']) ? number_format($sale_total['sell_
             top: 20px;
             width: 30px;
             height: 30px;
-            background: #222;
+            background: #007bff;
+            /* สีน้ำเงิน */
             color: #fff;
-            font-size: 25px;
-            font-weight: 600;
+            font-size: 20px;
+            /* ขนาดตัวอักษร */
+            font-weight: bold;
             line-height: 30px;
             text-align: center;
             border-radius: 50%;
+            transition: background-color 0.3s;
+            /* เพิ่ม transition เมื่อชี้ */
+        }
+
+        .popup2 .close-btn:hover {
+            background: #0056b3;
+            /* สีเมื่อชี้ */
         }
 
         .popup2.active .overlay1 {
@@ -1002,30 +1103,110 @@ $totalSell = isset($sale_total['sell_total']) ? number_format($sale_total['sell_
 
         .popup2 .content5 h1 {
             text-align: center;
-            margin-top: 5px;
-            margin-bottom: 10px;
-
+            margin: 5px 0;
+            font-size: 20px;
+            /* ขนาดตัวอักษร */
+            font-weight: bold;
+            /* ทำให้ตัวอักษรหนา */
         }
 
-        .popup2 .content5 .name-report1 {
-            font-size: 15px;
+        .popup2 .content5 .name-report {
+            font-size: 12px;
+            /* ขนาดตัวอักษรใน name-report */
             display: flex;
-            justify-content: left;
-            padding-bottom: 5px;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-weight: bold;
+            /* ทำให้ตัวอักษรหนาใน name-report */
         }
 
-        .popup2 .content5 .name-report1 p {
-            font-size: 14px;
-            color: #507F99;
-            background-color: #fff;
+        .popup2 .content5 .name-report label {
+            color: #333;
+            font-size: 12px;
+            /* ขนาดตัวอักษรของ label */
+            font-weight: bold;
+            /* ทำให้ตัวอักษรหนา */
         }
 
-        .popup2 .content5 .name-report1 span {
+        .popup2 .content5 .name-report span {
             color: #666;
+            font-weight: bold;
+            /* ทำให้ตัวอักษรหนา */
+            font-size: 12px;
+            /* ขนาดตัวอักษรของข้อมูล */
         }
 
         .popup2 .content5 a {
-            font-size: 14px;
+            font-size: 10px;
+            /* ขนาดตัวอักษรสำหรับลิงก์ */
+            font-weight: bold;
+            /* ทำให้ตัวอักษรหนา */
+        }
+
+        .popup2 .content5 a:hover {
+            text-decoration: underline;
+            /* ขีดเส้นใต้เมื่อชี้ */
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            /* จัดปุ่มให้ห่างกัน */
+            margin-top: 15px;
+            /* ลดระยะห่างด้านบน */
+        }
+
+        .btn-next {
+            font-size: 12px;
+            /* ขนาดตัวอักษรในปุ่ม */
+            padding: 6px 10px;
+            /* ปรับระยะห่างภายในให้เล็กลง */
+            flex: 1;
+            /* ให้ปุ่มใช้พื้นที่ให้เต็ม */
+            margin: 5px;
+            /* เพิ่มระยะห่างระหว่างปุ่ม */
+            font-weight: bold;
+            /* ทำให้ตัวอักษรหนา */
+        }
+
+        /* เพิ่มการจัดการเมื่อมีข้อมูลมาก */
+        .name-report {
+            flex-wrap: wrap;
+            /* ให้มีการห่อเมื่อมีข้อมูลยาว */
+        }
+
+        .wrapper {
+            margin-top: 10px;
+            /* เพิ่มระยะห่างด้านบนสำหรับ progress */
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            /* จัดให้อยู่ตรงกลาง */
+            margin-bottom: 10px;
+            /* เพิ่มระยะห่างด้านล่าง */
+        }
+
+        .progress {
+            height: 5px;
+            /* ความสูงของ progress bar */
+            background: #007bff;
+            /* สีของ progress bar */
+            border-radius: 5px;
+            flex: 1;
+            /* ให้ progress bar ใช้พื้นที่ให้เต็ม */
+            margin-right: 10px;
+            /* ระยะห่างระหว่าง progress bar และ steps */
+        }
+
+        .progress-step {
+            font-size: 12px;
+            /* ขนาดตัวอักษรของ progress steps */
+            color: #666;
+            /* สีของตัวอักษร */
+            font-weight: bold;
+            /* ทำให้ตัวอักษรหนา */
         }
 
         /* step */
@@ -1147,8 +1328,16 @@ $totalSell = isset($sale_total['sell_total']) ? number_format($sale_total['sell_
             left: 50%;
             transform: translate(-50%, -50%) scale(0);
             background: #fff;
-            width: 450px;
-            height: 585px;
+            width: 600px;
+            /* เพิ่มความกว้าง */
+            max-width: 90%;
+            /* เพื่อให้เหมาะกับหน้าจอเล็ก */
+            height: auto;
+            /* เปลี่ยนเป็น auto เพื่อให้ความสูงปรับตามเนื้อหา */
+            max-height: 80vh;
+            /* จำกัดความสูง */
+            overflow-y: auto;
+            /* เพิ่ม scroll เมื่อเนื้อหามากเกินไป */
             z-index: 2;
             padding: 20px;
             box-sizing: border-box;
@@ -1486,13 +1675,13 @@ $totalSell = isset($sale_total['sell_total']) ? number_format($sale_total['sell_
 
 
     <!-- order  -->
-
     <div class="container">
         <h1>Order</h1>
 
         <table class="content-table">
             <thead>
                 <tr>
+                    <th>ลำดับ</th>
                     <th>ออเดอร์</th>
                     <th>ชื่อ</th>
                     <th>สถานะ</th>
@@ -1500,128 +1689,58 @@ $totalSell = isset($sale_total['sell_total']) ? number_format($sale_total['sell_
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>00001</td>
-                    <td>สาวสวย</td>
-                    <td class="active">
-                        <p>รอรับออเดอร์</p>
-                    </td>
-                    <td>10-07-24</td>
-                    <td class="edit"><button class="ck" onclick="edit()">Edit</button></td>
-                </tr>
-                <tr>
-                    <td>00002</td>
-                    <td>สุดใจ</td>
-                    <td class="active">
-                        <p>กำลังดำเนินการ</p>
-                    </td>
-                    <td>10-07-24</td>
-                    <td class="edit"><button class="ck" onclick="edit()">Edit</button></td>
-                </tr>
-                <tr>
-                    <td>00003</td>
-                    <td>โอ้โห</td>
-                    <td class="active">
-                        <p>เสร็จ</p>
-                    </td>
-                    <td>10-07-24</td>
-                    <td class="edit"><button class="ck" onclick="edit()">view</button></td>
-                </tr>
-                <!-- สามารถเพิ่มแถวข้อมูลต่อไปตามต้องการ -->
+            <tbody id="order-status-body">
+                <?php
+                // Initialize the counter for order numbers
+                $orderNumber = 1;
+
+                // Display order details
+                if ($orderResult->num_rows > 0) {
+                    while ($row = $orderResult->fetch_assoc()) {
+                        echo "<tr>";
+                        echo "<td>" . $orderNumber . "</td>"; // Display the order number
+                        echo "<td>" . htmlspecialchars($row['sell_order']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['customer_name']) . "</td>";
+                        echo "<td class='status' data-status-index='0'><p>รับออเดอร์</p></td>"; // Set initial status
+                        echo "<td>" . date('d-m-y', strtotime($row['sell_date'])) . "</td>"; // Display date
+                        echo "<td class='edit'><button class='ck' onclick='Popup_Detail(" . $row['sell_id'] . ", this.closest(\"tr\"))'>Edit</button></td>";
+                        echo "</tr>";
+                        $orderNumber++; // Increment the order number
+                    }
+                } else {
+                    echo "<tr><td colspan='6'>ไม่มีข้อมูลออเดอร์</td></tr>"; // Adjust colspan to match the new column
+                }
+                ?>
             </tbody>
         </table>
     </div>
-
     <!-- order end-->
 
 
     <!-- review-->
     <section class="review" id="review">
-
         <h1 class="review-name">Review</h1>
 
         <div class="swiper review-slider">
-
             <div class="swiper-wrapper">
-
-                <div class="swiper-slide box3">
-                    <img src="../photo/ตู้ซักผ้า2.jpg" alt="">
-                    <h3>ชื่อลูกค้า</h3>
-                    <div class="stars">
-                        <i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i>
+                <?php
+                // สมมติว่าคุณได้ดึงข้อมูลรีวิวไว้ในตัวแปร $reviewResult
+                while ($review = $reviewResult->fetch_assoc()): ?>
+                    <div class="swiper-slide box3">
+                        <?php if (!empty($review['img'])): ?>
+                            <img src="../photo/<?= htmlspecialchars($review['img']) ?>" alt="Review Image">
+                        <?php else: ?>
+                            <img src="default-image.png" alt="Default Image">
+                        <?php endif; ?>
+                        <h3><?= htmlspecialchars($review['name'] . ' ' . $review['lastname']) ?></h3>
+                        <div class="stars">
+                            <?php for ($i = 0; $i < intval($review['review_stars']); $i++): ?>
+                                <i class='bx bxs-star'></i>
+                            <?php endfor; ?>
+                        </div>
+                        <p><?= htmlspecialchars($review['review_commant']) ?></p>
                     </div>
-                    <p>Lorem ipsum dolor sit amet.</p>
-                </div>
-
-                <div class="swiper-slide box3">
-                    <img src="../photo/ตู้ซักผ้า2.jpg" alt="">
-                    <h3>ชื่อลูกค้า</h3>
-                    <div class="stars">
-                        <i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i>
-                    </div>
-                    <p>Lorem ipsum dolor sit amet.</p>
-                </div>
-
-                <div class="swiper-slide box3">
-                    <img src="../photo/ตู้ซักผ้า2.jpg" alt="">
-                    <h3>ชื่อลูกค้า</h3>
-                    <div class="stars">
-                        <i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i>
-                    </div>
-                    <p>Lorem ipsum dolor sit amet.</p>
-                </div>
-
-                <div class="swiper-slide box3">
-                    <img src="../photo/ตู้ซักผ้า2.jpg" alt="">
-                    <h3>ชื่อลูกค้า</h3>
-                    <div class="stars">
-                        <i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i>
-                    </div>
-                    <p>Lorem ipsum dolor sit amet.</p>
-                </div>
-
-                <div class="swiper-slide box3">
-                    <img src="../photo/ตู้ซักผ้า2.jpg" alt="">
-                    <h3>ชื่อลูกค้า</h3>
-                    <div class="stars">
-                        <i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i>
-                    </div>
-                    <p>Lorem ipsum dolor sit amet.</p>
-                </div>
-
-                <div class="swiper-slide box3">
-                    <img src="../photo/ตู้ซักผ้า2.jpg" alt="">
-                    <h3>ชื่อลูกค้า</h3>
-                    <div class="stars">
-                        <i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i>
-                        <i class='bx bxs-star'></i>
-                    </div>
-                    <p>Lorem ipsum dolor sit amet.</p>
-                </div>
+                <?php endwhile; ?>
             </div>
         </div>
     </section>
@@ -1632,85 +1751,50 @@ $totalSell = isset($sale_total['sell_total']) ? number_format($sale_total['sell_
     <div class="popup2" id="popup-2">
         <div class="overlay1"></div>
         <div class="content5">
-            <div class="close-btn" onclick="edit()">&times;</div>
+            <div class="close-btn" onclick="document.getElementById('popup-2').classList.remove('active')">&times;</div>
             <h1>รายการ</h1>
-            <div class="name-report1">
-                <label for="text">ลำดับ : </label>
-                <span>
-                    <p>0001</p>
-                </span>
+            <input type="hidden" name="orderNumber" id="inputOrderNumber"> <!-- ฟิลด์ที่ซ่อน -->
+            <input type="hidden" name="shop_id" id="inputShopId"> <!-- แสดง shop_id -->
+            <input type="hidden" name="sell_id" id="inputSellId"> <!-- แสดง sell_id -->
+
+            <div class="name-report">
+                <label for="text">เลขออเดอร์: </label><span id="orderNumber"></span>
             </div>
-            <div class="name-report1">
-                <label for="text">ชื่อ : </label>
-                <span>
-                    <p>สาวสวย</p>
-                </span>
+            <div class="name-report">
+                <label for="text">ชื่อ: </label><span id="customerName"></span>
             </div>
-            <div class="name-report1">
-                <label for="text">บริการ : </label>
-                <span>
-                    <p>ซัก อบ แห้ง</p>
-                </span>
+            <div class="name-report">
+                <label for="text">เบอร์โทร: </label><span id="customerPhone"></span>
             </div>
-            <div class="name-report1">
-                <label for="text">เบอร์โทร : </label>
-                <span>
-                    <p> 099-999-9999 </p>
-                </span>
+            <div class="name-report">
+                <label for="text">ที่อยู่: </label><span id="customerAddress"></span>
             </div>
-            <div class="name-report1">
-                <label for="text">ที่อยู่ : </label>
-                <span>
-                    <p>หอพักสวัสดี 48/2 ม.7 ว.ลำผักชี ข.หนองจอก กทม</p>
-                </span>
+            <div class="name-report">
+                <label for="text">วันที่: </label><span id="orderDate"></span>
             </div>
-            <div class="name-report1">
-                <label for="text">Map : </label>
-                <span>
-                    <p><a href="https://maps.app.goo.gl/sxaEgafBW4vicRHJA">ที่อยู่</a></p>
-                </span>
+            <div class="name-report">
+                <label for="text">ประเภท: </label><span id="orderType"></span>
             </div>
-            <div class="name-report1">
-                <label for="text">ราคา : </label>
-                <span>
-                    <p>80 บาท</p>
-                </span>
+            <div class="name-report">
+                <label for="text">ขนาด: </label><span id="orderSize"></span>
             </div>
-            <div class="name-report1">
-                <label for="text">ระยะทาง : </label>
-                <span>
-                    <p>5 Km.</p>
-                </span>
+            <div class="name-report">
+                <label for="text">บริการ: </label><span id="orderService"></span>
             </div>
-            <div class="name-report1">
-                <label for="text">ค่าขนส่ง : </label>
-                <span>
-                    <p>50 บาท</p>
-                </span>
+            <div class="name-report">
+                <label for="text">ราคา: </label><span id="orderPrice"></span>
             </div>
-            <div class="name-report1">
-                <label for="text">ราคารวม : </label>
-                <span>
-                    <p>130 บาท</p>
-                </span>
+            <div class="name-report">
+                <label for="text">ระยะทาง: </label><span id="orderDistance"></span>
             </div>
-            <div class="name-report1">
-                <label for="text">ประเภท : </label>
-                <span>
-                    <p>เสื้อผ้า</p>
-                </span>
+            <div class="name-report">
+                <label for="text">ค่าขนส่ง: </label><span id="shippingCost"></span>
             </div>
-            <div class="name-report1">
-                <label for="text">ขนาด : </label>
-                <span>
-                    <p> S </p>
-                </span>
+            <div class="name-report">
+                <label for="text">หมายเหตุ: </label><span id="orderNotes"></span>
             </div>
-            <div class="name-report1">
-                <label for="text">หมายเหตุ : </label>
-                <span>
-                    <p> </p>
-                </span>
+            <div class="name-report">
+                <label for="text">ราคารวม: </label><span id="totalPrice"></span>
             </div>
 
             <!-- step by step-->
@@ -1730,6 +1814,7 @@ $totalSell = isset($sale_total['sell_total']) ? number_format($sale_total['sell_
 
                 <div class="btn-container">
                     <button class="btn-next" onclick="next()">Next</button>
+                    <button class="btn-next" onclick="confirmStatus()">ยืนยัน</button>
                 </div>
             </div>
             <!-- step by step end-->
@@ -1747,8 +1832,6 @@ $totalSell = isset($sale_total['sell_total']) ? number_format($sale_total['sell_
             <div class="close-btn" onclick="messenger()">&times;</div>
             <h1>Messenger</h1>
 
-            <!-- table messenger  -->
-
             <div class="container">
                 <table class="content-table">
                     <thead>
@@ -1757,38 +1840,31 @@ $totalSell = isset($sale_total['sell_total']) ? number_format($sale_total['sell_
                             <th>ชื่อ</th>
                             <th>เรื่อง</th>
                             <th>วันที่</th>
-                            <th></th>
+                            <th>ดำเนินการ</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>สาวสวย</td>
-                            <td>เสื้อขาด</td>
-                            <td>10-07-24</td>
-                            <td class="edit"><button class="ck" onclick="viewmessenger()">View</button></td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>สาวสวย</td>
-                            <td>เสื้อขาด</td>
-                            <td>10-07-24</td>
-                            <td class="edit"><button class="ck" onclick="viewmessenger()">View</button></td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>สาวสวย</td>
-                            <td>เสื้อขาด</td>
-                            <td>10-07-24</td>
-                            <td class="edit"><button class="ck" onclick="viewmessenger()">View</button></td>
-                        </tr>
-                        <!-- สามารถเพิ่มแถวข้อมูลต่อไปตามต้องการ -->
+                        <?php
+                        // Check if there are any results
+                        if ($result_service->num_rows > 0) {
+                            $index = 1; // Initialize index for numbering
+                            while ($row = $result_service->fetch_assoc()) {
+                                echo "<tr>";
+                                echo "<td>" . $index++ . "</td>"; // Display index
+                                echo "<td>" . htmlspecialchars($row['customer_name'] . ' ' . $row['customer_lastname']) . "</td>"; // Customer name
+                                echo "<td>" . htmlspecialchars($row['head_sevice']) . "</td>"; // Service name
+                                echo "<td>" . htmlspecialchars($row['date_service']) . "</td>"; // Service date
+                                echo "<td class='edit'><button class='ck' onclick='viewmessenger(" . htmlspecialchars($row['id']) . ")'>View</button></td>";
+                                echo "</tr>";
+                            }
+                        } else {
+                            // Display a message if no data is found
+                            echo "<tr><td colspan='5'>ไม่พบข้อมูล</td></tr>";
+                        }
+                        ?>
                     </tbody>
                 </table>
             </div>
-
-            <!-- table messenger end-->
-
         </div>
     </div>
 
@@ -1800,46 +1876,45 @@ $totalSell = isset($sale_total['sell_total']) ? number_format($sale_total['sell_
     <div class="popup4" id="popup4">
         <div class="overlay4"></div>
         <div class="content4">
-            <div class="close-btn" onclick="viewmessenger()">&times;</div>
+            <div class="close-btn" onclick="document.getElementById('popup4').classList.toggle('active')">&times;</div>
             <h1>ปัญหา</h1>
             <div class="container2">
                 <div class="form-group">
                     <label for="name">ชื่อ:</label>
-                    <input type="text" id="name" name="name" required>
+                    <input type="text" id="name" name="name" disabled>
                 </div>
                 <div class="form-group">
                     <label for="email">อีเมล:</label>
-                    <input type="email" id="email" name="email" required>
+                    <input type="email" id="email" name="email" disabled>
                 </div>
                 <div class="form-group">
                     <label for="phone">เบอร์โทรศัพท์:</label>
-                    <input type="tel" id="phone" name="phone">
+                    <input type="tel" id="phone" name="phone" disabled>
                 </div>
                 <div class="form-group">
                     <label for="order">เลขออเดอร์:</label>
-                    <input type="text" id="order" name="order" required>
+                    <input type="text" id="order" name="order" disabled>
                 </div>
                 <div class="form-group">
                     <label for="issue">หัวข้อปัญหา:</label>
-                    <input type="text" id="issue" name="issue" required>
+                    <input type="text" id="issue" name="issue" disabled>
                 </div>
                 <div class="form-group">
                     <label for="description">ลักษณะของปัญหาที่พบ:</label>
-                    <textarea id="description" name="description" rows="4" required></textarea>
+                    <textarea id="description" name="description" rows="4" disabled></textarea>
                 </div>
                 <div class="form-group">
                     <label for="image1">แนบรูปภาพ 1:</label>
-                    <img src="../photo/ตู้ซักผ้า2.jpg" alt="">
+                    <img id="image1" src="" alt="">
                 </div>
                 <div class="form-group">
                     <label for="image2">แนบรูปภาพ 2:</label>
-                    <img src="../photo/ตู้ซักผ้า2.jpg" alt="">
+                    <img id="image2" src="" alt="">
                 </div>
                 <div class="form-group">
                     <label for="image3">แนบ QR Payment :</label>
-                    <img src="../photo/ตู้ซักผ้า2.jpg" alt="">
+                    <img id="image3" src="" alt="">
                 </div>
-                </form>
             </div>
         </div>
     </div>
@@ -1894,7 +1969,7 @@ $totalSell = isset($sale_total['sell_total']) ? number_format($sale_total['sell_
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
     <!--custom js file link -->
-    <script src="js/script.js"></script>
+
 
     <script>
         let searchForm = document.querySelector('.search-form');
@@ -1951,46 +2026,122 @@ $totalSell = isset($sale_total['sell_total']) ? number_format($sale_total['sell_
         });
 
         /* popup */
-        function edit() {
-            document.getElementById("popup-2").classList.toggle("active");
+        const statuses = ["รับออเดอร์", "ดำเนินการ", "สำเร็จ"];
+        let currentStatusIndex = 0; // เริ่มต้นที่สถานะแรก
+        let currentOrderRow; // Variable to keep track of the current order row
+
+        // ฟังก์ชันสำหรับเปิด popup
+        function Popup_Detail(sellId, rowElement) {
+            currentOrderRow = rowElement; // เก็บแถวปัจจุบัน
+
+            // เรียก Ajax เพื่อดึงข้อมูลตาม sell_id
+            fetch('get_sell_details.php?sell_id=' + sellId)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        // แสดงข้อมูลที่ดึงมา
+                        document.getElementById('orderNumber').innerText = data.sell_order || 'N/A';
+                        document.getElementById('orderDate').innerText = data.sell_date || 'N/A';
+                        document.getElementById('orderType').innerText = data.product_type || 'N/A';
+                        document.getElementById('orderSize').innerText = data.sell_size || 'N/A';
+                        document.getElementById('orderService').innerText = data.product_name || 'N/A';
+                        document.getElementById('orderPrice').innerText = data.sell_total + ' บาท' || 'N/A';
+                        document.getElementById('orderDistance').innerText = data.sell_distance + ' กม.' || 'N/A';
+                        document.getElementById('shippingCost').innerText = '50 บาท';
+                        document.getElementById('orderNotes').innerText = data.sell_note || 'ไม่มี';
+
+                        // แสดงข้อมูลลูกค้า
+                        document.getElementById('customerName').innerText = data.name + ' ' + data.lastname || 'N/A';
+                        document.getElementById('customerPhone').innerText = data.phone || 'N/A';
+                        document.getElementById('customerAddress').innerText = data.address || 'ไม่มีที่อยู่';
+                        document.getElementById('totalPrice').innerText = (parseFloat(data.sell_total) + 50).toFixed(2) + ' บาท';
+
+                        // จัดการค่าของร้าน
+                        document.getElementById('inputShopId').value = data.shop_id || 'N/A'; // ตั้งค่า shop_id
+                        document.getElementById('inputSellId').value = sellId; // ตั้งค่า sell_id
+
+                        // แสดง popup
+                        document.getElementById('popup-2').classList.add('active');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         }
 
-        const progress = document.getElementById("progress");
-        const nextBtn = document.querySelector(".btn-next");
-        const progressSteps = document.querySelectorAll(".progress-step .bx");
+        // ฟังก์ชันสำหรับยืนยันสถานะ
+        function confirmStatus() {
+            const statusCell = currentOrderRow.querySelector('.status'); // Get the status cell
 
-        // Default step value
-        let currentStep = 1;
+            // Update the status in the order table
+            statusCell.innerHTML = `<p>${statuses[currentStatusIndex]}</p>`; // Update displayed status
+            statusCell.setAttribute('data-status-index', currentStatusIndex); // Update index
 
-        const next = () => {
-            // Increase step value by 1
-            if (currentStep < progressSteps.length) {
-                currentStep++;
-                refresh();
+            // ปิด popup
+            document.getElementById("popup-2").classList.remove("active");
+
+            // Move to the next status if not at the last one
+            if (currentStatusIndex < statuses.length - 1) {
+                currentStatusIndex++;
+            } else {
+                alert("สถานะเสร็จสิ้นแล้ว."); // Alert if at the last status
             }
-        };
 
-        const refresh = () => {
-            // Add or remove active class according to current step value
+            // บันทึกข้อมูลสถานะลงฐานข้อมูล
+            const sellId = document.getElementById('inputSellId').value;
+            const shopId = document.getElementById('inputShopId').value;
+            const ctId = 1; // ตั้งค่า ct_id ตามที่คุณต้องการ
+            const productId = 1; // ตั้งค่า product_id ตามที่คุณต้องการ
+
+            fetch('save_status.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        status: statuses[currentStatusIndex],
+                        sell_id: sellId,
+                        ct_id: ctId,
+                        shop_id: shopId,
+                        product_id: productId
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log("บันทึกสถานะเรียบร้อยแล้ว");
+                    } else {
+                        console.error("เกิดข้อผิดพลาดในการบันทึกสถานะ:", data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+            updateProgress();
+        }
+
+        // ฟังก์ชันเพื่ออัปเดตการแสดงผล
+        function updateProgress() {
+            const progressSteps = document.querySelectorAll(".progress-step .bx");
             progressSteps.forEach((step, index) => {
-                if (index < currentStep) step.classList.add("active");
-                else step.classList.remove("active");
+                step.classList.toggle('active', index <= currentStatusIndex);
             });
 
-            // If current step value is greater than all progress steps
-            // then set value to total length of progress steps
-            if (currentStep > progressSteps.length) {
-                currentStep = progressSteps.length;
-                nextBtn.classList.add("disabled");
-            } else {
-                nextBtn.classList.remove("disabled");
+            // คำนวณความกว้างสำหรับแถบโปรเกรส
+            const width = ((currentStatusIndex + 1) / statuses.length) * 100;
+            document.getElementById("progress").style.width = width + "%";
+        }
+
+        // ฟังก์ชันถัดไป
+        const next = () => {
+            // เพิ่มค่าสถานะ
+            if (currentStatusIndex < statuses.length - 1) {
+                currentStatusIndex++;
+                updateProgress();
             }
-
-            // Calculate width for the progress bar
-            const allActiveSteps = document.querySelectorAll(".progress-step .bx.active");
-            const width = (allActiveSteps.length / progressSteps.length) * 100 - 5;
-
-            progress.style.width = width + "%";
         };
 
         /* popup */
@@ -1999,8 +2150,33 @@ $totalSell = isset($sale_total['sell_total']) ? number_format($sale_total['sell_
         }
 
         /* popup3 */
-        function viewmessenger() {
-            document.getElementById("popup4").classList.toggle("active");
+        function viewmessenger(serviceId) {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', 'fetch_service_details.php?id=' + serviceId, true);
+            xhr.onload = function() {
+                if (this.status === 200) {
+                    const data = JSON.parse(this.responseText);
+                    if (data.name) { // ตรวจสอบว่ามีข้อมูล
+                        document.getElementById("name").value = data.name;
+                        document.getElementById("email").value = data.email;
+                        document.getElementById("phone").value = data.phone;
+                        document.getElementById("order").value = data.order;
+                        document.getElementById("issue").value = data.issue;
+                        document.getElementById("description").value = data.description;
+
+                        // แสดงภาพ
+                        document.getElementById("image1").src = data.image1;
+                        document.getElementById("image2").src = data.image2;
+                        document.getElementById("image3").src = data.image3;
+
+                        // แสดง popup
+                        document.getElementById("popup4").classList.add("active");
+                    } else {
+                        alert('ไม่พบข้อมูล');
+                    }
+                }
+            };
+            xhr.send();
         }
     </script>
 </body>
